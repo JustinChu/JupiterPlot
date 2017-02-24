@@ -1,4 +1,4 @@
 #Assembly Consistency plot
 
 ##Requires:
-(Circos)[http://circos.ca/software/download/]
+[Circos](http://circos.ca/software/download/)
