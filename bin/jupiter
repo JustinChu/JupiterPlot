@@ -1,0 +1,78 @@
+#!/usr/bin/make -Rrf
+ifdef profile
+SHELL=/usr/bin/time -f '=> jupiter: %e %C' /bin/bash -o pipefail
+else
+SHELL=/bin/bash -o pipefail
+endif
+
+#------------------------------------------------------------
+# params
+#------------------------------------------------------------
+
+# k-mer size
+min_size=10000
+
+#------------------------------------------------------------
+# meta rules
+#------------------------------------------------------------
+
+.PRECIOUS:
+.DELETE_ON_ERROR:
+.PHONY: check-params generateplot
+
+default: generateplot
+
+generateplot: check-params $(name).png $(name).svg
+
+check-name-param:
+ifndef name
+	$(error missing required param 'name' (output file prefix))
+endif
+
+check-params: check-name-param
+ifndef ref
+	$(error missing required param 'ref' (FASTA reference file))
+endif
+ifndef fa
+	$(error missing required param 'fa' (FASTA contigs file))
+endif
+
+
+#------------------------------------------------------------
+# pipeline rules
+#------------------------------------------------------------
+
+$(name)_reference.fa: $(ref)
+	ln -s $* $(name)_reference.fa
+	
+$(name)_scaffolds.fa: $(fa)
+	ln -s $* $(name)_scaffolds.fa
+
+# index FASTA file
+%.fai: %
+	samtools faidx $*
+	
+%.bwt: %
+	bwa index $*
+
+%.agp: %.fa
+	fatoagp.pl $* > $@
+
+%.bam: $(name)_reference.fa $(name)_scaffolds.fa
+	bwa mem -x intractg $< | samtools view -Sb - | samtools sort - > $@
+
+$(name).bed: $(name).bam
+	samtools view $< | grep -v XA | grep -v '^@' | awk '{if($5 > 50 || $5 == "" ) print}' | awk '{OFS="\t"; if (and($2, 16)) print $3,$4,$4+length($10),$1,$5,"-"; else print $3,$4,$4+length($10),$1,$5,"+" }' > $@
+
+$(name)_reference_gaps.bed: $(name)_reference.fa
+	generateGapBed.pl $< 
+
+%.conf: %.agp $(name).bed $(name)_reference.fa.fai $(name).karyotype
+	generateConf.pl $< $(name).bed $(name)_reference.fa.fai $(name).karyotype
+	
+$(name).karyotype: $(name)_reference.fa
+	generateKaryotype.pl
+	
+%.svg %.png: %.conf 
+	circos -noparanoid
+ 

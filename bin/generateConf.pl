@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use Getopt::Long qw(GetOptions);
 use IO::File;
-use File::ReadBackwards;
 
 my $genomeIndexFile = "";
 my $scaffoldFiles   = "";
@@ -737,34 +736,46 @@ sub outputKaryotype {
 	}
 	$genomeFileFH->close();
 
-	my $scaffFH = new File::ReadBackwards($scaffoldFiles);
+	my $scaffFH = new IO::File($scaffoldFiles);
 	$line = $scaffFH->getline();
+	
+	my %scaffoldLengths;
+	
+	#load in fai file
+	while ( $line ){
+		my @tempArray = split( /\t/, $line );
+		my $scaffoldID = $tempArray[0];
+		chomp($line);
+		$scaffoldLengths{$scaffoldID} = $tempArray[1];
+		$line = $scaffFH->getline();		
+	}
+	$scaffFH->close();
+	
+	#sort by length
+	my @lengthOrder = sort { $scaffoldLengths{$a} <=> $scaffoldLengths{$b} } keys %scaffoldLengths;
 
 	my $count       = 1;
 	my $scaffoldSum = 0;
 
-	while ( $line && ( $genomeSize * $numScaff ) > $scaffoldSum ) {
-		chomp($line);
+	foreach my $scaffoldID ( reverse @lengthOrder ) {
+		
+		if(( $genomeSize * $numScaff ) <= $scaffoldSum){
+			last;
+		}
 
-	  #177998958	scaffold1,177998948,f2072507Z113377705k35a0m10r2072510z64621243
-		my @tempArray = split( /\t/, $line );
-		my $scaffoldID = $tempArray[1];
-		$scaffoldID =~ s/,/-/g;
+		#remove underscores
 		$scaffolds{$scaffoldID} = "scaffold" . $count;
 		$direction{$scaffoldID} = 0;
 		$karyotype->write( "chr - "
 			  . $scaffolds{$scaffoldID}
 			  . " $scaffolds{$scaffoldID} 0 "
-			  . $tempArray[0] . " vvlgrey"
+			  . $scaffoldLengths{$scaffoldID} . " vvlgrey"
 			  . "\n" );
-		$scaffoldSum += $tempArray[0];
-		$scaffoldsSize{$scaffoldID} = $tempArray[0];
-#		print STDERR $tempArray[0] . "\t" . $count . "\n";
+		$scaffoldSum += $scaffoldLengths{$scaffoldID};
+		$scaffoldsSize{$scaffoldID} = $scaffoldLengths{$scaffoldID};
 		$count++;
-		$line = $scaffFH->getline();
 	}
-	$scaffFH->close();
-
+	
 	#print out spacing information:
 	my $defaultSpacing = 0.002;
 	print $fd "<ideogram>\n<spacing>\ndefault = " . $defaultSpacing . "r\n";
@@ -803,11 +814,6 @@ sub outputLinks {
 		my $scaffoldID = $tempArray[0];
 		$scaffoldID =~ s/^scaffold//;
 
-		#remove underscores
-		$scaffoldID =~ s/_//g;
-		$scaffoldID =~ s/,/-/g;
-
-#scaffoldscaffold1,177998948,f2072507Z113377705k35a0m10_r2072510z64621243	432048	446780	53	W	contigscaffold1,177998948,f2072507Z113377705k35a0m10_r2072510z64621243_26	1	14733	+
 		if ( exists( $scaffolds{$scaffoldID} ) && $tempArray[4] eq "W" ) {
 			my $contigID = $tempArray[5];
 
@@ -852,7 +858,6 @@ sub outputLinks {
 		}
 		$scaffoldID =~ s/^contig//;
 		$scaffoldID =~ s/_\d+$//;
-		$scaffoldID =~ s/,/-/g;
 		my $linkSize = $tempArray[2] - $tempArray[1];
 		if ( exists $scaffolds{$scaffoldID} ) {
 			my $contigID = $tempArray[3];
@@ -892,19 +897,18 @@ sub outputLinks {
 #hs1 100 200 hs2 250 300
 #CM000667.2	165524114	165541850	contigscaffold7,63778938,f2072554Z57691322k42a0m10r2072561z3380221k43a0m10f2072570z2707395_3247	60	+
 		my @tempArray = split( /\t/, $line );
+#		print $line . "\n";
 		my $scaffoldID = $tempArray[3];
 		$scaffoldID =~ s/^contig//;
 		$scaffoldID =~ s/_\d+$//;
-		$scaffoldID =~ s/,/-/g;
 		my $linkSize = $tempArray[2] - $tempArray[1];
 		if ( exists $scaffolds{$scaffoldID} ) {
 
 			if ( $direction{$scaffoldID} >= 0 ) {
 				my $contigID = $tempArray[3];
 				if ( !exists( $scafftigSize{$contigID} ) ) {
-					print $contigID . "\n";
+					print $scaffoldID . " " . $contigID . "\n";
 					exit(1);
-
 				}
 				$linkSize =
 				    $linkSize < $scafftigSize{$contigID}
