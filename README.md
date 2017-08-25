@@ -1,7 +1,6 @@
-#Assembly Consistency plot
-
-##Requires:
-
+Jupiter Assembly Consistency plot
+======================
+### Requires (for full pipeline):
 * [Circos](http:__circos.ca_software_download_)
 * [bwa](https:__github.com_lh3_bwa)
 * [samtools](https:__github.com_samtools_samtools)
