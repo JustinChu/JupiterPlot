@@ -17,9 +17,12 @@ while ($line) {
 		$line = <>;
 	}
 	my ($chrName) = $header =~ /^>([^\s]+)\s/;
-	while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
-		my @start = @-;
-		my @end   = @+;
-		print $chrName . "\t" . $start[0] . "\t" . $end[0] . "\n";
-	}
+	
+	#TODO assign colours in meaningful way
+	print "chr - " . $chrName . " 0 ".length($currentStr) . " grey\n"
+	
+	#TODO process gaps 
+#	while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
+#		print $chrName . "\t" . $-[0] . "\t" . $+[0] . "\n";
+#	}
 }

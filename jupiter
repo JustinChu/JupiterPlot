@@ -5,6 +5,8 @@ else
 SHELL=/bin/bash -o pipefail
 endif
 
+ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
 #------------------------------------------------------------
 # params
 #------------------------------------------------------------
@@ -43,36 +45,36 @@ endif
 #------------------------------------------------------------
 
 $(name)_reference.fa: $(ref)
-	ln -s $* $(name)_reference.fa
+	ln -s $< $(name)_reference.fa
 	
 $(name)_scaffolds.fa: $(fa)
-	ln -s $* $(name)_scaffolds.fa
+	ln -s $< $(name)_scaffolds.fa
 
 # index FASTA file
-%.fai: %
-	samtools faidx $*
+%.fa.fai: %.fa
+	samtools faidx $<
 	
-%.bwt: %
+%.bwt: %.fa
 	bwa index $*
 
-%.agp: %.fa
-	fatoagp.pl $* > $@
-
-%.bam: $(name)_reference.fa $(name)_scaffolds.fa
-	bwa mem -x intractg $< | samtools view -Sb - | samtools sort - > $@
-
-$(name).bed: $(name).bam
-	samtools view $< | grep -v XA | grep -v '^@' | awk '{if($5 > 50 || $5 == "" ) print}' | awk '{OFS="\t"; if (and($2, 16)) print $3,$4,$4+length($10),$1,$5,"-"; else print $3,$4,$4+length($10),$1,$5,"+" }' > $@
-
-$(name)_reference_gaps.bed: $(name)_reference.fa
-	generateGapBed.pl $< 
-
-%.conf: %.agp $(name).bed $(name)_reference.fa.fai $(name).karyotype
-	generateConf.pl $< $(name).bed $(name)_reference.fa.fai $(name).karyotype
+%.agp %.fa : %_scaffolds.fa
+	perl $(ROOT_DIR)/bin/fatoagp.pl -f $*.fa $< > $*.agp
 	
-$(name).karyotype: $(name)_reference.fa
-	generateKaryotype.pl
+%.fa.bwt %.fa.ann %.fa.pac %.fa.sa: %.fa
+	bwa index $<
+
+%.sam: %_reference.fa %.fa %_reference.fa.bwt %_reference.fa.pac %_reference.fa.sa %_reference.fa.ann
+	bwa mem -t 8 -x intractg $*_reference.fa $*.fa > $@
+
+%.bed: %.sam
+	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | awk '{OFS="\t"; if (and($$2, 16)) print $$3,$$4,$$4+length($$10),$$1,$$5,"-"; else print $$3,$$4,$$4+length($$10),$$1,$$5,"+" }' > $@
+
+%.conf %.karyotype %.links: %.agp %.bed %_reference.fa.fai %_reference.karyotype %_scaffolds.fa.fai
+	perl $(ROOT_DIR)/bin/generateConf.pl -n 90 -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -g $*_reference.fa.fai -b $*.bed -a $*.agp -k $*_reference.karyotype
+
+$(name)_reference.karyotype: $(name)_reference.fa
+	perl $(ROOT_DIR)/bin/generateKaryotype.pl $(name)_reference.fa > $@
 	
-%.svg %.png: %.conf 
+%.svg %.png: %.conf %.links %.karyotype
 	circos -noparanoid
  

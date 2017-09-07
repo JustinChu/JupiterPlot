@@ -7,7 +7,7 @@ Jupiter Assembly Consistency plot
 * GNU make
 * Some perl modules - Use CPAN when you encounter missing module errors
 
-##Usage
+###Usage
 
 ###Starting inputs
 
