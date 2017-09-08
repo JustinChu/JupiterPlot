@@ -1,0 +1,40 @@
+
+For details about installation and use on Windows, please see
+
+http://circos.ca/tutorials/lessons/configuration/unix_vs_windows/
+
+http://circos.ca/tutorials/lessons/configuration/distribution_and_installation/
+
+
+Specifically, be aware of the following:
+
+1. Windows file paths use "\" as a directory separator, whereas UNIX
+uses "/". The UNIX convention is used throughout the tutorials. Thus
+when you see
+
+  tutorials/2/2/circos.conf
+
+in any of the tutorials or documents, read
+
+  tutorials\2\2\circos.conf
+
+2. From the command line, you'll need to run perl and use the circos script as the argument
+
+  perl bin\circos -conf tutorials\2\2\circos.conf
+
+Windows won't know what to do with the bin\circos file otherwise.
+
+3. By default, tutorial images are created in /tmp, a directory that
+does not exist on Windows. You'll need to either (a) create this
+directory or override the output directory by using the -outputdir
+parameter
+
+  perl bin\circos -conf tutorials\2\2\circos.conf -outputdir c:\path\to\image\directory
+
+You can change the output filename using -outputfile.
+
+  perl bin\circos [...] -outputfile myfile.png
+
+
+
+

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Contributed by Charles Howes
+# http://groups.google.com/group/circos-data-visualization/browse_thread/thread/96e74d863a53e405?hl=en_US
+awk '!/^[\t ]*use /{next};$2~/^(lib|Circos.*|base|strict|vars|warnings);?$/{next};{sub(";","",$2);print $2}' circos ../lib/Circos/*pm ../lib/Circos.pm ../lib/Circos/*/*pm | sort -u 

@@ -1,0 +1,29 @@
+Circos could not find the configuration file [%s]. To run Circos, you need to specify this file using the -conf flag. The configuration file contains all the parameters that define the image, including input files, image size, formatting, etc. 
+
+If you do not use the -conf flag, Circos will attempt to look for a file circos.conf in several reasonable places such as . etc/ ../etc 
+
+To see where Circos looks for the file, use
+
+  circos -debug_flag io
+
+To see how configuration files work, create the example image, whose configuration and data are found in example/. From the Circos distribution directory,
+	  
+  cd example
+  ../bin/circos -conf ./circos.conf
+
+or use the 'run' script (UNIX only).
+
+Configuration files are described here
+
+  http://circos.ca/tutorials/lessons/configuration/configuration_files/
+	  
+and the use of command-line flags, such as -conf, is described here
+
+  http://circos.ca/tutorials/lessons/configuration/runtime_parameters/
+
+Windows users unfamiliar with Perl should read 
+
+  http://circos.ca/tutorials/lessons/configuration/unix_vs_windows/
+
+This error can also be produced if supporting configuration files, such as track defaults, cannot be read. 
+

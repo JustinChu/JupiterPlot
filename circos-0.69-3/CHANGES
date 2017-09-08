@@ -1,0 +1,1271 @@
+
+7 Mar 2005 - v0.1
+
+24 May 2005 - v0.2
+
+A large number of changes. Primarily
+
+ - support for non-linear scale
+ - support for optional tick labels and minimum tick separation
+ - reworked 2D data file formats
+
+A lot of bugs fixed. Primarily
+
+ - fixed poor text layout on tick labels
+ - fixed support for newer GD (stringFT vs stringTTF)
+
+25 May 2005 - v0.21
+
+Added global scaling, described in Tutorial 6.
+
+23 Jan 2007 - v0.22
+
+Focused tutorials on figures in NYT article. Added support for multiple fonts. You no longer need to define $FONT yourself.
+
+17 Oct 2007 - v0.31pre0
+
+Prelease of 0.31. Nearly everything has been revamped.
+
+Revamped configuration syntax, making it more intuitive and consistent.
+
+New tutorials posted. Axes breaks added. More flexible ideogram ordering. 
+
+Significant changes to placement of data elements, now with support for relative and absolute position values.
+
+18 Oct 2007 - v0.31pre1
+
+Fixed memory problem when drawing highlights. Now require Set::IntSpan v1.11 or newer.
+
+Additional sanity checks when loading configuration files.
+
+23 Oct 2007 - v0.31pre2
+
+Added tiles and heatmaps.
+
+26 Oct 2007 - v0.31pre3
+
+Added scale adjustment.
+
+28 Oct 2007 - v0.31
+
+Finalized features in 0.31-preX.
+
+20 Nov 2007 - v0.32
+
+Added functionality for histograms to avoid joining neighbouring bins if their spans are not abutting.
+
+Added ability to define rules based on format characteristics of data (e.g. color, thickness).
+
+Added "restart" flow control for rules.
+
+Fixed image output for Windows users.
+
+3 Dec 2007 - v0.33
+
+Adjusted ideogram spacing to allow pair-wise spacing definitions based on tag.
+
+Fixed axis break issue when a break value was required but break parameter was not set.
+
+Added text labels on ticks.
+
+22 Dec 2007 - v0.34
+
+Rewrote label snuggling method.
+
+Added ability to turn text tracks into glyph tracks.
+
+Fixed rule condition evaluation to allow broader range of characters.
+
+24 Dec 2007 - v0.35
+
+Unit-related error messages now more explicit.
+
+Various fixes for handling bezier_radius.
+
+3 Jan 2008 - v0.36
+
+Imagemap output reformatted and made consistent.
+
+27 Feb 2008 - v0.37
+
+Added ability to set image background to transparent or a custom image.
+
+Adjusted color allocation to avoid duplicate allocation of identical colors.
+
+9 Apr 2008 v0.38
+
+Added support for stacked histograms and ability to independently set radius for each link end.
+
+Fixed histogram fill to drop to y=0 (or closest) level.
+
+Circos now requires Clone module (http://search.cpan.org/~rdf/Clone-0.28/Clone.pm)
+
+14 Apr 2008 v0.39
+
+Added ability to orient ideograms and scale in a counterclockwise orientation using angle_orientation parameter.
+
+Adjusted the way joined histogram bin stroke is drawn.
+
+Fixed bug in which joined histograms bins were not being filled in correctly.
+
+Fixed bug with text offsets at 12 o'clock position.
+
+21 Apr 2008 v0.40
+
+Added SVG output support.
+
+23 Apr 2008 v0.41
+
+Fixed bug which caused incorrect plot scaling when min>0.
+
+Fixed a svg bug which caused images with single unspaced ideograms to display incorrectly.
+
+Adjusted svg-related coded to avoid PNG color palette limitations (you can now have more than 256 colors in color.conf when using svg).
+
+Modified SVG Bezier curves to use crest parameter.
+
+28 Apr 2008 v0.42
+
+Fixed a bug which prevented ribbons from displaying in svg files.
+
+12 May 2008 v0.43
+
+Tick labels can be made relative to ideogram length using relative_label.
+
+Tick spacing can be made relative using rspacing/spacing_type.
+
+Individual ideograms can be placed at different radius.
+
+There is now an installation script which adjusts the Perl binary location and tutorial file output directory.
+
+18 Jun 2008 v0.44
+
+Fixed bug that prevented scientific notation with capital E from being parsed correctly.
+
+Fixed bug that prevened tick mark labels from being rounded correctly.
+
+Default ideogram spacing value can be set to be relative to total size of ideograms.
+
+The parameter chromosomes_units can be set relative to total size of ideograms.
+
+Added skip_run and min_value_change options to plots
+
+The "-" character can be again used in ideogram names
+
+PNG and SVG files can now be created at the same time
+
+25 Jun 2008 v0.45
+
+A variety of speed optimizations were done.
+
+ - GD brush initialization
+ - added memoization to speed up certain function calls
+ - reduced debug reporting overhead
+ 
+Overall speed improvement is about 3- to 4-fold for core functions.
+
+23 July 2008 v0.46
+
+Fixed ideogram lookup bug when display order was customized.
+
+Added a variety of helper scripts to create and filter data and to order chromosomes (see tools/)
+
+Added 24-bit PNG support and adjusted color allocation accordingly
+
+30 Sep 2008 v0.47
+
+IMPORTANT: Math::BigFloat is now required.
+
+Added error trap if old version of GD is used that does not support 24bit flag.
+
+Added support for alpha channel in PNG images - now colors can have transparency level.
+
+Fixed brush bug for outlined ribbons with newer GD version.
+
+Added -show_ticks as a command-line parameter (to unset use -no-show-ticks).
+
+Added -show_tick_labels as a command-line parameter (to unset use -no-show-tick_labels).
+
+Added -silent for completely quiet operation (nothing reported to STDOUT).
+
+Improved tick suppression consistency when tick_separation was defined.
+
+Precision in tick mark formatting is improved with Math::BigFloat (this module is now needed).
+
+Added ticks for specific positions via "position" and "rposition" parameter.
+
+Added connector track (currently experimental). This will be documented in an upcoming release.
+
+21 Oct 2008 v0.48
+
+Direction of individual ideograms can be reversed with chromosomes_reverse.
+
+Twist of ribbons is now correct, with a ribbon linking the start and end coordinates of each span.
+
+Ribbon twists can be forced with twist=1 or removed with flat=1.
+
+Individual link coordinates can be inverted by using start>end or inverted=1 parameter.
+
+Added plot of type=highlight to allow highlights to be drawn at any z-depth.
+
+Finalized connector track.
+
+Added band_transparency to allow drawing semi-transparent cytogenetic bands on top of ideograms.
+
+30 Jan 2009 v0.49
+
+Optimized calls to Math::Bezier to reduce time taken to draw links.
+
+Inverted link coordinates (i.e. end<start) can be tested with _REV1_ and _REV2_ in rules.
+
+Fixed error that caused ends of ribbons to be drawn as straight lines.
+
+Fixed error that caused highlights to be drawn on top of the grid in certain cases.
+
+26 Jun 2009 v0.50
+
+Added file_delim to allow any field delimiter to be used in input files (e.g. a tab).
+
+Added sanity check for True Type font support in GD.
+
+Added antialiasing to lines and polygins. Limitations in gd prevent antialiasing of lines that have a thickness >1 pixel or that use a color with an alpha channel.
+
+Fixed bug with parameter parsing that was using = as a delimiter.
+
+Added image maps (via the url parameter) to ideograms, bands, ticks, highlights, tiles, ribbons, text, scatter plots, histograms and heat maps. This is described in Tutorial 10.
+
+Backend implementation has been adjusted, with Circos code moved to Circos.pm module (credit goes to Ken Youens-Clark (CSHL)).
+
+5 Jul 2009 v0.51
+
+Added more comprehensive options to show and suppress tick marks based on ideogram and position.
+
+Fixed scale zooming for display at base resolution.
+
+Expanded and streamlined tick mark functionality.
+
+24 Nov 2009 v0.52
+
+A bug release that fixes issues with ordering and axis breaks.
+
+Ideogram labels can now be rendered with their baseline parallel to
+the circle's circumference by using label_parallel=yes in the
+<ideogram> block.
+
+17 Jan 2011 v0.53
+
+Rolled in bug fixes.
+
+29 Mar 2011 v0.54
+
+Tile image fills are now supported. Specify the file name instead of the fill color.
+
+Color lists supported.
+
+Automated track placement using counters.
+
+Various bug fixes and error checks.
+
+13 Apr 2011 v0.54-1
+
+Factored out color functions to Circos::Colors
+Factored out configuration functions to Circos::Configuration
+Factored out constants and strings to Circos::Constants
+Factored out debug functions to Circos::Debug
+Factored out image variables to Circos::Image
+Factored out unit checking functions to Circos::Unit
+Factored out utility functions to Circos::Utils
+
+Fixed transparency bug introduced in 0.54. Fixed tableviewer parse-table bug which was triggering error complaining about a missing '='
+
+Added to README for Windows users.
+
+16 Jun 2011 v0.55-1
+
+Multiple karyotype files can be specified as comma-delimited list in 'karyotype' parameter
+
+Color for chromosomes can be specified with chromosomes_color
+  hs1:red,hs2:blue,...
+
+Chromosomes can now take a fraction of the entire image by specifying relative scale.
+  hs1:0.25r # hs1 will take up 1/4 of the figure
+
+Parameters in included configuration files can be overridden using "*" suffix. Any number of *s can be
+used to indicate priority. 
+
+  <ideogram>
+  <<include ideogram.defaults.conf>>
+  # this will override any 'label_radius'
+  label_radius*   = dim(ideogram,radius) + 0.25r
+  # this will override any 'label_radius', 'label_radius*', and 'label_radius**'
+  label_radius*** = dim(ideogram,radius) + 0.25r
+  </ideogram>
+
+Parameter list can now use '=' for assignment, in addition to ':'. Lists that do not expect a span (e.g. chromosomes) can also use ',' as record delimiter. For example, any of these will work.
+
+  chromosomes_scale = chr1:0.5;chr2:0.25
+  chromosomes_scale = chr1:0.5,chr2:0.25
+  chromosomes_scale = chr1=0.5;chr2=0.25
+  chromosomes_scale = chr1=0.5,chr2=0.25
+
+Transparent colors now include COLOR_a0, which points to the fully opaque version of COLOR. Thus, for a given auto_alpha_steps value (e.g. N=5) COLOR_a0 ... COLOR_aN are available. Previously COLOR_a0 was not available and the name COLOR had to be used (e.g. red instead of red_a0).
+
+remap(value,min,max,remap_min,remap_max) can now be used in rules, as well as remap_int() to remap to integers (truncation) or remap_round() to remap to integers (rounding).
+
+chromosomes_scale and chromosomes_color can accept regular expressions for chromosomes. These are evaluated first, followed by literal chromosome definitions.
+
+  chromosomes_scale = /hs/=0.2,hs5=0.5,/hs1/=0.3
+
+  order of scale adjustment:
+
+  1. all chromosomes matching /hs/ set to 0.2
+  2. all chromosomes matching /hs1/ set to 0.3
+  3. hs5 set to 0.5
+
+'chromosomes' parameter accepts regular expressions, specified using /.../
+
+  chromosomes = /hs/
+  chromosomes = -/hs/
+
+When chrromosomes_display_default=yes, use chromosomes_order_by_karyotype=yes to order chrs by their order in the karyotype. If this parameter is not set, the order is determined by a sort based on string+digit in the chromosome name (e.g. chr1=chr+1 chr2=chr+2, etc)
+
+Histograms with transparency fill should now no longer have an outline even if no outline is desired. This artefact was due to how GD rendered antialiased filled polygons.
+
+Rules for links and plots can have 'use=no' to turn them off.
+
+Color lists now written to cache to speed up color allocation at run-time.
+
+Debug groups now available to show running status of components. See etc/housekeeping.conf for a full list
+ 
+  e.g.
+  summary   - summary progress
+  chrfilter - ideogram filtering
+  conf      - configuration
+  ideogram  - ideogram reports
+  cache     - file caching
+  io        - file input/output
+  _all      - turn on all debugging (very verbose)
+
+Colors such as vlred (very light red), lred (light red), etc, have been replaced by Brewer palette colors, where possible. For example, the vlred, lred, red, dred, vdred samples the 5 color sequential red palette.
+
+Multiple counters can be adjusted with pre_increment_counter and other functions using a comma-delimited list
+
+  pre_increment_counter = counter1:10,counter2:15
+
+Colors have always been forced to lowercase. If a user asked for a color with capitals (e.g. chrX), an error resulted. Now, only a warning is generated (if warnings are turned on) if the lowercase equivalent is found.
+
+Parallel labels should now be better centered when using label_center for the ideogram label in <ideogram> block.
+
+Added band_stroke_thickness to <ideogram> block.
+
+init_counter is now used to initialize a counter value 
+
+Added example/ and moved tutorials to a separate distribution.
+
+Speeded up the text track.
+
+Speeded up input io - data points that don't fall on ideograms on the figure are ignored
+
+10 Sep 2011 v0.56-pre0
+
+Parallel ideogram labels are now centered with respect to the ideogram.
+
+restrict_parameter_names now controls whether parameters are restricted to a pre-defined list (e.g. color, thickness, etc). If you have custom parameters (e.g. 'myspecialcode') then set restrict_parameter_names=no. By default, this is always set to 'yes'.
+
+Added link_orientation for text tracks. When set to "out" links from text labels face out, rather than in.
+
+28 Oct 2011 v0.56-pre1
+
+Added font names to SVG files via font-family tag. 
+
+1 Nov 2011 v0.56-pre2
+
+Removed -verbose. The -v flag now reports version.
+
+Added -version.
+
+Removed dependence on Graphics::ColorObject.
+
+Added error handling framework. 
+
+Circos now requires Text::Format
+
+Bug fix to heat map color mapping of last color.
+
+26 Jan 2012 v0.56-pre3
+
+Fixed bug which was causing line links to be drawn with a thickness half of what was requested.
+
+Fixed bug that prevented parameters made acceptable by the restrict_parameter_names=no setting from being parsed.
+
+Configuration file location is now guessed if guess_conf_location=yes (see etc/housekeeping.conf)
+
+Color file cache can now be static (color_cache_static) and dir/file can be changed (color_cache_{file,dir})
+
+Added 'placed' and 'not_placed' output for labels in text tracks to. Use -debug_group textplace to see this.
+
+   # create data file of labels that were not placed
+   circos -conf ... -debug_group textplace | grep not_placed > text.notplaced.txt
+
+Parts of the code were made faster (unit checking) through Memoize.
+
+Fixed a bug which prevented links with thickness=1 from being shown with correct transparency.
+
+4 Feb 2012 v0.56-pre4
+
+Fixed bug in which color errors were produced when PNG file was not asked for.
+
+Fixed bug in which opacity of links in SVG files was missing in some cases.
+
+Fixed but which was assigning the wrong color to transparent links in PNG files in some cases.
+
+Centralized color configuration files colors.conf now includes brewer.conf - no need to include brewer.conf separately.
+
+Added -paranoid flag to exit on warnings.
+
+Made error messages friendlier. Revamped internal error handling mechanism.
+
+5 Feb 2012 v0.56
+
+Added data_path to allow adding to locations where files are searched for.
+
+Added data/ to prefix path of locations where files are searched for. Now the default search locations are
+
+  { CWD | CIRCOS_PATH } + { . | .. | ../.. } + { . | etc | data }
+
+20 Feb 2012 v0.56-1
+
+Added TTF versions of CMU Bright Roman and CMU Typewriter Regular. The OTF versions are incorrectly displayed by GD, when rotated.
+
+Fixed bug that prevented regular expressions from being evaluated properly in a chromosome record.
+
+Speeded up histogram code.
+
+Speeded up function that draws arcs. If SVG file is not requested, this function now skips SVG-related calculations.
+
+Fixed bug in init_counter which was causing this function to not be applied.
+
+Added color_cache_create parameter to toggle creation of cache file on/off.
+
+Added 'symbol' synonym for 'symbols' font.
+
+Fixed round_up() utility function.
+
+Added -chromosomes_display_default command line flag.
+
+Changed chromosome prefix in Drosophila melanogaster (fruit fly) karyotype to 'dm' and colors to set1-6-qual palette.
+
+Made the TTF support checking more robust. 
+
+4 May 2012 v0.60
+
+Added image_map_missing_parameter=ignoreparam to allow URL parameter values with [].
+
+Fixed bug in extend_bin which prevented extend_bin=no from being correctly interpreted.
+
+Fixed bug in testing z-depth for plots.
+
+Fixed bug with angle_offset.
+
+Links with transparency should now show up correctly in SVG.
+
+Plot axes should now show up correctly in SVG.
+
+Fixed a bug which made reversed chromosome segments created with chromosomes_breaks show up in an unintuitive order.
+
+Fixed behaviour of offset when drawing slices. This fixed a bug that made some slice arcs curve the wrong way.
+
+Configuration file syntax __$CONF{a}{b}__ can now be replaced with conf(a,b). eval() is needed if the conf value is used in an expression. For example eval(2*conf(a,b)) instead of __2*$CONF{a}{b}__
+
+Wherever you would use a color name, you can now specify colors using r,g,b or r,g,b,a values. Here 'a' is the alpha channel 0..1 (0=opaque,1=transparent).
+
+  color = red
+  color = 250,50,50
+
+Added -randomcolor, just for fun.
+
+Links can be specified on one line in input data file, instead of two
+
+  chr1 start1 end1 chr2 start2 end2 {options}
+
+<link> blocks no longer need to be named - they now behave like <plot> blocks. 
+
+  <links>
+     <link>
+        ...
+     </link>
+     <link>
+        ...
+     </link>
+     ...
+  </links>
+
+Rules are now ordered in two phases. First, all rules with an
+'importance' value are placed first, followed by rules that don't have
+this parameter, in the order that they appear. For example, if the
+following are rules' importance values ("-" means not defined)
+
+  r1 -
+  r2 0
+  r3 15
+  r4 -
+  r5 20
+
+the final order will be r5(20),r3(15),r2(0),r1(-),r4(-). Thus, rules
+don't need the importance parameter at all, if you're happy with their
+order of appearance.
+
+Rule flow has been expanded. The flow parameter can now be one of
+
+  flow = continue {if true|false}
+  flow = restart {if true|false}
+  flow = stop {if true|false}
+  flow = goto TAG {if true|false}
+
+By default, if the condition is not specified, a flow is always
+triggered. This replaces the behaviour in which the flow triggered
+only when the rule was passed.
+
+  flow = stop          # always stops, regardless of whether rule is passed
+  flow = stop if false # stops if rule is false
+
+The TAG is assigned to a rule with 'tag'
+
+  <rule>
+  # define a tag for this rule
+  tag = myrule
+  ...
+  </rule>
+ 
+  <rule>
+  ...
+  # goto the rule with tag=myrule
+  flow = goto myrule
+  </rule>
+
+You can have multiple flow tags to accomodate different if true/false actions.
+
+  <rule>
+  ...
+  flow = stop if false
+  flow = goto otherrule if true
+  </rule>
+
+A rule may lack a condition if a flow directive exists. Thus, shortcircuiting all rules can now be done with
+
+  <rule>
+  flow = stop
+  </rule>
+
+instead of 
+
+  <rule>
+  condition = 1
+  flow = stop
+  </rule>
+
+If you would like to always skip to a rule (e.g. to bypass rules you don't want)
+
+  <rule>
+  flow = goto myrule
+  </rule>
+
+A rule or configuration may remove a parameter by setting its value to 'undef'. This is useful to remove default.
+
+  <rule>
+  condition = var(value) < 0.5
+  fill_color = undef
+  </rule>  
+
+Added normalized relative scale. Now you can set
+
+  chromosomes_scale = /hs/=0.5rn
+
+to make all /hs/ equally sized and take up 0.5 of the circle. Previously, you had to do this
+
+   chromosomes_scale = /hs/=0.2083r
+
+assuming that /hs/ matched 24 chromosomes.
+
+All tracks now have default settings, taken from etc/tracks.
+
+4 Jun 2012 v0.61
+
+Identified a bug in gd that causes problems when lines of thickess 1px are anti-aliased. Added anti_aliasing parameter to turn aa off to mitigate this.
+
+Fixed bug that caused elements in list defined by chromosomes_colors to be applied in the wrong order.
+
+Fixed a bug that made backgrounds to be incorrectly oriented for tracks whose orientation is reversed.
+
+Added skip_missing_expression_vars in etc/housekeeping.conf to allow skipping references to missing parameters with var(NAME).
+
+Added label_format to <ideogram> block. This parameter allows you to use the same dynamic syntax for labels as you do for rules.
+
+  label_format = eval(var(chr))
+  label_format = eval(var(chr_with_tag))
+  label_format = eval(sprintf("%s %.3fMb",var(chr),var(size)/1e6))
+
+Changed rebuild_color_cache to color_cache_rebuild.
+
+Track axes are now defined using <axes> blocks with one or more <axis> entries. Each block can contain one or more of the following parameters: color, thickness, spacing, position, position_skip. Spacing and position parameters can be relative (use r suffix).
+
+  <axes>
+   color = grey
+   thickness = 1
+   <axis>
+   spacing = 0.1r 
+   position_skip = 25000
+   </axis>
+   <axis>
+   position = 0.35r
+   color = red
+   </axis>
+  </axes>
+
+Track background is now defined using <backgrounds> blocks with one or more <background> entries. Each block can contain one or more of the following parameters: color, stroke_{color|thickness}, y0, y1. If y0 and/or y1 are not specified, track minimum and maximum are used, respectively. y0 and y1 can be absolute or relative (use r suffix for relative).
+
+  <backgrounds>
+   <background>
+   color = lgrey
+   </background>
+   <background>
+   y0 = 0.5r
+   color = lgred
+   </background>
+   <background>
+   y1 = 0.5r
+   color = lgreen
+   </background>
+  </backgrounds>
+
+When cytogenetic bands overlap, a warning is produced instead of fatal error.
+
+Adjusted code which made v.60 incompatible with perl 5.8 due to a recursive regular expression used to parse rules. Text::Balanced is now used to extract function arguments in balanced parentheses.
+
+Added conf(.,x) syntax to access value of 'x' in the current block.
+
+  <plot>
+  r0 = 0.8r
+  r1 = conf(.,r0)+0.1r
+  ...
+
+Top level blocks, such as <ideogram>, <colors>, <fonts>, <image> and <ticks> are merged. This allows you to do something like this
+
+  # define your own color(s)
+  <colors>
+  mycolor = 255,100,100
+  </colors>
+
+  # include default color, fonts and patterns, which brings in 
+  # <colors>, <fonts> and <patterns> blocks
+  <<include etc/colors_fonts_patterns.conf>>
+
+To override a value, don't forget to use *. For example, to hide the ideogram label in tutorial 2.2,
+
+  <ideogram>
+  # * is required at the end of parameter name so that it overrides the
+  # default value of 'show_label' defined in the block imported below
+  show_label* = no
+  </ideogram>
+  
+  # default <ideogram> block from file
+  <<include ideogram.conf>>
+
+snuggle_sampling can now be relative
+
+  max_snuggle_distance = 1r
+  snuggle_sampling = 0.2r
+
+Text that is not placed can now be explicitly shown using 'overflow'. This text will be placed at r0 of the track. The format of the unplaced text can be controled using overflow_* parmaeters
+
+  overflow       = show
+  overflow_font  = bold
+  overflow_size  = 36
+  overflow_color = red
+
+25 Jun 2012 v0.62
+
+Added README and cat, cow and dog assemblies in data/karyotype/assembly.
+
+Added hs* colors, as synonym for chr* colors (e.g. hs1 <- chr1). This allows assigning chromosome name to color directly for human, instead of remapping hs to chr.
+
+  # previously
+  color = eval(sprintf("chr%s",substr(var(chr1),2)))
+
+  # now
+  color = eval(var(chr1))
+
+Added ../../.. to file search path. Now, when the parameter 'file' is used Circos will look three directories back. This allows the tutorials to be run in place without moving the data/ directory into the Circos distribution path.
+
+Added case_sensitive_parameter_names to allow data point parameter case to be respected. Default is case_sensitive_parameter_names=no
+
+Fixed a bug that was preventing link overlap check in text tracks.
+
+A bug was preventing backgrounds and axes of tracks from being shown on ideograms that had no data. Added show=data option to <backgrounds> and <axes> to show these elements only for ideograms on which the track has data.
+
+  <backgrounds>
+  show = data
+  <background>
+  ...
+  </background>
+  </backgrounds>
+
+Added a quick guide tutorial
+
+  http://www.circos.ca/documentation/tutorials/quick_guide/
+
+Added a check that ensures that the etc/housekeeping.conf file is being included.
+
+3 July 2012 v0.62-1
+
+This version includes example/data, which was inadvertantely left out of 0.62.
+
+5 Feb 2013 v0.63
+
+Added the ability to change any configuration parameter from the command-line by -param 
+
+  -param debug=1                         changes 'debug' in root 
+  -param image/radius=2000p              changes 'radius' in <image> block
+  -param ideogram/spacing/default=0.002r changes 'default' in <spacing> block of <ideogram> block
+
+A fatal error is triggered if you attempt to adjust a parameter in a block that does not exist.
+
+Removed the following command-line parameters (use -param PARAM=VALUE instead) :
+
+  chromosomes*
+  show_tick*
+  usertext*
+  background
+  image_map*
+  file_delim
+  tagname
+  cdebug
+
+The -cdump flag can now take a block, or a block path
+
+  -cdump image 
+  -cdump ideogram/spacing
+
+Absolute file names were improperly parsed on Windows. Fixed this by using the more general File::Spec module.
+
+Fixed bug that prevented 'minsize' and 'padding' track parameters from being parsed.
+
+chromosomes_color can now be used with ideogram tags
+
+  chromosomes       = cycle[g1]:0-45;cycle[s]:45-80;cycle[g2]:80-95;cycle[m]:95-100
+  chromosomes_color = g1=red,s=orange,g2=green,m=blue
+
+Added "pure" colors for each named color, accessed with "p" prefix. The ladder is a 10% luminance step. Other colors are pgreen, pblue, ppurple, porange. 
+
+  vvlpred   vlpred    lpred     pred    dpred   vdpred  vvdpred
+
+Fixed a bug in which files specified by an absolute path were not found on Windows.
+
+Fixed a bug that was reversing connectors with start>end.
+
+Changed the default value of restrict_parameter_names to 'no'. Now you can add options to data points without having to override this parameter. 
+
+Fixed a bug that was preventing rules from being applied to connectors.
+
+Speeded up routines that calculated spacing between ideograms.
+
+Added legacy_underline_expression_syntax to etc/housekeeping.conf to allow turning off for support for data point parameter access using _NAME_ syntax. By default, the parameter is set to 'no'. Set this parameter to 'yes' to support the old syntax.
+
+The minsize parameter can now be used in a rule to enlarge a data point interval.
+
+You can now set a default when referencing a variable with var(), e.g. var(id|0). This is useful when you are using optional fields in complex rule conditions or parameters. For example, if not all data points contain the parameter 'recurrence', then using it in a remap function requires that you provide a default
+
+  thickness  = eval(remap_int(var(recurrence|0),0,20,1,10))
+
+The default square brush used in the PNG routines created jaggies for objects with thick strokes (e.g. links with large thickness, when not drawn as ribbons). Implemented round brushes for objects with large thickness using two new parameters in etc/housekeeping.conf.
+
+  round_brush_use           = yes
+  round_brush_min_thickness = 5
+
+Fixed a bug that prevented using a global file option for a track. Now this works
+
+  <plots>
+  file = data.txt
+  <plot>
+  # if 'file' is not specified, data.txt will be used
+  ..
+  </plot>
+  <plot>
+  # if 'file' is not specified, data.txt will be used
+  ..
+  </plot>
+  ...
+
+A rule can now have multiple conditions, which are evaluated with AND. The following are equivalent
+
+  condition = on(hs1) && var(size) < 1e6
+
+  condition = on(hs1)
+  condition = var(size) < 1e6
+
+Fixed a bug which was misinterpreting 'padding' for tiles as an expansion of the tile interval. 
+
+Added 'offset' parameter to tiles to allow them to be shifted radially within their layer.
+
+  <rules>
+  <rule>
+  condition    = var(type) eq "exon"
+  thickness    = 12
+  </rule>
+  <rule>
+  condition    = var(type) eq "intron"
+  thickness    = 2
+  offset       = 5
+  </rule>
+  </rules>
+
+Fixed a bug that was causing the second bin of some histograms to encroach on the first.
+
+Reintroduced support for relative units in chromosomes_units parameter. When 'r' is used, the denominator is 10**round(log10(S)) where S is the total size of all ideograms.
+
+Fixed a bug that was not drawing backgrounds correctly with tiles.
+
+Fixed a bug that was breaking stacked histograms due to how bin extension works. Bin extension has been turned off for stacked histograms.
+
+Cytogenetic bands are now drawn after ideogram labels, as not to cover labels that are placed inside the ideogram.
+
+Fixed a bug which was prevening ideogram spacing from correctly incorporating ideogram scale.
+
+Circos now looks for files relative to the location of the configuration file, in addition to the current and distribution directories.
+
+7 Feb 2013 v0.63-1
+
+Fixed bug in which parameter override (using * suffix) was not working in deep blocks.
+
+12 Feb 2013 v0.63-2
+
+Fixed but in which text labels were not respecting when an ideogram's radius was changed with chromosomes_radius. 
+
+Updated example/ to include chromosomes_radius, which now works correctly with text blocks.
+
+13 Feb 2013 v0.63-3
+
+The command-line parameters -noshow_ticks and -noshow_tick_labels now work.
+
+15 Feb 2013 v0.63-4
+
+Added debug_auto_timer_report in etc/housekeeping.conf to control the length of a run for which timing reports are always generated.
+
+Added format check for reading bands from karyotype file.
+
+18 Feb 2013 v0.63-5
+
+Added karyotype for Sorghum bicolor (http://www.plantgdb.org/SbGDB/) version JGI Sbi1.
+
+19 Feb 2013 v0.64-pre0
+
+Added fill_color parameter for line plots. You can now draw line plots with fill using this 
+
+  <plot>
+  type = line  
+  fill_color = black
+  ...
+  </plot>
+
+Added the ability to idependently draw outlines and position mark guides for text. Use type=outline or type=cross in the <guides> block. If type is not defined, both will be drawn.
+
+Nested calls to conf() now work. For example,
+
+  <radius>
+  a = 0.5
+  </radius>
+
+  <plots>
+  <plot>
+  ...
+  strain = a
+  r0     = conf(radius,conf(.,strain))r
+
+Fixed bug that was prevening undefining of parameters. To undefine a parameter previously set, use undef
+
+  <<include etc/housekeeping.conf>>
+  track_defaults* = undef
+
+The 'radius' parameter in <ideogram> block now accepts dims(). For example,
+ 
+  radius = dims(image,radius) - 50p
+
+15 Mar 2013 v0.64-pre0
+
+Added three argument versions of on() for testing data point position.
+
+  on(hs2)
+  on(hs2,5Mb,10Mb)
+
+Added within(), which acts like on() but insists that the data point falls fully within the interval.
+
+  within(hs2,5Mb,10Mb)
+
+19 Apr 2013 v0.64-pre1
+
+Properties of ideograms (e.g. chr, label, etc) now available at tick level in image maps.
+
+2 May 2013 v0.64
+
+Added code that checks whether a module is available. If not, a
+specific error is reported that directs the user to the online
+tutorial that explains how to install missing modules.
+
+Added alert when too many ideograms, ticks, links, or data points were being drawn. This is controlled by max_* in etc/housekeeping conf, currently set to
+  max_ticks            = 5000
+  max_ideograms        = 200
+  max_links            = 25000
+  max_points_per_track = 25000
+
+Fixed a bug in which configuration parameters with multiple instances (e.g. condition in rules) weren't parsed correctly for keywords like conf().
+
+14 May 2013 v0.65
+
+Counter parameters can now have multiple instances in <plot>, <link> and <highlight> blocks
+
+  <plot>
+  init_counter = thickness:0
+  init_counter = fill:0
+  ...
+  post_increment_counter = thickness:0.5
+  post_increment_counter = fill:2
+  ...
+  </plot>
+
+pre_increment_counter and post_increment_counter can be used without a counter name, in which case the counter defaults to the block type. This value will be used for each subsequent block, until it is redefined.
+
+  <plot>
+  post_increment_counter = 2 # plot counter incremented by 2 after block is parsed
+  ... 
+  </plot>
+
+The default location of the output file has been changed from the current directory to the configuration file directory. To change this default, see etc/image.generic.conf, which is included from etc/image.conf.
+
+  # old
+  dir = .
+  # new
+  dir = conf(configdir)
+
+Data points that extend past the end of their ideogram view range can now be trimmed or hidden, along with optional warnings (fatal or not). See the data_out_of_range parameter in etc/housekeeping.conf. The default is trim,warn.
+
+A <plot> block no longer requires a file parameter. It can be used for drawing axes and/or backgrounds, without any data.
+
+The fonts/symbols/symbols.otf font how includes hollow glyphs, encoded by lower case letters. Solid glyphs have been moved to upper case.
+
+  small
+  | medium
+  | | large
+  | | |
+  a b c   square
+  d e f   rhombus
+  g h i   triangle up
+  j k l   triangle down
+  m n o   circle
+
+  upper case - solid
+  lower case - hollow
+
+Tick multiplier, spacing and position now supports K, M, G and T suffixes (case-insensitive), with an optional trailing "b" (e.g. Kb). Arithmetic (e.g. division) is supported in these values
+
+  multiplier = 1/1Mb         # 1e-6
+  spacing    = 5Mb           # 5000000
+  position   = 5kb,10kb,15kb # 5000,10000,25000
+
+Most data SVG elements can now have attributes for their SVG tags by adding svg* parameters to the data point track. Any parameter that starts with svg (e.g. svgNNN) will be turned into an attribute whose name is derived from the parameter by stripping the leading "svg" out (e.g. NNNN). (e.g. svgid -> id, svgclass -> class).
+
+ hs1 100 200 0.5 svgid=123,svgclass=abc  ->  <circle ... id="123" class="abc"/>
+
+Ideograms now accept SVG attributes using svg* parameters in <ideogram> block. These can be eval()'ed
+
+  <ideogram>
+  ...
+  svgclass = eval(var(chr))
+  svgid    = eval(sprintf("chrid%s",var(label)))
+  
+
+Added file_rx field to parse only lines from track file that match this regular expression
+
+  file = data.txt
+  file_rx = id=100$
+
+Fixed a bug that was incorrectly filling under line plots when angle_orientation = counterclockwise.
+
+16 April 2014 v0.67-pre0
+
+Histograms and heatmaps now accept 'pattern' parameter.
+
+Heatmap color encoding now accepts 'color_mapping' parameter (0,1,2) that defines how colors are mapped onto the range of values.
+
+   encodings: 0,1,2,3,...,n,n+1
+
+   method       min             max
+       0,1      0|0 1 2 ... n n+1|n+1
+         0      0|001122...445577|7       [min,max] divided uniformly
+         1      0|01122...4455667|7       division at edges 1/2 of others
+         2      0|1  2  ... n-1 n|n+1     divided uniformly, 0,n+1 encode data extremes 
+
+Heatmap pattern encoding accepts analogous 'pattern_mapping' (0,1,2).
+
+Added 'legend' debug group to report color mapping legend for each heatmap.
+
+  -debug_group legend
+  debuggroup legend 3.61s track_0  -inf 0.000   inf 0 black 0,0,0
+  debuggroup legend 3.61s tracko_0 0.000 1.000 1.000 0 black 0,0,0
+  debuggroup legend 3.61s track_0 1.000 2.000 1.000 1 spectral-8-div-1 213,62,79
+  debuggroup legend 3.61s track_0 2.000 3.000 1.000 2 spectral-8-div-2 244,109,67
+  debuggroup legend 3.61s track_0 3.000 4.000 1.000 3 spectral-8-div-3 253,174,97
+  debuggroup legend 3.61s track_0 4.000 5.000 1.000 4 spectral-8-div-4 254,224,139
+  debuggroup legend 3.61s track_0 5.000 6.000 1.000 5 spectral-8-div-5 230,245,152
+  debuggroup legend 3.61s track_0 6.000 7.000 1.000 6 spectral-8-div-6 171,221,164
+  debuggroup legend 3.61s track_0 7.000 8.000 1.000 7 spectral-8-div-7 102,194,165
+  debuggroup legend 3.61s track_0 8.000 9.000 1.000 8 spectral-8-div-8 50,136,189
+  debuggroup legend 3.61s track_0 9.000 10.000 1.000 9 grey 150,150,150
+  debuggroup legend 3.61s track_0 10.000  +inf   inf 9 grey 150,150,150
+
+2 May 2014 v0.67-pre3
+
+Fixed a bug that was preventing
+
+  param = undef
+
+from being recognized. This was incorrectly being replaced by the default value of the parameter, making it difficult to remove the effect of the default (e.g. fill color on glyphs).
+
+The default output image directory is now . (current directory), not the configuration file directory. To change this back, edit etc/image.generic.conf.
+
+Added -modules flag so that now modules can be tested using the circos binary.
+
+  circos -modules
+
+When Circos is run and modules are missing, a list of all missing modules is shown. Previously Circos exited at the first module.
+
+Fixed a bug that was incorrectly parsing <link> blocks that had no parameters (all inherited from <links> block) but had a <rules> block.
+
+Fixed a bug that was incorrectly parsing comma-delimited parameters for stacked histograms. The values were being split on commas but did not allow for a space around the comma.
+
+Rules can now access track statistics via var(plot_STAT) where STAT is one of
+
+  min, max, average (also avg, mean), sd, var, n
+
+Rules can now access additional data point properties with var(FIELD) where FIELD is one of
+  
+  i prev_value next_value prev_delta next_delta
+
+Updated Brewer palette file. Removed -LETTER colors (e.g. reds-3-seq-a). These never seemed to be used. Added integrated 13-color and 15-color palettes for all sequential and diverging palettes, which are composed of all the colors from which the n-color palettes are sampled.
+
+3 Jun 2014 v0.67-pre4
+
+Fixed bug with heatmap boundaries.
+
+13 Jun 2014 v0.67-pre5
+
+Fixed a bug that was interfering with color allocation when a background image was used.
+
+21 Aug 2014 v0.67-pre6
+
+Added pattern fill support in SVG files. SVG patterns are defined in etc/patterns.svg.conf.
+
+If the path to the parameter set using -param refers to multiple blocks, then this parameter is set in all the blocks. For example,
+
+  -param plots/plot/a=1
+
+will set a=1 in each <plot> block
+
+8 Sep 2014 v0.67-pre7
+
+Coordinates in data and karyotype files can now have thousands separators , and _
+
+HEX color format (AABBCC) can now be used anywhere a color name is used. Do not use # in front of the color name.
+
+Options now allow for ,'s within option values. 
+
+  x=1,y=(2,3),z=a,b,c=5
+
+will be parsed as x=1 y=2,3 z=a,b c=5
+
+Added options_record_delim and options_field_delim for delimiters for option lists in data files.
+
+Options lists now use both , and ; as a delimiter. This can be changed with options_record_delim in etc/housekeeping.conf
+
+Tiles, highlights and connector tracks can now use data files that contain values to make them compatible with data files for track types like scatter plots and text tracks. The requirement that values be numbers has been removed -- any string is now acceptable, but numbers are still required if you're using tracks that require numbers (e.g. histogram, scatter, heatmap etc).
+
+Fixed a roundoff bug for track axes that was preventing the last axis grid from being drawn.
+
+Axes now have default settings defined in etc/tracks/axis.conf
+
+Scatter and tile tracks now behave just like heatmaps. The value of for each tile will be encoded by a color if the color definition is a color list.
+
+Tile tracks now use 'sort' and 'sort_direction' field to determine the order in which tiles are placed in layers. 
+
+  sort = value | size
+  sort_direction = ascending | descending
+
+Colors can now be specified in LCH space using lch(l,c,h). This is the perceptually uniform version of hsv.
+
+The -cdump option now accepts both , and / as delimiter for block paths
+
+  -conf ideogram/spacing
+  -conf ideogram,spacing
+
+The -cdump option now accepts a regexp after the block path to filter the elements reported
+
+  -conf ideogram:fill
+  -conf colors:reds
+  -conf :default
+
+The flags -dir and -file can now be used instead of -outputdir and -outputfile. The -file and -outputfile flags now can contain paths. The following are equivalent
+
+  -file etc/circos.png 
+  -dir etc -file circos.png
+
+If the output directory does not exist, a fatal error is produced.
+
+The -time flag now reports timing information. This is a shortcut to -debug_flag +timer
+
+8 Sep 2014 v0.67-pre7
+
+C-style comments /* ... */ are no longer supported in the
+configuration file. The reason for this is that regular expressions
+like /.*/ interfere with parsing. Instead, use "#" for comments
+
+Using -debug_group without an argument lists the supported groups.
+
+Module check at the beginning now reports the module loading error. It should be clear when a module is out-of-date.
+
+1 Oct 2014 v0.67
+
+Added auto_eval in etc/housekeeping.conf to allow automatic evaluation of all parameter values in rules.
+
+Using var(?) anywhere in the config file will dump a list of available parameters.
+
+Fixed a bug with highlights that was drawing them multiple times for cropped ideogram regions from the same chromosome.
+
+<highlight> blocks can now have <rules>
+
+<ideogram> block can now have rules that apply formatting to each ideogram.
+
+Fixed a bug that was not drawing ticks when show_label=no.
+
+6 Oct 2014 v0.67-1
+
+Fixed cases that were producing warnings with newer versions of Perl.
+
+14 Nov 2014 v0.67-1
+
+Fixed bug with tick positions "start" and "end" not showing up on different cropped regions of the same chromosome.
+
+Fixed bug for regular expression checks in chromosomes_color
+
+18 Nov 2014 v0.67-2
+
+Fixed a tick bug introduced in v0.67-1.
+
+25 Nov 2014 v0.67-3
+
+To draw all axis breaks of style 2 as double lines (including start/end breaks) use
+
+ <style>
+ ...
+ double_line = yes 
+ </style>
+
+Added karyotype for GRCh38/hg39 (Dec 2013) human assembly, as data/karyotype/karyotype.human.hg38.txt.
+
+27 Nov 2014 v0.67-4
+
+Ideograms can now be filled with a pattern. In <ideogram> use
+
+  fill_pattern = checker
+
+19 Jan 2015 v0.67-5
+
+Added arrows to symbols font.
+
+Fixed bug that was making Circos look for a file named after the 'background' parameter in <image>.
+
+Fixed bug with ideogram rules and labels. Now ideogram_label can be altered by a rule.
+
+27 Feb 2015 v0.67-6
+
+Experimental support for superscripts and subscripts in SVG output. 
+
+  a_i
+  a_{ijk}
+  a^2
+  a^{234}
+
+Baseline and font size shifts are defined in etc/housekeeping.conf using sub_baseline_shift and sub_fontsize and analogous for sup_*.
+
+16 Mar 2015 v0.67-7
+
+Fixed a color bug that was ignoring transparency values in color definitions in data files.
+
+17 Mar 2015 v0.67-8
+
+Added current directory and command to error reporting. 
+
+Added specific error report for undefined and ambiguous options.
+
+7 Apr 2015 v0.68-pre1
+
+Fixed a bug that was preventing background to be drawn in SVG files.
+
+10 Jul 2015 v0.68-pre2
+
+Fixed a bug that was introduced in the previous release that broke abbreviation of command-line flags.
+
+16 Nov 2015 v0.68-1
+
+Fixed axis spacing bug that was causing an infinite loop when min=max and spacing was relative.
+
+Fixed a bug in tick filtering which was unnecessarily looping over ticks that were filtered out entirely from an ideogram.
+
+25 Nov 2015 v0.69
+
+The name of the symbols font has been changed from Symbols-Roman to CircosSymbols. See fonts/symbols
+
+Fixed SVG regular expression that was creating a warning due to unmatched {. Now { need to be escaped or used as a character class [{] [}].
+
+Nested calls to var() in rules are now possible. For example,
+
+  <rule>
+  ... 
+  type = a
+  </rule>
+  <rule>
+  ...
+  value = var(var(type)) # calls var(a)
+  </rule>
+
+Stacked histograms can now be normalized using
+
+  normalize_bin_values = yes
+
+which can be used in combination with
+
+  sort_bin_values      = yes
+
+To have a track plotted inside an ideogram (useful for highlights) use
+
+  inside_ideogram = yes
+
+  # equivalent to
+  r0 = dims(ideogram,radius_inner)
+  r1 = dims(ideogram,radius_outer)
+
+  
+25 Feb 2016 v0.69-1
+
+Fixed an error that was causing issues in parsing SVG parameters in a connector track.
+
+30 Mar 2016 v0.69-2
+
+Fixed a bug in the output of the heatmap legend that was breaking how RGB values of a color were shown.
+
+24 Jun 2016 v0.69-3
+
+Added a commented chrM to data/karyotype/karyotype.human.hg38.txt to complement the chrM band definition to fix a bug that was preventing the file from being parsed. Note that both chr and band definitions for chrM are commented out, since most figures will not require this chromosome.
+
+Fixed text track so that r0 can be changed using rules.
+
+
+

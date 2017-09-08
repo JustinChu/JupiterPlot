@@ -1,0 +1,375 @@
+#!/usr/bin/env perl
+
+=pod
+
+=head1 NAME
+
+randomlinks - generate a data file with random links between chromosomes
+
+=head1 SYNOPSIS
+
+  randomlinks -karyotype KARYOTYPE_FILE [-ruleset RULE_NAME]
+              {-chr_rx REGEX } -size AVG[,SD] [-nointra] [-nointer]
+
+=head1 DESCRIPTION
+
+Generate a Circos link file containing random links between
+chromosomes. Chromosomes are sampled from the karyotype file
+c<KARYOTYPE_FILE> and optionally further filtered using the regular
+expression c<REGEX>.
+
+The number of links between any two chromosome pairs is determined by
+rules (see below). The size of the ends of each link is determined by
+the average and standard deviation values provided by c<-size>. Links
+with thick ends are best drawn as ribbons.
+
+Intrachromosomal links can be avoided using c<-nointra>. 
+
+Similiarly, interchromosomal links can be avoided using c<-nointer>. 
+
+=head2 Link Multiplicity Rules
+
+Given a filtered set of chromosomes (first sampled from the
+c<KARYOTYPE_FILE> and then passed through the regular expression c<REGEX>),
+the number of links joining any pair of chromosomes is determined by a
+set of rules.
+
+Each rule contains two regular expressions, one for each
+of the chromosomes in the pair, and these determine which pairs of
+chromosomes the rule will apply to.
+
+For example, if the regular expressions are '.' and '.' then all
+chromosome pairs are matched. However, if the regular expressions are
+'.' and 'chr10' then only pairs of chromosomes for which one contains
+chr10 are affected.
+
+In addition to the regular expression selection filter, each rule
+contains either (a) avg/sd parameters used to generate a normally
+distributed random number which is used as the number of links between
+the selected chromosomes, or (b) a multiplier which is used to
+multiply the number of links as determined by a previous rule.
+
+Optionally, rules may contain a sampling parameter which determines
+how frequently the rule is applied.
+
+Rules are applied in increasing order of specificity. Thus, rules that
+affect the largest number of chromosome pairs are applied first,
+followed by rules that affect fewer pairs.
+
+For more details about the syntax of rules, see etc/randomlinks.conf.
+
+=head1 HISTORY
+
+=over
+
+=item * 4 Jul 2014 v0.4
+
+Now reports links on a single line. The two-line syntax is deprectated.
+
+=item * 10 Feb 2009 v0.3
+
+Minor bug fix.
+
+=item * 7 Jul 2008 v0.2
+
+Added documentation and refined rule set syntax.
+
+=item * 2 Jul 2008 v0.1
+
+Started and versioned.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+Martin Krzywinski
+
+=head1 CONTACT
+
+  Martin Krzywinski
+  Genome Sciences Centre
+  Vancouver BC Canada
+  www.bcgsc.ca
+  martink@bcgsc.ca
+
+=cut
+
+################################################################
+#
+# Copyright 2002-2014 Martin Krzywinski
+#
+# This file is part of the Genome Sciences Centre Perl code base.
+#
+# This script is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This script is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this script; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+################################################################
+
+use strict;
+use Config::General;
+use Data::Dumper;
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+use IO::File;
+use Math::VecStat qw(sum min max average);
+use Math::Random qw(random_normal);
+use Pod::Usage;
+use Set::IntSpan;
+use Statistics::Descriptive;
+use Storable;
+use Time::HiRes qw(gettimeofday tv_interval);
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+use vars qw(%OPT %CONF);
+
+################################################################
+#
+# *** YOUR MODULE IMPORTS HERE
+#
+################################################################
+
+GetOptions(\%OPT,
+					 "nointra",
+					 "nointer",
+					 "chr_rx=s",
+					 "size=s",
+					 "ruleset=s",
+					 "karyotype=s",
+					 "cdump",
+					 "configfile=s",
+					 "help",
+					 "man",
+					 "debug");
+
+pod2usage() if $OPT{help};
+pod2usage(-verbose=>2) if $OPT{man};
+loadconfiguration($OPT{configfile});
+populateconfiguration(); # copy command line options to config hash
+validateconfiguration(); 
+if($CONF{cdump}) {
+  $Data::Dumper::Pad = "debug parameters";
+  $Data::Dumper::Indent = 1;
+  $Data::Dumper::Quotekeys = 0;
+  $Data::Dumper::Terse = 1;
+  print Dumper(\%CONF);
+	exit;
+}
+
+my $kfile = -e $CONF{karyotype} ? $CONF{karyotype} : "$FindBin::RealBin/../$CONF{karyotype}";
+my $k     = read_karyotype($kfile);
+
+$CONF{chr_rx} =~ s/,/|/g;
+my $chrs = [ grep($_ =~ /$CONF{chr_rx}/, keys %$k) ];
+
+my @size = split(",",$CONF{size});
+die "average link size must be positive" if $size[0] <= 0;
+die "link size standard deviation must be positive" if $size[1] < 0;
+
+my $rules;
+
+my @ruleset = ref($CONF{rules}{$CONF{ruleset}}{rule}) ? @{$CONF{rules}{$CONF{ruleset}}{rule}} : ($CONF{rules}{$CONF{ruleset}}{rule});
+
+for my $rule (@ruleset) {
+  my ($rx1,$rx2,$n,$sd,$sampling,$pos1,$possd1,$pos2,$possd2) = split(" ",$rule);
+  my $npairs = grep($_ =~ /$rx1/, @$chrs) * grep($_ =~ /$rx2/, @$chrs);
+  $sampling ||= 1;
+  push @$rules, {npairs=>$npairs,
+		 rx1=>$rx1,
+		 rx2=>$rx2,
+		 sampling=>$sampling,
+		 n=>$n,sd=>$sd,
+		 pos1=>$pos1,possd1=>$possd1,
+		 pos2=>$pos2,possd2=>$possd2,
+		};
+}
+$rules = [ sort {$b->{npairs} <=> $a->{npairs} || $b->{sampling} <=> $a->{sampling}} @$rules ];
+
+my $nlinks;
+for my $r (@$rules) {
+  my $seen;
+  for my $i ( 0..@$chrs-1 ) {
+    for my $j ( 0..@$chrs-1 ) {
+      next if $CONF{nointra} && $i == $j;
+      next if $CONF{nointer} && $i != $j;
+      my ($c1,$c2) = @{$chrs}[$i,$j];
+      next unless $c1 =~ /$r->{rx1}/ && $c2 =~ /$r->{rx2}/;
+      next if $r->{sampling} && rand() > $r->{sampling};
+      next if $seen->{$i}{$j}++;
+      $nlinks->{$c1}{$c2} = $r;
+      if($r->{n} =~ /r(.*)/) {
+	if($nlinks->{$c1}{$c2}) {
+	  $nlinks->{$c1}{$c2}{nlinks} *= $1;
+	} else {
+	  $nlinks->{$c1}{$c2}{nlinks} = $1;
+	}
+      } else {
+	my $n;
+	do {
+	  $n = int random_normal(1,$r->{n},$r->{sd});
+	} while ($n <= 0);
+	$nlinks->{$c1}{$c2}{nlinks} = $n;
+      }
+    }
+  }
+}
+
+my $linkn=0;
+for my $i ( 0..@$chrs-1 ) {
+  for my $j ( 0..@$chrs-1 ) {
+    my ($c1,$c2) = @{$chrs}[$i,$j];
+    next if ! exists $nlinks->{$c1}{$c2};
+    my $n = $nlinks->{$c1}{$c2}{nlinks};
+    next unless $n;
+    for my $li (1..$n) {
+      my ($size1,$size2);
+      do {
+	$size1 = int random_normal(1,@size);
+      } while ($size1<=0);
+      do {
+	$size2 = int random_normal(1,@size);
+      } while ($size2<=0);
+
+      my ($pos1,$pos2);
+      if($nlinks->{$c1}{$c2}{pos1}) {
+	$pos1 = int random_normal(1, 
+				  $nlinks->{$c1}{$c2}{pos1}*$k->{$c1}->size,
+				  $nlinks->{$c1}{$c2}{possd1}*$k->{$c1}->size);
+      } else {
+	$pos1 = int(rand($k->{$c1}->size));
+      }
+      if($nlinks->{$c1}{$c2}{pos2}) {
+	$pos2 = int random_normal(1, 
+				  $nlinks->{$c1}{$c2}{pos2}*$k->{$c2}->size,
+				  $nlinks->{$c1}{$c2}{possd2}*$k->{$c2}->size);
+      } else {
+	$pos2 = int(rand($k->{$c2}->size));
+      }
+
+      my $set1 = $size1 > 1 ? Set::IntSpan->new(sprintf("%d-%d",filter_pos($c1,$pos1-$size1/2,$pos1+$size1/2))) : Set::IntSpan->new(filter_pos($c1,$pos1));
+      my $set2 = $size2 > 1 ? Set::IntSpan->new(sprintf("%d-%d",filter_pos($c2,$pos2-$size2/2,$pos2+$size2/2))) : Set::IntSpan->new(filter_pos($c2,$pos2));
+
+      $set1->I($k->{$c1});
+      $set2->I($k->{$c2});
+
+      my ($n) = $CONF{color_chr_idx} == 2 ? $c2 =~ /(\d+)$/ : $c1 =~ /(\d+)$/;
+      $n %= 25;
+      printinfo($c1,$set1->min,$set1->max,$c2,$set2->min,$set2->max,"color=chr$n");
+      $linkn++;
+    }
+  }
+}
+
+sub filter_pos {
+  my ($c,$pos1,$pos2) = @_;
+  my @newpos;
+  for my $x ($pos1,$pos2) {
+    if($x < 1) {
+      $x = 1;
+    } elsif ($x > $k->{$c}->cardinality) {
+      $x = $k->{$c}->cardinality;
+    }
+    push @newpos, $x;
+  }
+  return grep(defined $_, @newpos);
+
+}
+sub read_karyotype {
+  my $file = shift;
+  open(F,$file);
+  my $k;
+  while(<F>) {
+    chomp;
+    if(/^chr/) {
+      my @tok = split;
+      my ($chr,$start,$end) = @tok[2,4,5];
+      $k->{$chr} = Set::IntSpan->new("$start-$end");
+    }
+  }
+  return $k;
+}
+
+sub validateconfiguration {
+  $CONF{chr_rx} ||= ".";
+}
+
+################################################################
+#
+# *** DO NOT EDIT BELOW THIS LINE ***
+#
+################################################################
+
+sub populateconfiguration {
+  foreach my $key (keys %OPT) {
+    $CONF{$key} = $OPT{$key};
+  }
+
+  # any configuration fields of the form __XXX__ are parsed and replaced with eval(XXX). The configuration
+  # can therefore depend on itself.
+  #
+  # flag = 10
+  # note = __2*$CONF{flag}__ # would become 2*10 = 20
+
+  for my $key (keys %CONF) {
+    my $value = $CONF{$key};
+    while($value =~ /__([^_].+?)__/g) {
+      my $source = "__" . $1 . "__";
+      my $target = eval $1;
+      $value =~ s/\Q$source\E/$target/g;
+      #printinfo($source,$target,$value);
+    }
+    $CONF{$key} = $value;
+  }
+
+}
+
+sub loadconfiguration {
+  my $file = shift;
+  my ($scriptname) = fileparse($0);
+  if(-e $file && -r _) {
+    # great the file exists
+  } elsif (-e "/home/$ENV{LOGNAME}/.$scriptname.conf" && -r _) {
+    $file = "/home/$ENV{LOGNAME}/.$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/etc/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/etc/$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/../etc/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/../etc/$scriptname.conf";
+  } else {
+    return undef;
+  }
+  $OPT{configfile} = $file;
+  my $conf = new Config::General(-ConfigFile=>$file,
+				 -AllowMultiOptions=>"yes",
+				 -LowerCaseNames=>1,
+				 -AutoTrue=>1);
+  %CONF = $conf->getall;
+}
+
+sub printdebug {
+	printinfo("debug",@_);
+}
+
+sub printinfo {
+    print join(" ",@_),"\n";
+}
+
+sub printdumper {
+    print Dumper(@_);
+}
+

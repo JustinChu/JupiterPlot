@@ -1,0 +1,144 @@
+
+Tutorials are available as a separate distribution from
+
+http://www.circos.ca/documentation/tutorials
+
+################################################################
+
+Circos Tutorials - flexible and automatable circular data visualization
+
+Martin Krzywinski
+Canada's Michael Smith Genome Sciences Center
+British Columbia Cancer Agency
+
+martink@bcgsc.ca
+www.circos.ca
+
+0. DIRECTORY STRUCTURE AND CONFIGURATION
+   1. UNIX vs Windows
+   2. Distribution Directory Structure and Installation
+   3. Configuration Files - Syntax, Colors, Fonts and Units
+   4. Data Files
+   5. Required Perl Modules
+   6. Runtime Parameters
+   7. Debugging
+   8. Common Errors
+   9. PNG Output
+   10.SVG Output
+
+1. QUICK GUIDE
+   1. Hello World
+   2. Ticks & Labels
+   3. Ideogram Selection, Scale, Color & Orientation
+   4. Links & Rules
+   5. Histograms
+   6. Axes & Backgrounds
+   7. Heat Maps & Colors
+   8. Text
+
+2. DRAWING IDEOGRAMS
+   1. Ideograms
+   2. Karyotypes
+   3. Filtering
+   4. Ordering
+   5. Cropping
+   6. Spacing and Axis Breaks
+   7. Tags
+   8. Variable Radius
+   9. Labels
+   10.Progression and Orientation
+
+3. HIGHLIGHTS
+   1. Wedge Highlights
+   2. Highlight Parameters - Part I - Embedded in Data File
+   3. Highlight Parameters - Part II - Using z-depth
+   4. Highlight Parameters - Part III - Radial Position
+   5. Ideogram Highlights
+   6. Recipe 1 - Ideogram Highlights
+   7. Recipe 2 - Focusing on a Genome Region
+   8. Recipe 3 - Plot Axis Range Highlights
+   9. Drawing on Top of Data
+
+4. TICK MARKS, GRIDS AND LABELS
+   1. Tick Marks - Basics
+   2. Tick Marks - Margins
+   3. Tick Marks - Label Margins
+   4. Tick Marks - Offsets
+   5. Grids
+   6. Label Formats
+   7. Relative Ticks
+   8. Ticks at Specific Positions
+   9. Tick Rings
+
+5. LINKS AND RELATIONSHIPS
+   1. Drawing Basic Links
+   2. Link geometry
+   3. Link Formatting
+   4. Link Rules - Part I
+   5. Link Rules - Part II
+   6. Link Rules - Part III
+   7. Link Rules - Part IV
+   8. Link Rules - Part V
+   9. Ribbons
+   10.Ribbon Twists
+
+6. 2D DATA TRACKS
+   1. Scatter Plots
+   2. Line Plots
+   3. Histograms
+   4. Tiles
+   5. Heat Maps
+   6. Text Labels
+   7. Arranging Text Labels
+   8. Applying Rules to Text Labels
+   9. Glyphs
+   10.Connectors
+   11.Putting it All Together
+
+7. AXIS SCALING
+   1. Global Scale Adjustment
+   2. Global Relative Scale Adjustment
+   3. Adjusting Scale for Regions
+   4. Creating Zoomed Regions
+   5. Overlapping Zoomed Regions
+   6. Smoothing Scale
+   7. Combining Scales
+   8. Drawing Data with Scale Adjustment
+
+8. RECIPES
+   1. Microbial Genome
+   2. Link Geometry - Detailed Bezier Control
+   3. Labeling Karyotype Bands
+   4. Image Maps
+   5. Image Transparency and Background
+   6. Manipulating Histograms
+   7. Variable Radius Link Ends
+   8. Stacked Histograms
+   9. Transparent Links
+   10.ID Fields
+   11.Heat Map Links
+   12.Inverted Links
+   13.Copy Number Data
+   14.Directed Links
+   15.Pattern Fills
+   16.Automating Tracks
+   17.Automating Heatmaps
+   18.Circular Stacked Bar Plots
+   19.Cortical Maps and Connectograms
+   20.Cell Cycle - Part I 
+   21.Cell Cycle - Part II
+
+9. HELPER TOOLS
+   1. Generating Random Link Data
+   2. Reordering Ideograms to Minimize Overlap
+   3. Bundling Links
+   4. Filtering Links
+   5. Visualizing Tabular Data
+   6. Generate Link Density Tracks
+   7. Visualizing Categorical Data
+
+10. IMAGE MAPS
+   1. Image Maps - Introduction and Clickable Ideograms
+   2. Image Maps - Clickable Cytogenetic Bands
+   3. Clickable Tick Marks
+   4. Clickable Highlights and Data

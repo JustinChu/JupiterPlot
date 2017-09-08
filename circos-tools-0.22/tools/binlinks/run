@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cat data/segdup.links.txt | bin/binlinks
+

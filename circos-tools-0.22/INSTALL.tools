@@ -1,0 +1,14 @@
+
+Unpack the tools directory anywhere
+
+Run each tutorial from the tutorial directory.
+
+> tar cvfz circos-tools-x.xx
+> cd circos-tools-x.xx
+> cd binlinks
+> ./run
+
+
+Windows users:
+
+See http://circos.ca/tutorials/lessons/configuration/unix_vs_windows/

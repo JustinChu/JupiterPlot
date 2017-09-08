@@ -1,0 +1,536 @@
+#!/usr/bin/env perl
+
+=pod
+
+=head1 NAME
+
+binlinks - collate link ends into bins and generate link density track
+
+=head1 SYNOPSIS
+
+  binlinks -bin_size BINSIZE
+           -links linkfile.txt -link_end 0|1|2|3
+           -output_style 0|1|2
+           [-min_link_size SIZE] [-max_link_size SIZE]
+           [-num]
+           [-log]
+           [-color_by_chr]
+           [-color_prefix lum90]
+
+=head1 DESCRIPTION
+
+This script collates link starts and ends within a bin of size C<BINSIZE> and reports the
+total size of link start and end spans for each bin. The output can be
+interpreted as link density and is very helpful in demonstrating how
+many links start/end at a region of the genome.
+
+The output is suitable for 2D track display, such as the histogram.
+
+The reported data points will be formatted with the color named after
+the corresponding target chromosome. The way the color is determined
+depends on the value of the -output_style. For example, for
+-output_style=0, the color will be that of the target chromosome with
+the largest contribution to the link size sum in a given bin.
+
+You can use the output of binlinks to draw highlights but will need to remove the value associated with each bin (column 4)
+
+  # remove column 4 - suitable for input to highlight tracks
+  bin/binlinks ... | cut -d " " -f 1-3,5-
+
+=head1 OUTPUT
+
+The output is controlled by the value passed to -output_style.
+
+=over 
+
+=item * -output_style 0
+
+Link density is reported for each bin. The density is the sum of link
+ends (as controlled by -link_end) for all target chromosomes (or the
+number of link ends, if -num is used).
+
+Use -color_by_chr to color the link by the color of the target
+chromosome with the largest contribution.
+
+=item * -output_style 1
+
+Link density for largest contribution, as determined by the target
+chromosome. The link is colored by the color code of the target
+chromosome.
+
+This output_style is the same as
+
+  -output_style 0 -color_by_chr
+
+=item * -output_style 2
+
+For each bin, the link density for each target chromosome is
+reported. The link is colored by the color code of the target
+chromosome.
+
+=item * -output_style 3
+
+Like -output_style=2, but the data is formatted for a stacked
+histogram track (multiple density values for the same bin are
+comma-delimited).
+
+The output values are ordered based on a sorted list of all target
+chromosomes. You will need to have a list of corresponding colors for
+the values, which is provided to you in STDERR.
+
+  ./binlinks -output_style 3 > density.txt 2> colors.txt
+
+The color list is meant to be used as the argument to the color
+parameter within the histogram <plot> track.
+
+  <plot>
+  file = density.txt
+  color = [STDERR output of script]
+  type = histogram
+  ...
+  </plot>
+
+=back
+
+=head1 OPTIONS
+
+=over
+
+=item * -links FILE
+
+Reads the links from FILE, which must be formatted as a Circos link
+list: each link is prepresented by a pair of lines, identified by a
+unique linkid string.
+
+  linkid chr1 start1 end1
+  linkid chr1 start2 end2
+
+=item * -bin_size BINSIZE
+
+The size of the bin. 
+
+=item * -link_end 0|1|2
+
+Controls which end(s) of the link are processed for each bin. (0 -
+start, 1 - end, 2 - both). The start of the link is considered to be
+the end defined by the first link line, and the link end is defined by
+the second link line.
+
+For example, if -link_end=0 then a bin will contain the sum (or number
+if -num is used) of links that start at that bin. If -link_end=1 then
+links that end at that bin will be used. Finally, -link_end=2 will
+make the bin value reflect the total outgoing and incoming links.
+
+=item * -min_link_size SIZE, -max_link_size SIZE
+
+Filters for links, based on the size of the link end. If either is
+defined, links smaller (or larger) than the cutoff will be ignored in
+calculating the link density.
+
+=item * -color_by_chr
+
+The output data will be formatted with the color of the target
+chromosome.
+
+If -output_style=0 is used, the color will be that of the largest
+contributor to the bin.
+
+The color will be added to the output file as fill_color=TARGETCHR. In
+the Circos color definition file etc/colors.conf there are colors
+defined for each human chromosome (chr1..chr22,chrX,chrY) according to
+the conventional palette. If the chromosomes you are processing with
+binlinks are not named this way, make sure that you either define
+colors for your chromosome names, or replace the chromosome prefixes
+with "chr". For example, if you use hsN for chromosome name,
+
+  bin/binlinks -log -output_style 0 | sed 's/=hs/=chr/'
+
+=item * -normalize
+
+The density values are normalized by the sum of the bin.
+
+This setting does nothing when -output_style=0 (otherwise, all values
+would be reported as 1).
+
+=item * -num
+
+Use the number of links in a bin, rather than the sum of ends, as the
+output value.
+
+If the end of a link spans bins, each bin will contain a +1
+contribution from the link. In other words, the sum of bin values may
+be larger than the number of links.
+
+=item * -log
+
+Output value is reported on a log scale as log10(value).
+
+=back
+
+=head1 HISTORY
+
+=over
+
+=item * 1 Aug 2012 v0.14
+
+Verified that this version works with 1- and 2-line link file formats.
+
+=item * 9 Feb 2011 v0.13
+
+Inverted link regions no longer cause an error from C<Set::IntSpan>.
+
+=item * 10 Feb 2009 v0.12
+
+Fixed bug that confused reporting for -link_end 1
+
+=item * 3 Feb 2009 v0.11
+
+Added binning by number of links. Minor changes to documentation.
+
+Added to Circos tools suite.
+
+=item * 7 Sep 2008
+
+Additional documentation.
+
+=item * 6 Aug 2008
+
+Started and versioned.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+Martin Krzywinski
+
+=head1 CONTACT
+
+  Martin Krzywinski
+  Genome Sciences Centre
+  Vancouver BC Canada
+  www.bcgsc.ca
+  martink@bcgsc.ca
+
+=cut
+
+################################################################
+#
+# Copyright 2002-2012 Martin Krzywinski
+#
+# This file is part of the Genome Sciences Centre Perl code base.
+#
+# This script is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This script is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this script; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+################################################################
+
+use strict;
+use Config::General;
+use Data::Dumper;
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+use IO::File;
+use Math::VecStat qw(sum min max average);
+use Memoize;
+#use Devel::DProf;
+use Pod::Usage;
+use Set::IntSpan;
+use Time::HiRes qw(gettimeofday tv_interval);
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+use vars qw(%OPT %CONF);
+
+################################################################
+#
+# *** YOUR MODULE IMPORTS HERE
+#
+################################################################
+
+GetOptions(\%OPT,
+					 "links=s",
+					 "file=s",
+					 "bin_size=f",
+					 "min_link_size=f",
+					 "max_link_size=f",
+					 "link_end=i",
+					 "color_by_chr",
+					 "color_prefix=s",
+					 "output_style=i",
+					 "normalize",
+					 "num",
+					 "removeintra!",
+					 "log",
+					 "cdump",
+					 "configfile=s","help","man","debug+");
+
+pod2usage() if $OPT{help};
+pod2usage(-verbose=>2) if $OPT{man};
+loadconfiguration($OPT{configfile});
+populateconfiguration(); # copy command line options to config hash
+validateconfiguration(); 
+if($CONF{cdump}) {
+  $Data::Dumper::Pad = "debug parameters";
+  $Data::Dumper::Indent = 1;
+  $Data::Dumper::Quotekeys = 0;
+  $Data::Dumper::Terse = 1;
+  print Dumper(\%CONF);
+	exit;
+}
+
+my ($links,$chr1list,$chr2list) = parse_links($CONF{links});
+
+if($CONF{output_style} == 3) {
+  print STDERR "fill_color=".lc join(",", map { $CONF{color_prefix} . $_ } @$chr2list),"\n";
+}
+for my $chr1 (sort keys %$links) {
+  for my $bin (sort {$a <=> $b} keys %{$links->{$chr1}}) {
+    my @chr2 = @$chr2list;
+    my $sum = sum( map { $links->{$chr1}{$bin}{$_}{size} } @chr2 );
+    my $num = sum( map { $links->{$chr1}{$bin}{$_}{n} } @chr2 );
+    my $value = $CONF{num} ? $num : $sum;
+    if($CONF{output_style} != 3) {
+      if($CONF{num}) {
+				@chr2 = sort { $links->{$chr1}{$bin}{$b}{n} <=> $links->{$chr1}{$bin}{$a}{n} } @chr2;
+      } else {
+				@chr2 = sort { $links->{$chr1}{$bin}{$b}{size} <=> $links->{$chr1}{$bin}{$a}{size} } @chr2;
+      }
+    }
+    if ($CONF{output_style} == 0) {
+      if ($CONF{log}) {
+				$value = $value ? log($value)/log(10) : 0;
+      }
+      if ($CONF{color_by_chr}) {
+				printinfo($chr1,$bin*$CONF{bin_size},($bin+1)*$CONF{bin_size}-1,
+									sprintf("%.4f",$value),"fill_color=".lc $chr2[0]);
+      } else {
+				printinfo($chr1,$bin*$CONF{bin_size},($bin+1)*$CONF{bin_size}-1,
+									sprintf("%.4f",$value));
+      }
+    } else {
+      my @values;
+      if ($CONF{removeintra}) {
+				if ($CONF{num}) {
+					@values = map { $_ ne $chr1 ? $links->{$chr1}{$bin}{$_}{n} : 0 } @chr2;
+				} else {
+					@values = map { $_ ne $chr1 ? $links->{$chr1}{$bin}{$_}{size} : 0 } @chr2;
+				}
+      } else {
+				if ($CONF{num}) {
+					@values = map { $links->{$chr1}{$bin}{$_}{n} } @chr2;
+				} else {
+					@values = map { $links->{$chr1}{$bin}{$_}{size} } @chr2;
+				}
+      }
+      if ($value && $CONF{normalize}) {
+				@values = map { $_/$value } @values;
+      }
+      if ($CONF{log}) {
+				@values = map {$_ ? log($_)/log(10) : 0} @values;
+      }
+      if ($CONF{output_style} == 3) {
+				printinfo($chr1,
+									$bin*$CONF{bin_size},
+									($bin+1)*$CONF{bin_size}-1,
+									join(",",map {sprintf("%.4f",$_)} @values));
+      } else {
+				for my $i (0..@chr2-1) {
+					printinfo($chr1,$bin*$CONF{bin_size},($bin+1)*$CONF{bin_size}-1,
+										sprintf("%.4f",$values[$i]),"fill_color=".lc $chr2[$i]);
+					last if $CONF{output_style} == 1;
+				}
+      }
+    }
+  }
+}
+
+sub get_handle {
+	my $h;
+	my $file = $CONF{file} || $CONF{links};
+	if(defined $file) {
+		die "No such file [$file]" unless -e $file;
+		open(FILE,$file);
+		$h = \*FILE;
+	} else {
+		$h = \*STDIN;
+	}
+	return $h;
+}
+
+sub parse_links {
+	my $inputhandle = get_handle();
+	my $links;
+	my $chash;
+	my $chrseen;
+	while (<$inputhandle>) {
+		chomp;
+		my @tok1 = split(" ",$_);
+		my $link;
+		if (@tok1 > 5) {
+			$link = {
+							 set=>[make_intspan(@tok1[1,2]),
+										 make_intspan(@tok1[4,5])],
+							 chr=>[$tok1[0],$tok1[3]]};
+		} else {
+			my $line2 = <F>;
+			last unless $line2;
+			chomp $line2;
+			my @tok2 = split(" ",$line2);
+			$link = {
+							 set=>[make_intspan(@tok1[2,3]),
+										 make_intspan(@tok2[2,3])],
+							 chr=>[$tok1[1],$tok2[1]]};
+		}
+		
+		next if $CONF{min_link_size} && $link->{set}[0]->cardinality < $CONF{min_link_size};
+		next if $CONF{min_link_size} && $link->{set}[1]->cardinality < $CONF{min_link_size};
+		next if $CONF{max_link_size} && $link->{set}[0]->cardinality > $CONF{max_link_size};
+		next if $CONF{max_link_size} && $link->{set}[1]->cardinality < $CONF{max_link_size};
+		
+		my @ends = $CONF{link_end} == 2 ? (0,1) : $CONF{link_end} == 1 ? (1) : 0;
+		
+		for my $end (@ends) {
+	    # bin index for this end of the link
+	    my @bins = (int($link->{set}[ $end ]->min / $CONF{bin_size}) ..
+									int($link->{set}[ $end ]->max / $CONF{bin_size}));
+	    #printdebug($link->{set}[$CONF{link_end}]->run_list,@bins) if @bins > 1;
+	    for my $b (@bins) {
+				# span of the bin
+				my $bset = Set::IntSpan->new(sprintf("%d-%d",$b*$CONF{bin_size},
+																						 ($b+1)*$CONF{bin_size}-1));
+				# intersection between bin and this end of the link
+				my $intersect = $bset->intersect( $link->{set}[$end] )->cardinality;
+				# the chromosome of this (and other) end
+				my $thischr = $link->{chr}[ $end ];
+				my $otherchr = $link->{chr}[ ! $end ];
+				printdebug("bin",$b,"end",$end,$intersect,$thischr,$otherchr);
+				$links->{$thischr}{$b}{$otherchr}{size} += $intersect;
+				$links->{$thischr}{$b}{$otherchr}{n} ++ if $intersect;
+		
+				$chrseen->{chr1}{$thischr}++;
+				$chrseen->{chr2}{$otherchr}++;
+		
+	    }
+    }
+    
+    if ($CONF{debug}) {
+      for my $tc (keys %$links) {
+				for my $bin (sort {$a <=> $b} keys %{$links->{$tc}}) {
+					for my $oc (sort {$links->{$tc}{$bin}{$b}{size} <=> $links->{$tc}{$bin}{$a}{size}} 
+											keys %{$links->{$tc}{$bin}}) {
+						printdebug("bysize",$tc,
+											 $bin*$CONF{bin_size},
+											 ($bin+1)*$CONF{bin_size}-1,
+											 $oc,$links->{$tc}{$bin}{$oc}{size});
+					}
+					for my $oc (sort {$links->{$tc}{$bin}{$b}{n} <=> $links->{$tc}{$bin}{$a}{n}} 
+											keys %{$links->{$tc}{$bin}}) {
+						printdebug("bynum",$tc,
+											 $bin*$CONF{bin_size},
+											 ($bin+1)*$CONF{bin_size}-1,
+											 $oc,$links->{$tc}{$bin}{$oc}{n});
+					}
+				}
+      }
+    }
+  }
+  return ($links,
+					[sort { my ($x1) = $a =~ /(\d+)/g; my ($x2) = $b=~/(\d+)/g; $x1<=>$x2 } keys %{$chrseen->{chr1}}],
+					[sort { my ($x1) = $a =~ /(\d+)/g; my ($x2) = $b=~/(\d+)/g; $x1<=>$x2 } keys %{$chrseen->{chr2}}]);
+}
+
+# added in v0.13 for inverted regions
+sub make_intspan {
+	my ($x,$y) = @_;
+	if($x < $y) {
+		return Set::IntSpan->new(sprintf("%d-%d",$x,$y));
+	} elsif ($x > $y) {
+		return Set::IntSpan->new(sprintf("%d-%d",$y,$x));
+	} else {
+		return Set::IntSpan->new(sprintf("%d",$x));
+	}
+}
+
+sub validateconfiguration {
+
+}
+
+################################################################
+#
+# *** DO NOT EDIT BELOW THIS LINE ***
+#
+################################################################
+
+sub populateconfiguration {
+  foreach my $key (keys %OPT) {
+    $CONF{$key} = $OPT{$key};
+  }
+
+  # any configuration fields of the form __XXX__ are parsed and replaced with eval(XXX). The configuration
+  # can therefore depend on itself.
+  #
+  # flag = 10
+  # note = __2*$CONF{flag}__ # would become 2*10 = 20
+
+  for my $key (keys %CONF) {
+    my $value = $CONF{$key};
+    while($value =~ /__([^_].+?)__/g) {
+      my $source = "__" . $1 . "__";
+      my $target = eval $1;
+      $value =~ s/\Q$source\E/$target/g;
+      #printinfo($source,$target,$value);
+    }
+    $CONF{$key} = $value;
+  }
+
+}
+
+sub loadconfiguration {
+  my $file = shift;
+  my ($scriptname) = fileparse($0);
+  if(-e $file && -r _) {
+    # great the file exists
+  } elsif (-e "/home/$ENV{LOGNAME}/.$scriptname.conf" && -r _) {
+    $file = "/home/$ENV{LOGNAME}/.$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/etc/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/etc/$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/../etc/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/../etc/$scriptname.conf";
+  } else {
+    return undef;
+  }
+  $OPT{configfile} = $file;
+  my $conf = new Config::General(-ConfigFile=>$file,
+				 -AllowMultiOptions=>"yes",
+				 -LowerCaseNames=>1,
+				 -AutoTrue=>1);
+  %CONF = $conf->getall;
+}
+
+sub printdebug {
+  printinfo("debug",@_)  if $CONF{debug};
+}
+
+sub printinfo {
+  printf("%s\n",join(" ",@_));
+}
+
+sub printerr {
+  printf STDERR ("%s\n",join(" ",@_));
+}

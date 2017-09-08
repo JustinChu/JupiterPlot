@@ -1,0 +1,23 @@
+
+Very brief installation instructions are provided in README.
+
+For details, see the Installation and Configuration tutorial
+
+  http://www.circos.ca/documentation/tutorials/configuration/
+
+For a guide for Mac OS X, see
+
+http://zientzilaria.heroku.com/blog/2012/06/03/installing-circos-on-os-x/
+
+################################################################
+
+WINDOWS USERS
+
+Please be attentive to the differences between UNIX and Windows, as
+described in the above tutorial. 
+
+Be aware that UNIX commands will not work on Windows.
+
+If you are unfamiliar with the DOS command-line, refer to this tutorial
+
+  http://www.bleepingcomputer.com/tutorials/tutorial76.html

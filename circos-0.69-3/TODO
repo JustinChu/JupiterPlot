@@ -1,0 +1,17 @@
+
+FEATURES
+
+++ add groups in SVG output
++ add dashed line support in SVG output
++ add ability to place a label anywhere on the image based on pixel value (and maybe gravity) (e.g. create label in center of image)
++ add phylogenetic tree track
++ add hierarchical bundling
++ fix/improve/rewrite how text labels are put down in text track (currently this feature is nastily implemented)
+
+IMPROVEMENTS
+
++++ add drop_line=yes drop_edge=yes to histogram bins
+++ background (axes, outline, panel) for tracks is shown even for ideograms for which there is no data - fix this
++ when r0 or r1 is set to 1r, this is currently taken as the outer ideogram radius. Change this so that either inner_ or outer_radius are used, depending on the other r value in the pair (e.g. r0=0.5 r1=1r should use inner_radius for 1r, but r0=1r r1=1.2r should use outer_radius).
+
+

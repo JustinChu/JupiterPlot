@@ -1,0 +1,388 @@
+debuggroup summary 0.15s welcome to circos v0.67-1 6 Oct 2014 on Perl 5.010000
+debuggroup summary 0.15s loading configuration from file etc/circos.conf
+debuggroup summary 0.15s found conf file etc/circos.conf
+debuggroup summary 0.64s debug will appear for these features: summary,timer
+debuggroup summary 0.64s bitmap output image ./circos.png
+debuggroup summary 0.64s SVG output image ./circos.svg
+debuggroup summary 0.65s parsing karyotype and organizing ideograms
+debuggroup summary 0.98s karyotype has 66 chromosomes of total size 8,540,079,869
+debuggroup summary 1.00s applying global and local scaling
+debuggroup summary 1.16s allocating image, colors and brushes
+debuggroup summary 2.08s drawing 24 ideograms of total size 3,344,416,167
+debuggroup summary 2.08s drawing highlights and ideograms
+debuggroup summary 4.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/link.conf
+debuggroup summary 4.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/link.conf
+debuggroup summary 4.99s process track_0 link /home/martink/work/circos/svn/example/data/rn.bundle.txt
+debuggroup summary 5.78s process track_1 link /home/martink/work/circos/svn/example/data/mm.bundle.txt
+debuggroup summary 5.95s drawing link track_0 z 0
+debuggroup summary 6.85s drawing link track_1 z 0
+debuggroup summary 6.94s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/highlight.conf
+debuggroup summary 6.94s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/highlight.conf
+debuggroup summary 6.94s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/text.conf
+debuggroup summary 6.94s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.94s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.94s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.95s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.96s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/heatmap.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 6.99s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.01s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.01s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.01s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.01s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/histogram.conf
+debuggroup summary 7.01s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.01s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/histogram.conf
+debuggroup summary 7.01s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/scatter.conf
+debuggroup summary 7.03s processing track_0 highlight /home/martink/work/circos/svn/example/data/highlights.txt
+debuggroup summary 7.03s processing track_1 highlight /home/martink/work/circos/svn/example/data/highlights.txt
+debuggroup summary 7.05s processing track_2 text /home/martink/work/circos/svn/example/data/genes.txt
+debuggroup summary 8.06s processing track_3 heatmap /home/martink/work/circos/svn/example/data/heatmap.hs.mm.20e6.txt
+debuggroup summary 8.13s processing track_4 heatmap /home/martink/work/circos/svn/example/data/heatmap.hs.rn.20e6.txt
+debuggroup summary 8.20s processing track_5 heatmap /home/martink/work/circos/svn/example/data/heatmap.hs.mm.10e6.txt
+debuggroup summary 8.34s processing track_6 heatmap /home/martink/work/circos/svn/example/data/heatmap.hs.rn.10e6.txt
+debuggroup summary 8.47s processing track_7 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.1.txt
+debuggroup summary 8.51s processing track_8 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.2.txt
+debuggroup summary 8.55s processing track_9 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.3.txt
+debuggroup summary 8.59s processing track_10 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.4.txt
+debuggroup summary 8.63s processing track_11 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.5.txt
+debuggroup summary 8.67s processing track_12 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.6.txt
+debuggroup summary 8.71s processing track_13 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.7.txt
+debuggroup summary 8.75s processing track_14 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.8.txt
+debuggroup summary 8.79s processing track_15 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.9.txt
+debuggroup summary 8.83s processing track_16 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.10.txt
+debuggroup summary 8.86s processing track_17 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.11.txt
+debuggroup summary 8.90s processing track_18 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.12.txt
+debuggroup summary 8.94s processing track_19 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.13.txt
+debuggroup summary 8.98s processing track_20 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.14.txt
+debuggroup summary 9.02s processing track_21 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.15.txt
+debuggroup summary 9.06s processing track_22 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.16.txt
+debuggroup summary 9.10s processing track_23 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.17.txt
+debuggroup summary 9.14s processing track_24 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.18.txt
+debuggroup summary 9.18s processing track_25 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.19.txt
+debuggroup summary 9.22s processing track_26 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.20.txt
+debuggroup summary 9.27s processing track_27 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.21.txt
+debuggroup summary 9.31s processing track_28 heatmap /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.22.txt
+debuggroup summary 9.35s processing track_29 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.1.txt
+debuggroup summary 9.40s processing track_30 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.2.txt
+debuggroup summary 9.45s processing track_31 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.3.txt
+debuggroup summary 9.51s processing track_32 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.4.txt
+debuggroup summary 9.56s processing track_33 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.5.txt
+debuggroup summary 9.61s processing track_34 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.6.txt
+debuggroup summary 9.66s processing track_35 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.7.txt
+debuggroup summary 9.71s processing track_36 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.8.txt
+debuggroup summary 9.76s processing track_37 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.9.txt
+debuggroup summary 9.81s processing track_38 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.10.txt
+debuggroup summary 9.86s processing track_39 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.11.txt
+debuggroup summary 9.91s processing track_40 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.12.txt
+debuggroup summary 9.96s processing track_41 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.13.txt
+debuggroup summary 10.02s processing track_42 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.14.txt
+debuggroup summary 10.07s processing track_43 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.15.txt
+debuggroup summary 10.12s processing track_44 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.16.txt
+debuggroup summary 10.17s processing track_45 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.17.txt
+debuggroup summary 10.22s processing track_46 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.18.txt
+debuggroup summary 10.28s processing track_47 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.19.txt
+debuggroup summary 10.33s processing track_48 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.20.txt
+debuggroup summary 10.38s processing track_49 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.21.txt
+debuggroup summary 10.44s processing track_50 heatmap /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.22.txt
+debuggroup summary 10.49s processing track_51 scatter /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.1.txt
+debuggroup summary 10.56s processing track_52 scatter /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.2.txt
+debuggroup summary 10.62s processing track_53 scatter /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.3.txt
+debuggroup summary 10.69s processing track_54 scatter /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.4.txt
+debuggroup summary 10.75s processing track_55 scatter /home/martink/work/circos/svn/example/data/heatmap.rn.5e6.hs.5.txt
+debuggroup summary 10.82s processing track_56 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.1.txt
+debuggroup summary 10.87s processing track_57 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.2.txt
+debuggroup summary 10.92s processing track_58 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.3.txt
+debuggroup summary 10.97s processing track_59 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.4.txt
+debuggroup summary 11.03s processing track_60 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.5.txt
+debuggroup summary 11.08s processing track_61 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.6.txt
+debuggroup summary 11.13s processing track_62 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.7.txt
+debuggroup summary 11.18s processing track_63 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.8.txt
+debuggroup summary 11.23s processing track_64 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.9.txt
+debuggroup summary 11.29s processing track_65 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.10.txt
+debuggroup summary 11.34s processing track_66 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.11.txt
+debuggroup summary 11.39s processing track_67 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.12.txt
+debuggroup summary 11.44s processing track_68 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.13.txt
+debuggroup summary 11.50s processing track_69 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.14.txt
+debuggroup summary 11.55s processing track_70 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.15.txt
+debuggroup summary 11.60s processing track_71 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.16.txt
+debuggroup summary 11.65s processing track_72 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.17.txt
+debuggroup summary 11.70s processing track_73 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.18.txt
+debuggroup summary 11.76s processing track_74 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.19.txt
+debuggroup summary 11.81s processing track_75 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.20.txt
+debuggroup summary 11.86s processing track_76 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.21.txt
+debuggroup summary 11.91s processing track_77 scatter /home/martink/work/circos/svn/example/data/heatmap.mm.5e6.hs.22.txt
+debuggroup summary 11.96s processing track_78 histogram /home/martink/work/circos/svn/example/data/heatmap.hs.mm.20e6.txt
+debuggroup summary 12.04s processing track_79 scatter /home/martink/work/circos/svn/example/data/heatmap.hs.mm.5e6.txt
+debuggroup summary 12.29s processing track_80 histogram /home/martink/work/circos/svn/example/data/heatmap.hs.rn.20e6.txt
+debuggroup summary 12.36s processing track_81 scatter /home/martink/work/circos/svn/example/data/heatmap.hs.rn.5e6.txt
+debuggroup summary 12.62s drawing track_0 highlight z 0 highlights.txt 
+debuggroup summary 12.62s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 12.67s drawing track_1 highlight z 0 highlights.txt 
+debuggroup summary 12.68s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 12.72s drawing track_2 text z 0 genes.txt 
+debuggroup summary 12.79s placing text track data/genes.txt
+debuggroup summary 12.79s ... see progress with -debug_group text
+debuggroup summary 12.79s ... see placement summary with -debug_group textplace
+debuggroup summary 50.41s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 52.44s drawing track_3 heatmap z 0 heatmap.hs.mm.20e6.txt 
+debuggroup summary 52.45s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 52.63s drawing track_4 heatmap z 0 heatmap.hs.rn.20e6.txt 
+debuggroup summary 52.64s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 52.80s drawing track_5 heatmap z 0 heatmap.hs.mm.10e6.txt 
+debuggroup summary 52.83s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.14s drawing track_6 heatmap z 0 heatmap.hs.rn.10e6.txt 
+debuggroup summary 53.17s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.46s drawing track_7 heatmap z 0 heatmap.mm.5e6.hs.1.txt 
+debuggroup summary 53.46s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.51s drawing track_8 heatmap z 0 heatmap.mm.5e6.hs.2.txt 
+debuggroup summary 53.52s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.56s drawing track_9 heatmap z 0 heatmap.mm.5e6.hs.3.txt 
+debuggroup summary 53.57s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.61s drawing track_10 heatmap z 0 heatmap.mm.5e6.hs.4.txt 
+debuggroup summary 53.62s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.67s drawing track_11 heatmap z 0 heatmap.mm.5e6.hs.5.txt 
+debuggroup summary 53.67s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.72s drawing track_12 heatmap z 0 heatmap.mm.5e6.hs.6.txt 
+debuggroup summary 53.72s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.77s drawing track_13 heatmap z 0 heatmap.mm.5e6.hs.7.txt 
+debuggroup summary 53.78s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.82s drawing track_14 heatmap z 0 heatmap.mm.5e6.hs.8.txt 
+debuggroup summary 53.83s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.87s drawing track_15 heatmap z 0 heatmap.mm.5e6.hs.9.txt 
+debuggroup summary 53.88s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.92s drawing track_16 heatmap z 0 heatmap.mm.5e6.hs.10.txt 
+debuggroup summary 53.93s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 53.98s drawing track_17 heatmap z 0 heatmap.mm.5e6.hs.11.txt 
+debuggroup summary 53.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.03s drawing track_18 heatmap z 0 heatmap.mm.5e6.hs.12.txt 
+debuggroup summary 54.03s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.08s drawing track_19 heatmap z 0 heatmap.mm.5e6.hs.13.txt 
+debuggroup summary 54.08s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.13s drawing track_20 heatmap z 0 heatmap.mm.5e6.hs.14.txt 
+debuggroup summary 54.13s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.18s drawing track_21 heatmap z 0 heatmap.mm.5e6.hs.15.txt 
+debuggroup summary 54.18s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.23s drawing track_22 heatmap z 0 heatmap.mm.5e6.hs.16.txt 
+debuggroup summary 54.23s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.28s drawing track_23 heatmap z 0 heatmap.mm.5e6.hs.17.txt 
+debuggroup summary 54.28s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.33s drawing track_24 heatmap z 0 heatmap.mm.5e6.hs.18.txt 
+debuggroup summary 54.34s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.38s drawing track_25 heatmap z 0 heatmap.mm.5e6.hs.19.txt 
+debuggroup summary 54.38s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.43s drawing track_26 heatmap z 0 heatmap.mm.5e6.hs.20.txt 
+debuggroup summary 54.44s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.48s drawing track_27 heatmap z 0 heatmap.mm.5e6.hs.21.txt 
+debuggroup summary 54.48s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.53s drawing track_28 heatmap z 0 heatmap.mm.5e6.hs.22.txt 
+debuggroup summary 54.53s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.58s drawing track_29 heatmap z 0 heatmap.rn.5e6.hs.1.txt 
+debuggroup summary 54.58s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.64s drawing track_30 heatmap z 0 heatmap.rn.5e6.hs.2.txt 
+debuggroup summary 54.65s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.70s drawing track_31 heatmap z 0 heatmap.rn.5e6.hs.3.txt 
+debuggroup summary 54.71s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.76s drawing track_32 heatmap z 0 heatmap.rn.5e6.hs.4.txt 
+debuggroup summary 54.77s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.82s drawing track_33 heatmap z 0 heatmap.rn.5e6.hs.5.txt 
+debuggroup summary 54.82s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.88s drawing track_34 heatmap z 0 heatmap.rn.5e6.hs.6.txt 
+debuggroup summary 54.88s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 54.94s drawing track_35 heatmap z 0 heatmap.rn.5e6.hs.7.txt 
+debuggroup summary 54.94s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.00s drawing track_36 heatmap z 0 heatmap.rn.5e6.hs.8.txt 
+debuggroup summary 55.00s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.06s drawing track_37 heatmap z 0 heatmap.rn.5e6.hs.9.txt 
+debuggroup summary 55.06s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.12s drawing track_38 heatmap z 0 heatmap.rn.5e6.hs.10.txt 
+debuggroup summary 55.12s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.18s drawing track_39 heatmap z 0 heatmap.rn.5e6.hs.11.txt 
+debuggroup summary 55.18s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.24s drawing track_40 heatmap z 0 heatmap.rn.5e6.hs.12.txt 
+debuggroup summary 55.24s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.30s drawing track_41 heatmap z 0 heatmap.rn.5e6.hs.13.txt 
+debuggroup summary 55.30s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.35s drawing track_42 heatmap z 0 heatmap.rn.5e6.hs.14.txt 
+debuggroup summary 55.36s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.42s drawing track_43 heatmap z 0 heatmap.rn.5e6.hs.15.txt 
+debuggroup summary 55.43s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.48s drawing track_44 heatmap z 0 heatmap.rn.5e6.hs.16.txt 
+debuggroup summary 55.49s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.54s drawing track_45 heatmap z 0 heatmap.rn.5e6.hs.17.txt 
+debuggroup summary 55.55s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.60s drawing track_46 heatmap z 0 heatmap.rn.5e6.hs.18.txt 
+debuggroup summary 55.61s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.66s drawing track_47 heatmap z 0 heatmap.rn.5e6.hs.19.txt 
+debuggroup summary 55.66s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.72s drawing track_48 heatmap z 0 heatmap.rn.5e6.hs.20.txt 
+debuggroup summary 55.72s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.78s drawing track_49 heatmap z 0 heatmap.rn.5e6.hs.21.txt 
+debuggroup summary 55.78s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.83s drawing track_50 heatmap z 0 heatmap.rn.5e6.hs.22.txt 
+debuggroup summary 55.84s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.89s drawing track_51 scatter z 0 heatmap.rn.5e6.hs.1.txt orient out
+debuggroup summary 55.89s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 55.96s drawing track_52 scatter z 0 heatmap.rn.5e6.hs.2.txt orient out
+debuggroup summary 55.97s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.03s drawing track_53 scatter z 0 heatmap.rn.5e6.hs.3.txt orient out
+debuggroup summary 56.04s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.10s drawing track_54 scatter z 0 heatmap.rn.5e6.hs.4.txt orient out
+debuggroup summary 56.11s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.17s drawing track_55 scatter z 0 heatmap.rn.5e6.hs.5.txt orient out
+debuggroup summary 56.17s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.23s drawing track_56 scatter z 0 heatmap.mm.5e6.hs.1.txt orient out
+debuggroup summary 56.24s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.27s drawing track_57 scatter z 0 heatmap.mm.5e6.hs.2.txt orient out
+debuggroup summary 56.28s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.31s drawing track_58 scatter z 0 heatmap.mm.5e6.hs.3.txt orient out
+debuggroup summary 56.31s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.34s drawing track_59 scatter z 0 heatmap.mm.5e6.hs.4.txt orient out
+debuggroup summary 56.35s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.38s drawing track_60 scatter z 0 heatmap.mm.5e6.hs.5.txt orient out
+debuggroup summary 56.38s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.41s drawing track_61 scatter z 0 heatmap.mm.5e6.hs.6.txt orient out
+debuggroup summary 56.42s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.45s drawing track_62 scatter z 0 heatmap.mm.5e6.hs.7.txt orient out
+debuggroup summary 56.45s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.49s drawing track_63 scatter z 0 heatmap.mm.5e6.hs.8.txt orient out
+debuggroup summary 56.49s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.52s drawing track_64 scatter z 0 heatmap.mm.5e6.hs.9.txt orient out
+debuggroup summary 56.53s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.56s drawing track_65 scatter z 0 heatmap.mm.5e6.hs.10.txt orient out
+debuggroup summary 56.56s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.59s drawing track_66 scatter z 0 heatmap.mm.5e6.hs.11.txt orient out
+debuggroup summary 56.60s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.63s drawing track_67 scatter z 0 heatmap.mm.5e6.hs.12.txt orient out
+debuggroup summary 56.63s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.66s drawing track_68 scatter z 0 heatmap.mm.5e6.hs.13.txt orient out
+debuggroup summary 56.67s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.70s drawing track_69 scatter z 0 heatmap.mm.5e6.hs.14.txt orient out
+debuggroup summary 56.70s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.73s drawing track_70 scatter z 0 heatmap.mm.5e6.hs.15.txt orient out
+debuggroup summary 56.74s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.77s drawing track_71 scatter z 0 heatmap.mm.5e6.hs.16.txt orient out
+debuggroup summary 56.77s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.80s drawing track_72 scatter z 0 heatmap.mm.5e6.hs.17.txt orient out
+debuggroup summary 56.81s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.84s drawing track_73 scatter z 0 heatmap.mm.5e6.hs.18.txt orient out
+debuggroup summary 56.84s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.87s drawing track_74 scatter z 0 heatmap.mm.5e6.hs.19.txt orient out
+debuggroup summary 56.88s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.91s drawing track_75 scatter z 0 heatmap.mm.5e6.hs.20.txt orient out
+debuggroup summary 56.91s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.94s drawing track_76 scatter z 0 heatmap.mm.5e6.hs.21.txt orient out
+debuggroup summary 56.94s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 56.97s drawing track_77 scatter z 0 heatmap.mm.5e6.hs.22.txt orient out
+debuggroup summary 56.98s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 57.01s drawing track_78 histogram z 0 heatmap.hs.mm.20e6.txt orient out
+debuggroup summary 57.03s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 57.74s drawing track_79 scatter z 0 heatmap.hs.mm.5e6.txt orient out
+debuggroup summary 57.79s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 58.30s drawing track_80 histogram z 0 heatmap.hs.rn.20e6.txt orient in
+debuggroup summary 58.31s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup summary 58.71s drawing track_81 scatter z 0 heatmap.hs.rn.5e6.txt orient in
+debuggroup summary 58.77s found conf file /home/martink/work/circos/svn/bin/../etc/tracks/axis.conf
+debuggroup timer 60.44s report circos 60.295 s
+debuggroup timer 60.44s report color 0.755 s
+debuggroup timer 60.44s report colorcache 0.005 s
+debuggroup timer 60.44s report colordefinitions 0.167 s
+debuggroup timer 60.44s report colorfetch 0.180 s
+debuggroup timer 60.44s report colorlists 0.010 s
+debuggroup timer 60.44s report colorlookups 0.007 s
+debuggroup timer 60.44s report colortransparency 0.350 s
+debuggroup timer 60.44s report dataparams 1.625 s
+debuggroup timer 60.44s report datarules 3.301 s
+debuggroup timer 60.44s report graphic_png_polygon 0.878 s
+debuggroup timer 60.44s report graphic_slice 2.560 s
+debuggroup timer 60.44s report graphic_slice_polygon_coord 0.442 s
+debuggroup timer 60.44s report graphic_slice_polygon_svg 0.888 s
+debuggroup timer 60.44s report graphic_slice_preprocess 0.227 s
+debuggroup timer 60.44s report highlights 0.000 s
+debuggroup timer 60.44s report ideograms_draw 2.902 s
+debuggroup timer 60.44s report ideograms_processing 0.025 s
+debuggroup timer 60.44s report ideograms_ticks_draw 2.244 s
+debuggroup timer 60.44s report ideograms_zoom 0.150 s
+debuggroup timer 60.44s report io 0.604 s
+debuggroup timer 60.44s report karyotype 0.331 s
+debuggroup timer 60.44s report parameter_seek 4.916 s
+debuggroup timer 60.44s report track_heatmap 2.217 s
+debuggroup timer 60.44s report track_highlight 0.066 s
+debuggroup timer 60.44s report track_histogram 0.706 s
+debuggroup timer 60.44s report track_preprocess 0.640 s
+debuggroup timer 60.44s report track_scatter 1.371 s
+debuggroup timer 60.44s report track_text_ashift 28.486 s
+debuggroup timer 60.44s report track_text_ashiftiter 13.936 s
+debuggroup timer 60.44s report track_text_draw 1.850 s
+debuggroup timer 60.44s report track_text_place 37.618 s
+debuggroup timer 60.44s report track_text_preashift 7.910 s
+debuggroup timer 60.44s report track_text_preprocess 0.597 s
+debuggroup timer 60.44s report track_text_refine 0.004 s
+debuggroup timer 60.44s report unitconvert 0.053 s
+debuggroup timer 60.44s report unitconvert_decision 0.004 s
+debuggroup timer 60.44s report unitconvert_delegate 0.015 s
+debuggroup timer 60.44s report unitparse 0.185 s

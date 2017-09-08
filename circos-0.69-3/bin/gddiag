@@ -1,0 +1,634 @@
+#!/bin/env perl
+
+=pod
+
+=head1 NAME
+
+gddiag - short GD diagnostics
+
+=head1 SYNOPSIS
+
+  # organize color swatches in 10 columns, each column swatch
+  # 20 pixels in size and color labels size 8
+  gddiag -conf etc/gddiag.conf -output_file_root gdtest [-debug] [-help] [-man]
+
+=head1 DESCRIPTION
+
+This script helps diagnose any problems with gd and Perl's GD
+module. It generates a matrix of colored squares, some rotated lines
+(with and without antialiasing) and text for each font defined in the
+<fonts> block.
+
+=head1 LIMITATIONS
+
+As of the current release of gd (2.0.35), antialiasing is not
+supported for lines with (a) thickness > 1 or (b) color with alpha
+channel. Therefore, if you want lines with transparency (e.g. 50%
+opaque), or lines whose thickness is greater than 1, you must give up
+antialiasing. Antialiasing with thick lines is planned in gd 2.1.0 -
+see
+
+http://bugs.libgd.org/?do=details&task_id=65&histring=antialias
+
+One way to "add" antialiasing, is to create an image that is 2x the
+size of the desired final result and then shrink the image with a tool
+like ImageMagick's 'convert'.
+
+=head1 HISTORY
+
+=over
+
+=item * 16 June 2009 v0.14
+
+Removed dependence on tutorial configuration file by adding a dedicated configuration file.
+
+=item * 3 Mar 2009 v0.13
+
+Added -alpha.
+
+=item * 30 Sep 2008 v0.12
+
+Added column number and width
+
+=item * 16 Apr 2008 v0.11
+
+Added labels sampling defined fonts
+
+=item * 25 Feb 2008 v0.10
+
+Started and versioned
+
+=back
+
+=head1 BUGS
+
+Please report all bugs, feature requests and general comments to Martin Krzywinski (martink@bcgsc.ca).
+
+=head1 AUTHOR
+
+Martin Krzywinski
+martink@bcgsc.ca
+mkweb.bcgsc.ca
+
+=head1 CONTACT
+
+  Martin Krzywinski
+  Genome Sciences Centre
+  Vancouver BC Canada
+  www.bcgsc.ca
+  martink@bcgsc.ca
+
+=cut
+
+################################################################
+#
+# Copyright 2004-2011 Martin Krzywinski
+#
+# This file is part of the Genome Sciences Centre Perl code base.
+#
+# This script is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This script is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this script; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+################################################################
+
+use strict;
+use constant twoPI   => 6.283185307;
+use constant deg2rad => 0.0174532925;
+use constant rad2deg => 57.29577951;
+use constant PI      => 3.141592654;
+use constant PIover2 => 1.570796327;
+use Carp;
+use Config::General;
+use Data::Dumper;
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+use IO::File;
+use Math::Round;
+use Math::VecStat qw(sum min max average);
+use POSIX qw(atan ceil);
+use Pod::Usage;
+use Set::IntSpan 1.11 qw(map_set);
+use Storable;
+use Time::HiRes qw(gettimeofday tv_interval);
+use GD;
+
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+
+use Circos::Configuration qw(%CONF $DIMS);
+use Circos::Colors;
+
+our %OPT;
+
+GetOptions(\%OPT,
+	   "colsize=i",
+	   "alpha",
+	   "verbose+",
+	   "output_file_root=s",
+	   "configfile=s","help","man","debug+");
+
+pod2usage() if $OPT{help};
+pod2usage(-verbose=>2) if $OPT{man};
+loadconfiguration($OPT{configfile});
+populateconfiguration(); # copy command line options to config hash
+validateconfiguration(); 
+if($CONF{debug} > 1) {
+  $Data::Dumper::Pad = "debug parameters";
+  $Data::Dumper::Indent = 1;
+  $Data::Dumper::Quotekeys = 0;
+  $Data::Dumper::Terse = 1;
+  print Dumper(\%CONF);
+}
+
+my $dims;
+
+# generate rows and columns of color patches
+
+my $seen_color;
+my $layout  = get_layout();
+
+my ($im,$colors) = make_image($layout);
+
+my ($x,$y) = ($CONF{marginx},$CONF{marginy});
+for my $row (@$layout) {
+    for my $data (@$row) {
+	if($data->{label}) {
+	    $im->string(gdTinyFont,$x,$y,$data->{label},$colors->{black});
+	    $x += 6 * length($data->{label});
+	} elsif ( $data->{type} eq "color") {
+	    if($CONF{alpha}) {
+		for my $alpha (reverse 0..5) {
+		    my $color = $colors->{ $data->{name} . "_a$alpha" };
+		    my $f = 1 - 0.8*(5-$alpha)/5;
+		    $im->filledRectangle($x,$y,
+					 $x+$CONF{colsize}*$f,$y+$CONF{colsize}*$f,
+					 $color);
+		}
+	    } else {
+		my $color = $colors->{ $data->{name} };
+		$im->filledRectangle($x,$y,
+				     $x+$CONF{colsize},$y+$CONF{colsize},
+				     $color);
+	    }
+	    $im->rectangle($x,$y,
+			   $x+$CONF{colsize},$y+$CONF{colsize},
+			   $colors->{ vlgrey });
+	    $x += $CONF{colsize} + $CONF{colmargin};
+	} elsif ($data->{type} eq "font") {
+	    $im->stringFT($colors->{black},
+			  locate_file($CONF{fonts}{ $data->{font}}),
+			  $CONF{fontsize},
+			  0,
+			  $x,$y+$CONF{fontsize},
+			  join("", map {chr(97+$_)} (0..25)));
+	    $y += $CONF{fontsize} * 0.75;
+	} else {
+	    $x += $CONF{colmargin};
+	}
+    }
+    $x  = $CONF{marginx};
+    $y += $CONF{colsize} + $CONF{colmargin};
+}
+
+my $output_file = sprintf("%s.png",$CONF{output_file_root});
+open(PNG,">$output_file") || confess "cannot open output file $output_file";
+binmode PNG;
+print PNG $im->png;
+close(PNG);
+printinfo("Created color diagnostic image at $output_file");
+printinfo("GD version",$GD::VERSION);
+
+exit;
+
+sub get_layout {
+    my $color_layout = get_color_layout();
+    my $font_layout  = get_font_layout();
+    return [grep($_, @$color_layout,@$font_layout)];
+}
+
+sub get_font_layout {
+    my @fonts = sort keys %{$CONF{fonts}};
+    my $font_layout;
+    for my $font (@fonts) {
+	push @$font_layout, [ {label=>sprintf("font %13s",$font) }, { font=>$font, type=>"font" } ];
+    }
+    return $font_layout;
+
+}
+sub get_color_layout {
+    my @colors = keys %{$CONF{colors}};
+    my @layout;
+    # brewer palettes
+    my $brewer_palettes = make_brewer(@colors);
+    for my $type (sort keys %$brewer_palettes) {
+	for my $palette (sort keys %{$brewer_palettes->{$type}}) {
+	    push @layout, [{label=>sprintf("%13s","$palette-$type")}];
+	    for my $ncolors (sort {$a <=> $b} keys %{$brewer_palettes->{$type}{$palette}}) {
+		push @{$layout[-1]}, {label=>$ncolors};
+		for my $idx (sort {$a <=> $b} keys %{$brewer_palettes->{$type}{$palette}{$ncolors}}) {
+		    my $color_data = $brewer_palettes->{$type}{$palette}{$ncolors}{$idx};
+		    push @{$layout[-1]}, $color_data;
+		    $seen_color->{$color_data->{name}}++;
+		}
+		push @{$layout[-1]}, undef;
+	    }
+	}
+    }
+    # chromosomes
+    my $chr_palettes = make_chr(@colors);
+    for my $type (sort keys %$chr_palettes) {
+	push @layout, [{label=>sprintf("%13s",$type)}];
+	for my $color (sort {$a->{label} <=> $b->{label} || $a->{label} cmp $b->{label}} @{$chr_palettes->{$type}}) {
+	    push @{$layout[-1]}, {label=>$color->{label} || "''"};
+	    push @{$layout[-1]}, {name=>$color->{name}, type=>"color",rgb=>$color->{rgb}};
+	    $seen_color->{$color->{name}}++;
+	}
+    }
+    # other colors
+    my $other_palettes = make_other_palette(@colors);
+    for my $type (sort keys %$other_palettes) {
+	push @layout, [{label=>sprintf("%13s",$type)}];
+	for my $color (sort {$a->{idx} <=> $b->{idx}} @{$other_palettes->{$type}}) {
+	    push @{$layout[-1]}, {label=>$color->{label} || "''"};
+	    push @{$layout[-1]}, {name=>$color->{name}, type=>"color",rgb=>$color->{rgb}};
+	}
+    }
+    return \@layout;
+}
+
+sub make_other_palette {
+    my $other_palettes;
+    for my $color (@_) {
+	if($color =~ /^(v*(l|d))(.+)$/) {
+	    my ($prefix,$name) = ($1,$3);
+	    next if $seen_color->{$color};
+	    next if $color =~ /-(qual|seq|div)/;
+	    my $idx = 0;
+	    if($color =~ /^(v*)(d|l)/) {
+		if($2 eq "d") {
+		    $idx += length($1) + 10;
+		} else {
+		    $idx -= length($1);
+		}
+	    }
+	    push @{$other_palettes->{$name}}, {rgb=>[split(",",$CONF{colors}{$color})],
+					       idx=>$idx,
+					       label=>$prefix,
+					       name=>$color};
+	}
+    }
+    return $other_palettes;
+}
+sub make_chr {
+    my $chr_palettes;
+    my @type = qw(chr gpos gneg gvar acen stalk);
+    for my $type (@type) {
+	for my $color (@_) {
+	    if($color =~ /$type/) {
+		if($color =~ /^(.*$type)(.*)/) {
+		    my ($palette,$label) = ($1,$2);
+		    next unless $CONF{colors}{$color} =~ /,/;
+		    push @{$chr_palettes->{$palette}}, {rgb=>[split(",",$CONF{colors}{$color})],
+							name=>$color,
+							label=>$label};
+		}
+	    }
+	}
+    }
+    return $chr_palettes;
+}
+
+sub make_brewer {
+    my @types = qw(seq div qual);
+    my $typerx = join("|",@types);
+    my @colors = sort grep($_ =~ /-($typerx)-/, @_);
+    my $brewer_palettes;
+    for my $type (@types) {
+	my @colors_type = grep($_ =~ /-$type-/, @colors);
+	for my $color (@colors_type) {
+	    if($color =~ /^(.+)-(\d+)-$type-(\d+)/) {
+		my ($palette,$ncolors,$idx) = ($1,$2,$3);
+		my @rgb = split(",",$CONF{colors}{$color});
+		$brewer_palettes->{$type}{$palette}{$ncolors}{$idx} = {name=>$color,rgb=>\@rgb,type=>"color"};
+	    }
+	}
+    }
+    return $brewer_palettes;
+}
+
+sub make_image {
+    my $layout = shift;
+    my $nrows  = @$layout;
+    my $ncols  = max( map {int(@$_)} @$layout);
+    my ($height,$width) = (2*$CONF{marginy},2*$CONF{marginx});
+    my @widths;
+    for my $row (@$layout) {
+	$height += $CONF{colsize} + $CONF{colmargin};
+	push @widths, 0;
+	for my $col (@$row) {
+	    if($col->{label}) {
+		$widths[-1] += 6 * length($col->{label});
+	    } elsif ($col->{type} eq "color") {
+		$widths[-1] += $CONF{colsize} + $CONF{colmargin};
+	    } elsif ($col->{type} eq "font") {
+		$height += $CONF{fontsize};
+	    } else {
+		$widths[-1] += $CONF{colmargin};
+	    }
+	}
+    }
+    $width += max(@widths);
+    my $im  = GD::Image->new($width,$height,1);
+    #printinfo("created image",$width,$height);
+    if(! $im) {
+	die "There was a problem creating a 24-bit image. This is a fatal error and you will not be able to use transparency in Circos. The error is likely due to a problem with Perl's GD module. Your installed version is ($GD::VERSION). See http://search.cpan.org/dist/GD/GD.pm for the latest version and upgrade, or fix your installation.";
+    }
+    $im->alphaBlending(1);
+    my $colors = Circos::Colors::allocate_colors($im);
+    printinfo("allocated",int(keys %$colors),"colors");
+    $im->fill(0,0,$colors->{white});
+    return ($im,$colors);
+}
+
+exit;
+
+# how many colors are defined?
+my $ncolors = keys %{$CONF{colors}};
+# how many fonts are defined?
+my $nfonts  = keys %{$CONF{fonts}};
+# how many rows of color swatches?
+my $nrow = ceil($ncolors / $CONF{ncol});
+# how wide is the image?
+my $width = $CONF{ncol} * 2*$CONF{colsize} + $CONF{colsize} + 2*$CONF{marginx};
+# how tall is the image?
+my $height = (1+$nrow) * 2*$CONF{colsize} + $nfonts * 2.5*$CONF{labelsize} + 2*$CONF{marginy};
+
+printinfo("allocating image",$width,$height);
+
+# try to create an 8bit image
+my $im8 = GD::Image->new($width,$height);
+# try to create a 24bit image
+my $im  = GD::Image->new($width,$height,1);
+if(! $im) {
+  die "There was a problem creating a 24-bit image. This is a fatal error and you will not be able to use transparency in Circos. The error is likely due to a problem with Perl's GD module. Your installed version is ($GD::VERSION). See http://search.cpan.org/dist/GD/GD.pm for the latest version and upgrade, or fix your installation.";
+}
+$im->alphaBlending(1);
+my $colors = Circos::Colors::allocate_colors($im);
+printinfo("allocated",int(keys %$colors),"colors");
+$im->fill(0,0,$colors->{white});
+
+my $swatch_idx    = 0;
+my $swatch_stroke = 1;
+
+map { delete $colors->{$_} if ref $colors->{$_} } keys %$colors;
+
+for my $color_strings (sort { (($b->[1] eq "chr") - ($a->[1] eq "chr")) || $a->[1] cmp $b->[1] || $a->[2] <=> $b->[2] } map { [$_,($_ =~ /v*[ld]*(.+?)\d*$/g),($_ =~ /(\d+)$/g)] } 
+		       grep($_ !~ /_a\d+/, keys %$colors)) {
+  my ($color,$color_stem,$color_dig) = @$color_strings;
+  next if $color =~ /(seq|div|qual)/ && $color =~ /-[a-z]$/;
+  #my $brushc = $colors->{"d$color_stem"} ? "d$color_stem" : "black";
+  #my ($brush,$brushcolor) = init_brush($swatch_stroke,$swatch_stroke,$brushc);
+  my ($x,$y) = ( $CONF{marginx}+($swatch_idx % $CONF{ncol})*2*$CONF{colsize},
+		 $CONF{marginy}+int($swatch_idx/$CONF{ncol})*2*$CONF{colsize} );
+
+  for my $i (0..10) {
+    $im->filledRectangle($x+3*$i,$y-$CONF{colsize}/4,
+			 $x+3*$i+2,$y-$CONF{colsize}/5,
+			 $colors->{$color . "_a$i"});
+  }
+
+  $im->filledRectangle($x,$y,
+		       $x+$CONF{colsize},$y+$CONF{colsize},
+		       $colors->{$color});
+  #$im->setBrush($brush);
+  $im->rectangle($x,$y,
+		 $x+$CONF{colsize},$y+$CONF{colsize},
+		 $colors->{black});
+  my $text_size = $CONF{labelsize} || 0.4*$CONF{colsize};
+  my $text = $color;
+  $text =~ s/-(seq|div|qual|)-/-/;
+  $im->stringFT($colors->{black},
+		locate_file($CONF{fonts}{mono} || $CONF{fonts}{default}),
+		$text_size,
+		0,
+		$x,$y + $CONF{colsize} + $text_size + 2,
+		$text);
+  $swatch_idx++;
+}
+
+my ($x,$y) = ($CONF{marginx},$CONF{marginy}+(1+$nrow)*2*$CONF{colsize});
+for my $font (keys %{$CONF{fonts}}) {
+  printinfo("drawing font",$font,"from file",locate_file($CONF{fonts}{$font}));
+  $im->stringFT($colors->{black},
+		locate_file($CONF{fonts}{$font}),
+		2*$CONF{labelsize},
+		0,
+		$x,$y,
+		$font);
+  $y += 2.5*$CONF{labelsize};
+}
+
+# draw some lines
+
+($x,$y) = (2*$CONF{marginx},$CONF{marginy}+($nrow)*2*$CONF{colsize});
+my $len = 10;
+my $step = $len*sqrt(2);
+for my $i (0..36) {
+  $im->filledArc($x,$y,$len,$len,0,360,$colors->{red});
+  $im->filledArc($x,$y+$step,$len,$len,0,360,$colors->{red});
+  $im->filledArc($x,$y+2*$step,$len,$len,0,360,$colors->{red});
+  $x+= $step;
+}
+
+($x,$y) = (2*$CONF{marginx},$CONF{marginy}+($nrow)*2*$CONF{colsize});
+for my $i (0..36) {
+  my $angle = $i*10;
+  $im->setAntiAliased($colors->{black});
+  $im->line($x - $len*cos($angle*deg2rad),
+	    $y - $len*sin($angle*deg2rad),
+	    $x + $len*cos($angle*deg2rad),
+	    $y + $len*sin($angle*deg2rad),
+	    gdAntiAliased);
+  $im->line($x - $len*cos($angle*deg2rad),
+	    $y + $step - $len*sin($angle*deg2rad),
+	    $x + $len*cos($angle*deg2rad),
+	    $y + $step + $len*sin($angle*deg2rad),
+	    $colors->{black});
+
+  my $alpha = $i % 11;
+  my $thickness = 1 + ($i % 4);
+  my $color = "black_a".$alpha;
+
+  $im->setThickness($thickness);
+  $im->line($x - $len*cos($angle*deg2rad),
+	    $y + 2*$step - $len*sin($angle*deg2rad),
+	    $x + $len*cos($angle*deg2rad),
+	    $y + 2*$step + $len*sin($angle*deg2rad),
+	    $colors->{$color});
+  $im->setThickness(1);
+  $x += $step;
+}
+
+my $outputfile = $CONF{output_file};
+open(PNG,">$outputfile") || confess "cannot open output file $outputfile";
+binmode PNG;
+print PNG $im->png;
+close(PNG);
+printinfo("created gd diagnostic image at $outputfile");
+printinfo("used GD version",$GD::VERSION);
+
+sub init_brush {
+  my ($w,$h,$brush_color) = @_;
+  $h ||= $w;
+  my $brush = new GD::Image($w,$h);
+  my $color = Circos::Colors::allocate_colors($brush);
+  if($brush_color && $color->{$brush_color}) {
+    $brush->fill(0,0,$color->{$brush_color});
+  }
+  return ($brush,$color);
+}
+
+sub locate_file {
+  my $file = shift;
+  $file =~ s/,.*//;
+  if(-e $file && -r _) {
+    return $file;
+  } elsif (-e $file && ! -r _) {
+    confess "file $file exists, but cannot be read";
+  } else {
+    # look for the file elsewhere
+    for my $dir ( 
+		 "$FindBin::RealBin/",
+		 "$FindBin::RealBin/etc",
+		 "$FindBin::RealBin/../etc",
+		 "$FindBin::RealBin/../",
+		 "$FindBin::RealBin/../etc",
+		 "$FindBin::RealBin/../../etc",
+		) {
+      printwarning("trying $dir/$file");
+      if(-e "$dir/$file" && -r "$dir/$file") {
+	printwarning("$file found in $dir/$file");
+	return "$dir/$file";
+      }
+    }
+  }
+  confess "could not locate $file";
+}
+
+################################################################
+#
+# *** DO NOT EDIT BELOW THIS LINE ***
+#
+################################################################
+################################################################
+################################################################
+################################################################
+
+sub validateconfiguration {
+  for my $parsekey (keys %CONF) {
+    if($parsekey =~ /^(__(.+)__)$/) {
+      if(! defined $CONF{$1}) {
+	confess "ERROR - problem in configuration file - you want to use variable $1 ($2) in another parameter, but this variable is not defined";
+      }
+      my ($token,$parsevalue) = ($1,$CONF{$1});
+      for my $key (keys %CONF) {
+	$CONF{$key} =~ s/$token/$parsevalue/g;
+      }
+    }
+  }
+  confess "error - no configuration file specified - please use -conf FILE" unless $CONF{configfile};
+
+  if($CONF{alpha}) {
+    die "value passed to -alpha must be 0-126" unless $CONF{alpha} >=0 && $CONF{alpha} <= 127;
+  }
+  $CONF{image}{pngmake} = 1;
+
+}
+
+sub populateconfiguration {
+  foreach my $key (keys %OPT) {
+    $CONF{$key} = $OPT{$key};
+  }
+
+  # any configuration fields of the form __XXX__ are parsed and replaced with eval(XXX). 
+  # The configuration can therefore depend on itself.
+  #
+  # flag = 10
+  # note = __2*$CONF{flag}__ # would become 2*10 = 20
+
+  repopulateconfiguration(\%CONF);
+
+  # populate some defaults
+
+}
+
+sub repopulateconfiguration {
+  my $root     = shift;
+  for my $key (keys %$root) {
+    my $value = $root->{$key};
+    if(ref($value) eq "HASH") {
+      repopulateconfiguration($value);
+    } else {
+      while($value =~ /__([^_].+?)__/g) {
+	my $source = "__" . $1 . "__";
+	my $target = eval $1;
+	$value =~ s/\Q$source\E/$target/g;
+      }
+      $root->{$key} = $value;
+    }
+  }
+}
+
+sub loadconfiguration {
+  my $file = shift;
+  my ($scriptname) = fileparse($0);
+  if(-e $file && -r _) {
+    # great the file exists
+  } elsif (-e "/home/$ENV{LOGNAME}/.$scriptname.conf" && -r _) {
+    $file = "/home/$ENV{LOGNAME}/.$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/etc/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/etc/$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/../etc/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/../etc/$scriptname.conf";
+  } else {
+    confess "error - could not find the configuration file [$file]";
+  }
+  $OPT{configfile} = $file;
+  my $conf = new Config::General(-ConfigFile=>$file,
+				 -AllowMultiOptions=>1,
+				 -LowerCaseNames=>1,
+				 -ConfigPath=>["$FindBin::RealBin/etc","$FindBin::RealBin/../etc","$FindBin::RealBin/..",$FindBin::RealBin,dirname($file),"$FindBin::RealBin/../".dirname($file)],
+				 -AutoTrue=>1);
+  %CONF = $conf->getall;
+}
+
+sub printdebug {
+  printinfo("debug",@_) if $CONF{debug};
+}
+
+sub printwarning {
+  printinfo("warning",@_) if $CONF{warnings};
+}
+
+sub printinfo {
+  print join(" ",@_),"\n";
+}
+
+sub printdumper {
+    printinfo(Dumper(@_));
+}

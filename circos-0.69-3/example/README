@@ -1,0 +1,47 @@
+EXAMPLE
+
+This is an example that demonstrates many features of Circos,
+including some advanced such as track automation. Use this example to
+verify that your installation is working and as an introduction to the
+configuration file syntax.
+
+*** Don't use this configuration file as a template for
+*** your projects if you are new to Circos. Instead, use the 
+*** Quick Start tutorial and refer to the Best Practices
+***
+*** http://www.circos.ca/tutorials/lessons/quick_start
+
+The example uses relative paths in the configuration file. You need to
+run the example from this directory. Read more about relative/absolute
+paths in data file names here.
+
+http://circos.ca/documentation/tutorials/configuration/data_files/
+
+Use the online tutorials (see below) to learn about configuration syntax.
+
+To create the image, execute the 'run' script (UNIX)
+
+> ./run
+
+The image takes ~60 seconds to generate on a 3.33GHz GHz Intel Xeon
+X5680 machine. Most of it spent arranging labels in the gene name text
+track. See run.out for what to expect.
+
+For Windows users, please see 
+
+http://www.circos.ca/tutorials/lessons/configuration/unix_vs_windows/
+
+to learn how to run Circos. To run the example on Windows
+
+> perl ..\bin\circos -conf etc/circos.conf -debug_group summary,timer
+
+
+TUTORIALS
+
+Tutorials that explain each feature are available for download separately
+
+  http://www.circos.ca/software/download/tutorials/
+
+ available online at
+
+  http://www.circos.ca/documentation/tutorials

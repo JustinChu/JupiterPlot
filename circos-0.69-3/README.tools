@@ -1,0 +1,22 @@
+
+Utility scripts are available as a separate distribution from
+
+http://mkweb.bcgsc.ca/dev/circos/software/download/utilities
+
+################################################################
+
+Circos Utilities - flexible and automatable circular data visualization
+
+Martin Krzywinski
+Canada's Michael Smith Genome Sciences Center
+British Columbia Cancer Agency
+
+martink@bcgsc.ca
+www.circos.ca
+
+
+A collection of utility scripts for data parsing and processing. 
+
+See http://circos.ca/tutorials/lessons/utilities/
+
+

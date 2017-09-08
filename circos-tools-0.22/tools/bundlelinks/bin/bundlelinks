@@ -1,0 +1,607 @@
+#!/usr/bin/env perl
+
+=pod
+
+=head1 NAME
+
+bundlelinks - reduce the number of links by bundling neighbouring ones together
+
+=head1 SYNOPSIS
+
+  bundlelinks -links linkfile.txt 
+              -max_gap NUM
+              {-min_bundle_membership NUM | -strict }
+              {-min_bundle_size NUM}
+              {-min_bundle_identity FRACTION}
+              -chr1 CHR1
+              -chr2 CHR2
+
+=head1 DESCRIPTION
+
+The purpose of this script is to turn a large set of links into a
+smaller one by merging neighbouring links.
+
+=head1 OUTPUT
+
+The script produces a new link file to STDOUT. A one-line format is used for links and options include
+
+  nlinks      number of links in the bundle
+  linksize1   extent of starts of merged link
+  linksize2   extent of ends of merged links
+  identity1   linksize1 / extent of bundle start
+  identity2   linksize2 / extent of bundle end
+
+  e.g.
+  cf21 53500000 54000000 hs11 59342637 60003116 nlinks=12,bsize1=500001,bsize2=655257,bidentity1=1.000000,bidentity2=0.992092
+
+A tally is sent to STDERR that lists the following
+
+  # number of links read in
+  num_links 894
+
+  # number of initial bundles and links therein, before filtering
+  num_initial_bundles 9
+  num_links_in_initial_bundles 894
+
+  # number of bundles that pass filters (size, extent, identity, membership)
+  num_passed_bundles 3 (33.33%)
+  num_links_in_passed_bundles 884 (98.88%)
+
+=head1 OPTIONS
+
+=head2 -max_gap
+
+Adjacent links are merged into bundles if their start/end coordinates
+are sufficiently close. Given two links L1 and L2, they are merged
+into a bundle if
+
+  chr( L1 ) == chr( L2 )
+
+  distance( start(L1), start(L2) ) <= MAX_GAP
+  distance( end(L1),   end(L2)   ) <= MAX_GAP
+
+If a link does not have any acceptable adjacent neighbouring links, it forms a single-link bundle.
+
+=head2 -max_gap_1, -max_gap_2
+
+Tests only the start, C<-max_gap_1>, or end, C<-max_gap_2>, of the link and bundle. Use this at your discretion.
+
+=head2 -min_span_1, -min_span_2
+
+Tests the size of the links. This is useful for cases where the input contains links with small ends that you want to avoid.
+
+=head2 -max_span_1, -max_span_2
+
+Tests the size of the links. This is useful for cases where the input contains links with large ends that you want to avoid.
+
+=head2 -min_bundle_membership, -strict
+
+The minimum number of links required in a bundle for the bundle to be
+accepted, C<-min_bundle_membership>.
+
+The -strict option is a short cut to C<-min_bundle_membership 2>.
+
+=head2 -min_bundle_extent
+
+Extent cutoff for a bundle. The extent of a bundle is the end-start value for its start and end. The minimum is taken, so the cutoff test is
+
+  min( end1-start1, end2-start2 ) >? cutoff
+
+=head2 -min_bundle_size
+
+Size cutoff for a bundle. The size of a bundle is the total size of merged link coordinates for the bundle. There is a separate size for the bundle start (composed of merged link ends that form the bundle start) and bundle end. The minimum is taken, so the cutoff test is
+
+  min( size(merged link for start), size(merged link for end) ) >? cutoff
+
+=head2 -min_bundle_identity
+
+This parameter filters bundles based on the bundle identity, which is defined as
+
+ identity = bundle_size / bundle_extent
+
+Identity of both ends of the bundle are evaluated independently and the minimum is taken
+
+ min( identity(start), identity(end) ) >? cutoff
+
+=head1 HISTORY
+
+=over
+
+=item * 24 Sep 2013
+
+Added bundle depth to output. This is the number of larger bundles that overlap it.
+
+=item * 19 Jun 2012
+
+Link input now requires one line format.
+
+  chr1 start1 end1 chr2 start2 end2 [options]
+
+Added -bundle_extent.
+
+z parameter is no longer reported. You should use rules in the Circos configuration file to derive it. Instead, I include bundle link size, identity and number of links.
+
+Refactored code.
+
+=item * 28 Aug 2008
+
+Minor changes.
+
+=item * 16 July 2008
+
+Started and versioned.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+Martin Krzywinski
+
+=head1 CONTACT
+
+  Martin Krzywinski
+  Genome Sciences Centre
+  Vancouver BC Canada
+  www.bcgsc.ca
+  martink@bcgsc.ca
+
+=cut
+
+use strict;
+use Config::General;
+use Data::Dumper;
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+use IO::File;
+use Math::VecStat qw(sum min max average);
+use Pod::Usage;
+use Set::IntSpan;
+use List::MoreUtils qw(uniq);
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+use vars qw(%OPT %CONF);
+
+GetOptions(\%OPT,
+					 "links=s",
+					 "max_gap=f",
+					 "max_gap_1=f",
+					 "max_gap_2=f",
+					 "max_span_1=f",
+					 "max_span_2=f",
+					 "min_span_1=f",
+					 "min_span_2=f",
+					 "min_bundle_membership=i",
+					 "min_bundle_identity=f",
+					 "min_bundle_size=f",
+					 "min_bundle_extent=f",
+					 "chr1=s",
+					 "chr2=s",
+					 "strict",
+					 "configfile=s",
+					 "help",
+					 "man",
+					 "cdump",
+					 "debug+");
+
+pod2usage() if $OPT{help};
+pod2usage(-verbose=>2) if $OPT{man};
+loadconfiguration($OPT{configfile});
+populateconfiguration();
+validateconfiguration(); 
+if($CONF{cdump}) {
+  $Data::Dumper::Pad = "debug parameters";
+  $Data::Dumper::Indent = 1;
+  $Data::Dumper::Quotekeys = 0;
+  $Data::Dumper::Terse = 1;
+  print Dumper(\%CONF);
+	exit;
+}
+
+my ($links,$nlinks,$chrs) = parse_links($CONF{links});
+
+printerr("num_links",$nlinks);
+
+my $nlinks_in_bundles;
+my $bundles = [];
+
+for my $c (@$chrs) {
+  # fetch all links that start on $c chromosome, sorted by
+	# target chromosome and link start on $c and target
+  my @links = sort { ($a->{chr}[1] cmp $b->{chr}[1]) 
+											 || 
+												 ($a->{set}[0]{min} <=> $b->{set}[0]{min})
+													 ||
+														 ($a->{set}[1]{min} <=> $b->{set}[1]{min}) } @{$links->{$c}};
+  # keep a table of all available links
+  # key   - link ID
+  # value - position of link in @links array
+  my $available_links;
+  map { $available_links->{$_->{id}} = 1 } @links;
+ LINKI:
+  for my $li ( @links ) {
+    # first link - only use it if it is available to start a bundle
+    next unless $available_links->{$li->{id}};
+		# start the bundle
+		printdebug(1,"linki",report_link($li));
+    my $bundle = init_link_struct( $li->{chr}[0],@{$li->{set}[0]}{qw{min max}},
+																	 $li->{chr}[1],@{$li->{set}[1]}{qw{min max}},
+																	 $li->{options},
+																 );
+		# add the link to the bundle
+    grow_bundle($bundle,$li);
+		# make this link is no longer available to start bundles
+    delete $available_links->{ $li->{id} };
+		# prepare a list of links that terminate on the same chr as linki and are
+		# available for bundling
+		my @linkj = grep($_->{chr}[1] eq $li->{chr}[1]
+										 &&
+										 $available_links->{ $_->{id} }, @links);
+		printdebug(2,"linki","candidates",int(@linkj));
+  LINKJ:
+    for my $lj ( @linkj) {
+      # gap between starts (gap1) and ends (gap2) of the links lj to the current bundle
+      my $gap1 = span_distance($lj->{set}[0],$bundle->{set}[0]);
+      my $gap2 = span_distance($lj->{set}[1],$bundle->{set}[1]);
+      my $gap_pass_1 = 1;
+      my $gap_pass_2 = 1;
+      $gap_pass_1 = 0 if defined $CONF{max_gap_1} && $gap1 > $CONF{max_gap_1};
+      $gap_pass_2 = 0 if defined $CONF{max_gap_2} && $gap2 > $CONF{max_gap_2};
+      $gap_pass_1 = 0 if defined $CONF{max_gap}   && $gap1 > $CONF{max_gap};
+      $gap_pass_2 = 0 if defined $CONF{max_gap}   && $gap2 > $CONF{max_gap};
+			my $option_pass_table;
+			# value filter for bundling?
+			if($CONF{options}) {
+				for my $option (keys %{$CONF{options}}) {
+					my $max_diff     = $CONF{options}{$option};
+					my $value_bundle = $bundle->{options}{$option};
+					my $value_link   = $lj->{options}{$option};
+					my $value_diff   = abs($value_bundle-$value_link);
+					if($value_diff <= $max_diff) {
+						$option_pass_table->{$option} = 1;
+					} else {
+						$option_pass_table->{$option} = 0;
+					}
+				}
+			}
+			my $option_pass;
+			if(defined $option_pass_table) {
+				$option_pass = min(values %$option_pass_table);
+			}
+      printdebug(2,"linkj","test",report_link($lj),"gap",$gap1,$gap2,"gappass",$gap_pass_1,$gap_pass_2,"optionpass",$option_pass);
+      if($gap_pass_1 && $gap_pass_2 && (! defined $option_pass || $option_pass)) {
+				# link li,lj are within bundle gap parameters
+				#
+				# add lj to current bundle
+				delete $available_links->{ $lj->{id} };
+				grow_bundle($bundle,$lj);
+				if($option_pass) {
+					for my $option (keys %{$CONF{options}}) {
+						$bundle->{options}{$option} = average($bundle->{options}{$option},
+																									$lj->{options}{$option});
+					}
+				}
+				printdebug(1,"linkj",">bundle",report_link($lj));
+				printdebug(1,"?bundle",report_link($bundle),"nlinks",int( @{$bundle->{links}} ));
+			}
+    }
+  REGISTER:
+    if(! defined $CONF{min_bundle_membership} || @{$bundle->{links}} >= $CONF{min_bundle_membership}) {
+			printdebug(1,"+bundle",report_link($bundle),"nlinks",int(@{$bundle->{links}}));
+      push @$bundles, $bundle;
+      $nlinks_in_bundles += @{$bundle->{links}};
+    }
+  }
+}
+
+printerr(sprintf("num_initial_bundles %d",int(@$bundles)));
+printerr(sprintf("num_links_in_initial_bundles %d",$nlinks_in_bundles));
+
+exit if ! @$bundles;
+
+################################################################
+# Now that the bundles are formed, filter them.
+
+my $num_passed_bundles;
+my $num_links_in_passed_bundles;
+for my $bundle (@$bundles) {
+	if(defined $CONF{min_bundle_membership}) {
+		my $m    = @{$bundle->{links}};
+		my $pass = $m >= $CONF{min_bundle_membership};
+		printdebug(1,"bundlefilter membership",report_link($bundle),$m,"pass",$pass);
+		next unless $pass;
+	}
+	my $e1   = $bundle->{set}[0]{max} - $bundle->{set}[0]{min} + 1;
+	my $e2   = $bundle->{set}[1]{max} - $bundle->{set}[1]{min} + 1;
+	$bundle->{extent} = [$e1,$e2];
+	if(defined $CONF{min_bundle_extent}) {
+		my $pass = $e1 < $CONF{min_bundle_extent} && $e2 < $CONF{min_bundle_extent};
+		printdebug(1,"bundlefilter extent",report_link($bundle),$e1,$e2,"pass",$pass);
+		next unless $pass;
+	}
+	# union of all link coordinates in bundle
+	my $pos1 = Set::IntSpan->new();
+	my $pos2 = Set::IntSpan->new();
+	my $z;
+	for my $link (@{$bundle->{links}}) {
+		my $set1 = Set::IntSpan->new(sprintf("%d-%d",@{$link->{set}[0]}{qw(min max)}));
+		my $set2 = Set::IntSpan->new(sprintf("%d-%d",@{$link->{set}[1]}{qw(min max)}));
+		$pos1->U($set1);
+		$pos2->U($set2);
+		$z += $set1->cardinality;
+		$z += $set2->cardinality;
+	}
+	my $size1 = $pos1->cardinality;
+	my $size2 = $pos2->cardinality;
+	$bundle->{size} = [$size1,$size2];
+	if(defined $CONF{min_bundle_size}) {
+		my $pass = $size1 >= $CONF{min_bundle_size} && $size2 >= $CONF{min_bundle_size};
+		printdebug(1,"bundlefilter size",report_link($bundle),$size1,$size2,"pass",$pass);
+		next unless $pass;
+	}
+	my $i1 = $bundle->{size}[0] / $bundle->{extent}[0];
+	my $i2 = $bundle->{size}[1] / $bundle->{extent}[1];
+	$bundle->{identity} = [$i1,$i2];
+	if(defined $CONF{min_bundle_identity}) {
+		my $pass = $i1 >= $CONF{min_bundle_identity} && $i2 >= $CONF{min_bundle_identity};
+		printdebug(1,"bundlefilter identity",report_link($bundle),$i1,$i2,"pass",$pass);
+		next unless $pass;
+	}
+	$bundle->{pass} = 1;
+  $num_passed_bundles++;
+  $num_links_in_passed_bundles += @{$bundle->{links}};
+}
+
+# count the number of larger bundles overlapping this bundle
+my @chrs1 = uniq map { $_->{chr}[0] } @$bundles;
+my @chrs2 = uniq map { $_->{chr}[1] } @$bundles;
+
+for my $cdata ([0,\@chrs1],[1,\@chrs2]) {
+	my ($idx,$clist) = @$cdata;
+	for my $c (@$clist) {
+		# bundles on c, large->small
+		my @b = sort {$b->{extent}[$idx] <=> $a->{extent}[$idx]} grep($_->{chr}[$idx] eq $c, @$bundles);
+		for my $i (0..@b-1) {
+			my $bref_set = make_set(@{$b[$i]->{set}[0]}{qw(min max)});
+			for my $j ($i+1..@b-1) {
+				my $b_set = make_set(@{$b[$j]->{set}[0]}{qw(min max)});
+				if($bref_set->intersect($b_set)->cardinality) {
+					$b[$j]->{depth}[$idx]++;
+				}
+			}
+		}
+	}
+}
+
+for my $bundle (grep($_->{pass}, @$bundles)) {
+  printinfo($bundle->{chr}[0],@{$bundle->{set}[0]}{qw{min max}},
+						$bundle->{chr}[1],@{$bundle->{set}[1]}{qw{min max}},
+						sprintf("nlinks=%d,bsize1=%d,bsize2=%d,bidentity1=%f,bidentity2=%f,depth1=%d,depth2=%d,%s",
+										int(@{$bundle->{links}}),
+										@{$bundle->{size}},
+										@{$bundle->{identity}},
+										$bundle->{depth}[0]||0,
+										$bundle->{depth}[1]||0,
+										hash_to_options($bundle->{options})));
+	for my $link (@{$bundle->{links}}) {
+		printdebug(2,"bundle_links",report_link($link));
+	}
+}
+
+printerr(sprintf("num_passed_bundles %d (%.2f%%)",
+								 $num_passed_bundles,
+								 100*$num_passed_bundles/int(@$bundles)));
+printerr(sprintf("num_links_in_passed_bundles %d (%.2f%%)",
+								 $num_links_in_passed_bundles,
+								 100*$num_links_in_passed_bundles/$nlinks_in_bundles));
+
+sub report_link {
+	my $l = shift;
+	return map { $l->{chr}[$_],@{$l->{set}[$_]}{qw{min max}} } (0,1);
+}
+
+# add the link to the bundle - the bundle edges are expanded to
+# reach the min/max of the link on both chromosomes
+sub grow_bundle {
+  my ($bundle,$link) = @_;
+  for my $i (0,1) {
+    if(! defined $bundle->{set}[$i]{min} || $link->{set}[$i]{min} < $bundle->{set}[$i]{min}) {
+      $bundle->{set}[$i]{min} = $link->{set}[$i]{min};
+    }
+    if(! defined $bundle->{set}[$i]{max} || $link->{set}[$i]{max} > $bundle->{set}[$i]{max}) {
+      $bundle->{set}[$i]{max} = $link->{set}[$i]{max};
+    }
+  }
+	push @{$bundle->{links}}, $link;
+}
+
+sub span_distance {
+  my ($s1,$s2)     = @_;
+  my ($min1,$max1) = @{$s1}{qw(min max)};
+  my ($min2,$max2) = @{$s2}{qw(min max)};
+  my $d;
+  if($max1 < $min2) {
+    $d = $min2-$max1;
+  } elsif ($max2 < $min1) {
+    $d = $min1-$max2;
+  } else {
+    $d = 0;
+  }
+  return $d;
+}
+
+sub parse_links {
+	my $inputhandle;
+	if($CONF{links}) {
+		die "No such file $CONF{links}" unless -e $CONF{links};
+		open(FILE,$CONF{links});
+		$inputhandle = \*FILE;
+	} else {
+		$inputhandle = \*STDIN;
+	}
+
+  my ($links,$chash,$nlinks);
+  while(<$inputhandle>) {
+    chomp;
+		my ($chr1,$start1,$end1,
+				$chr2,$start2,$end2,
+				$options) = split;
+		die "one-line link format is required\n\nchr1 start1 end1 chr2 start2 end2 [options]" if ! defined $end2;
+
+		next if defined $CONF{chr1} && $chr1 ne $CONF{chr1};
+		next if defined $CONF{chr2} && $chr1 ne $CONF{chr2};
+
+		($start1,$end1) = ($end1,$start1) if $end1 < $start1;
+		($start2,$end2) = ($end2,$start2) if $end2 < $start2;
+
+    my $size1 = $end1-$start1+1;
+    my $size2 = $end2-$start2+1;
+
+    next if $CONF{min_span}   && ( $size1 < $CONF{min_span} || $size2 < $CONF{min_span} );
+    next if $CONF{min_span_1} && $size1 < $CONF{min_span_1};
+    next if $CONF{min_span_2} && $size2 < $CONF{min_span_2};
+
+    next if $CONF{max_span}   && ( $size1 > $CONF{max_span} || $size2 > $CONF{max_span} );
+    next if $CONF{max_span_1} && $size1 > $CONF{max_span_1};
+    next if $CONF{max_span_2} && $size2 > $CONF{max_span_2};
+
+		printdebug(1,$chr1,$start1,$end1);
+    my $link = init_link_struct($chr1,$start1,$end1,
+																$chr2,$start2,$end2,
+																$options,
+																$nlinks++);
+    $chash->{$chr1}++;
+    push @{$links->{$chr1}}, $link;
+	}
+	return ($links,$nlinks,[sort keys %$chash]);
+}
+
+sub init_link_struct {
+	my ($chr1,$start1,$end1,
+			$chr2,$start2,$end2,
+			$options,
+			$id) = @_;
+	my $struct = {};
+	$struct->{chr}[0] = $chr1 if defined $chr1;
+	$struct->{chr}[1] = $chr2 if defined $chr2;
+	$struct->{set}[0]{min} = $start1;
+	$struct->{set}[0]{max} = $end1;
+	$struct->{set}[1]{min} = $start2;
+	$struct->{set}[1]{max} = $end2;
+	$struct->{options}     = ref $options eq "HASH" ? $options : options_to_hash($options);
+	$struct->{id}          = $id if defined $id;
+	return $struct;
+}
+
+sub make_set {
+	my ($x,$y) = @_;
+	if($x == $y) {
+		return Set::IntSpan->new($x);
+	} else {
+		return Set::IntSpan->new("$x-$y");
+	}
+}
+
+sub hash_to_options {
+	my $hash = shift;
+	my @options;
+	for my $var (keys %$hash) {
+		push @options, join("=",$var,$hash->{$var});
+	}
+	return join(",",@options);
+}
+
+sub options_to_hash {
+	my $options = shift;
+	my $hash = {};
+	for my $pair (split(/,/,$options)) {
+		my ($var,$value) = split(/=/,$pair);
+		$hash->{$var} = $value;
+	}
+	return $hash;
+}
+
+sub parse_anchors {
+  my $file = shift;
+  open(F,$file);
+  my $anchors;
+  while(<F>) {
+    chomp;
+    push @$anchors, $_;
+  }
+  return $anchors;
+}
+
+sub validateconfiguration {
+  $CONF{min_bundle_membership} = 2 if ! $CONF{min_bundle_membership} && $CONF{strict};
+}
+
+################################################################
+#
+# *** DO NOT EDIT BELOW THIS LINE ***
+#
+################################################################
+
+sub populateconfiguration {
+  foreach my $key (keys %OPT) {
+    $CONF{$key} = $OPT{$key};
+  }
+  for my $key (keys %CONF) {
+    my $value = $CONF{$key};
+    while($value =~ /(eval\s*\(\s*(.+)\s*)/g) {
+      my $source = $1;
+      my $target = eval $2;
+      $value =~ s/\Q$source\E/$target/g;
+    }
+    $CONF{$key} = $value;
+  }
+
+}
+
+sub loadconfiguration {
+  my $file = shift;
+  my ($scriptname) = fileparse($0);
+  if(-e $file && -r _) {
+    # great the file exists
+	} elsif (-e "etc/$scriptname.conf" && -r _) {
+		$file = "etc/$scriptname.conf";
+	} elsif (-e "../etc/$scriptname.conf" && -r _) {
+		$file = "../etc/$scriptname.conf";
+  } elsif (-e "/home/$ENV{LOGNAME}/.$scriptname.conf" && -r _) {
+    $file = "/home/$ENV{LOGNAME}/.$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/etc/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/etc/$scriptname.conf";
+  } elsif (-e "$FindBin::RealBin/../etc/$scriptname.conf" && -r _) {
+    $file = "$FindBin::RealBin/../etc/$scriptname.conf";
+  } else {
+    return undef;
+  }
+  $OPT{configfile} = $file;
+  my $conf = new Config::General(-ConfigFile=>$file,
+																 -AllowMultiOptions=>"yes",
+																 -LowerCaseNames=>1,
+																 -AutoTrue=>1);
+  %CONF = $conf->getall;
+}
+
+sub printdebug {
+	my ($level,@msg) = @_;
+  printinfo("debug [$level]",@msg) if $CONF{debug} >= $level;
+}
+
+sub printinfo {
+  printf("%s\n",join(" ",@_));
+}
+
+sub printdumper {
+  printinfo(Dumper(@_));
+}
+
+sub printerr {
+  printf STDERR ("%s\n",join(" ",@_));
+}
