@@ -11,14 +11,13 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 # params
 #------------------------------------------------------------
 
-# k-mer size
-min_size=10000
+ng=75
 
 #------------------------------------------------------------
 # meta rules
 #------------------------------------------------------------
 
-.PRECIOUS:
+.PRECIOUS: %.agp %.bed %_reference.fa.fai %_reference.karyotype %_scaffolds.fa.fai
 .DELETE_ON_ERROR:
 .PHONY: check-params generateplot
 
@@ -70,11 +69,14 @@ $(name)_scaffolds.fa: $(fa)
 	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | awk '{OFS="\t"; if (and($$2, 16)) print $$3,$$4,$$4+length($$10),$$1,$$5,"-"; else print $$3,$$4,$$4+length($$10),$$1,$$5,"+" }' > $@
 
 %.conf %.karyotype %.links: %.agp %.bed %_reference.fa.fai %_reference.karyotype %_scaffolds.fa.fai
-	perl $(ROOT_DIR)/bin/generateConf.pl -n 90 -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -g $*_reference.fa.fai -b $*.bed -a $*.agp -k $*_reference.karyotype
+	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -g $*_reference.fa.fai -b $*.bed -a $*.agp -k $*_reference.karyotype
 
 $(name)_reference.karyotype: $(name)_reference.fa
 	perl $(ROOT_DIR)/bin/generateKaryotype.pl $(name)_reference.fa > $@
-	
-%.svg %.png: %.conf %.links %.karyotype
-	circos -noparanoid
+
+%.links.bundled: %.links
+	cat $< | $(ROOT_DIR)/circos-tools-0.22/tools/bundlelinks/bin/bundlelinks -max_gap 1000000 -min_bundle_size 100000 > $@
+
+%.svg %.png: %.conf %.links.bundled %.karyotype
+	perl $(ROOT_DIR)/circos-0.69-3/bin/circos -noparanoid -conf $<
  

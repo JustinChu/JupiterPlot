@@ -19,7 +19,7 @@ while ($line) {
 	my ($chrName) = $header =~ /^>([^\s]+)\s/;
 	
 	#TODO assign colours in meaningful way
-	print "chr - " . $chrName . " 0 ".length($currentStr) . " grey\n"
+	print "chr - " . $chrName . " " . $chrName. " 0 " . length($currentStr) . " grey\n"
 	
 	#TODO process gaps 
 #	while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
