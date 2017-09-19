@@ -13,7 +13,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 ng=75
 maxGap=10000
-maxBundleSize=10000 
+maxBundleSize=10000
 
 #------------------------------------------------------------
 # meta rules
@@ -25,7 +25,7 @@ maxBundleSize=10000
 
 default: generateplot
 
-generateplot: check-params $(name).png $(name).svg
+generateplot: check-params $(name).svg
 
 check-name-param:
 ifndef name
@@ -66,6 +66,9 @@ $(name)_scaffolds.fa: $(fa)
 
 %.sam: %_reference.fa %.fa %_reference.fa.bwt %_reference.fa.pac %_reference.fa.sa %_reference.fa.ann
 	bwa mem -t 8 -x intractg $*_reference.fa $*.fa > $@
+	
+$(name).sam: $(sam)
+	bwa mem -t 8 -x intractg $*_reference.fa $*.fa > $@
 
 %.bed: %.sam
 	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | awk '{OFS="\t"; if (and($$2, 16)) print $$3,$$4,$$4+length($$10),$$1,$$5,"-"; else print $$3,$$4,$$4+length($$10),$$1,$$5,"+" }' > $@
@@ -79,6 +82,6 @@ $(name)_reference.karyotype: $(name)_reference.fa
 %.links.bundled: %.links %.karyotype %.conf
 	cat $< | $(ROOT_DIR)/circos-tools-0.22/tools/bundlelinks/bin/bundlelinks -max_gap $(maxGap) -min_bundle_size $(maxBundleSize) > $@
 
-%.svg %.png: %.conf %.karyotype %.links.bundled
+%.svg: %.conf %.karyotype %.links.bundled
 	perl $(ROOT_DIR)/circos-0.69-3/bin/circos -noparanoid -conf $<
  
