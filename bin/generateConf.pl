@@ -97,6 +97,7 @@ sub outputKaryotype {
 		#chr - gi|453232067|ref|NC_003281.10| gi|453232067|ref|NC_003281.10| 0 13783801 greychr
 		$refIDMap{$tempArray[2]} = "ref". $tempID;
 		$tempArray[2] = "ref". $tempID;
+		$tempArray[3] = "ref". $tempID;
 		my $tempStr = join( " ", @tempArray ) . "\n";
 		push(@chrOrder, $tempArray[2]);
 		$karyotype->write($tempStr);
@@ -137,11 +138,7 @@ sub outputKaryotype {
 	#print out spacing information:
 	my $defaultSpacing = 0.002;
 	print $fd "<ideogram>\n<spacing>\ndefault = " . $defaultSpacing . "r\n";
-	my $spacingSize =
-	  ( $numChr +
-		  ( ( $genomeSize - $scaffoldSum ) ) /
-		  ( 2 * $genomeSize * $defaultSpacing ) ) /
-	  ( $count - 1 );
+	my $spacingSize = ($defaultSpacing*$numChr+($genomeSize-$scaffoldSum)/($genomeSize+$scaffoldSum))/$count/$defaultSpacing;
 
 	foreach ( keys(%scaffolds) ) {
 		print $fd "<pairwise "
@@ -269,7 +266,7 @@ sub outputLinks {
 					  . $scaffolds{$scaffoldID} . " "
 					  . $scafftigLocationsRV{$contigID} . " "
 					  . ( $scafftigLocationsRV{$contigID} + $linkSize )
-					  . " color=grey_a1\n" );
+					  . " color=grey_a5\n" );
 			}
 			else {
 				my $contigID = $tempArray[3];
@@ -287,7 +284,7 @@ sub outputLinks {
 					  . $scaffolds{$scaffoldID} . " "
 					  . $scafftigLocationsFW{$contigID} . " "
 					  . ( $scafftigLocationsFW{$contigID} + $linkSize )
-					  . " color=grey_a1\n" );
+					  . " color=grey_a5\n" );
 			}
 		}
 		$line = $bedFH->getline();
@@ -328,6 +325,12 @@ sub outputLinks {
 	}
 	print $fd $chrOrder[scalar(@chrOrder) - 1] ."\n";
 	print STDERR $chrOrder[scalar(@chrOrder) - 1] ."\n";
+	
+	foreach my $key ( keys(%scaffolds) ) {
+		if(!exists $scaffoldStart{$scaffolds{$key}}){
+			print STDERR $key . " has no alignments\n";
+		}
+	}
 
 	$bedFH->close();
 	$links->close();
