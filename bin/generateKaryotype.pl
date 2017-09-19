@@ -7,6 +7,9 @@
 
 my $line = <>;
 
+my $hueNum = 3;
+my $maxHue = 30;
+
 while ($line) {
 	my $header = $line;
 	$line = <>;
@@ -19,8 +22,8 @@ while ($line) {
 	my ($chrName) = $header =~ /^>([^\s]+)\s/;
 	
 	#TODO assign colours in meaningful way
-	print "chr - " . $chrName . " " . $chrName. " 0 " . length($currentStr) . " grey\n"
-	
+	print "chr - " . $chrName . " " . $chrName. " 0 " . length($currentStr) . " hue-$hueNum\n";
+	++$hueNum;
 	#TODO process gaps 
 #	while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
 #		print $chrName . "\t" . $-[0] . "\t" . $+[0] . "\n";
