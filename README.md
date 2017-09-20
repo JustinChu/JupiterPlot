@@ -4,6 +4,7 @@ Generates plots similar to those found in the [ABySS 2](http://genome.cshlp.org/
 Name after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter).
 
 <img src="./dm.svg">
+Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event)
 
 ### Requires (for full pipeline):
 * [Circos](http:__circos.ca_software_download_)
