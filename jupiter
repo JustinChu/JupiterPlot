@@ -12,8 +12,8 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 #------------------------------------------------------------
 
 ng=75
-maxGap=10000
-maxBundleSize=10000
+maxGap=100000
+maxBundleSize=100000
 
 #------------------------------------------------------------
 # meta rules
@@ -65,9 +65,6 @@ $(name)_scaffolds.fa: $(fa)
 	bwa index $<
 
 %.sam: %_reference.fa %.fa %_reference.fa.bwt %_reference.fa.pac %_reference.fa.sa %_reference.fa.ann
-	bwa mem -t 8 -x intractg $*_reference.fa $*.fa > $@
-	
-$(name).sam: $(sam)
 	bwa mem -t 8 -x intractg $*_reference.fa $*.fa > $@
 
 %.bed: %.sam
