@@ -11,13 +11,10 @@ use Getopt::Long qw(GetOptions);
 use IO::File;
 
 my $hueNum    = 0;
-my $increment = 53;
+my $increment = 0;
 my $maxHue    = 360;
-my $random    = 1;
-my $result    = GetOptions(
-	'r'   => \!$random,
-	'i=i' => \$increment
-);
+my $result    = GetOptions( 'i=i' => \$increment );
+my $count = 0;
 
 my $line = <>;
 
@@ -37,18 +34,20 @@ while ($line) {
 	  . $chrName . " "
 	  . $chrName . " 0 "
 	  . length($currentStr) . " hue";
-	if ($random) {
+	if ( $increment == 0 ) {
 		printf '%03s', int( rand( $maxHue + 1 ) );
 	}
 	else {
-		printf '%03s', $hueNum;
-	}
-	$hueNum += $increment;
-	if ( $hueNum > $maxHue ) {
-		$hueNum = $hueNum - $maxHue;
+		#flip the colour wheel around for odds a evens to contrast adjacent chromosomes
+		printf '%03s', int($count%2 == 0 ? $hueNum : ($hueNum + $maxHue/2)%$maxHue);
+		$hueNum += $increment;
+		if ( $hueNum > $maxHue ) {
+			$hueNum = $hueNum - $maxHue;
+		}
 	}
 	print "\n";
 	while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
 		print "band $chrName N N $-[0] $+[0] black\n";
 	}
+	$count++;
 }

@@ -15,6 +15,7 @@ ng=75
 maxGap=100000
 maxBundleSize=10000
 m=100000
+i=0
 
 #------------------------------------------------------------
 # meta rules
@@ -75,7 +76,7 @@ $(name)_scaffolds.fa: $(fa)
 	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -m $(m) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*.bed -a $*.agp -k $*_reference.karyotype
 
 $(name)_reference.karyotype: $(name)_reference.fa
-	perl $(ROOT_DIR)/bin/generateKaryotype.pl $(name)_reference.fa > $@
+	perl $(ROOT_DIR)/bin/generateKaryotype.pl -i $(i) $(name)_reference.fa > $@
 
 %.links.bundled: %.links %.karyotype %.conf
 	cat $< | $(ROOT_DIR)/circos-tools-0.22/tools/bundlelinks/bin/bundlelinks -max_gap $(maxGap) -min_bundle_size $(maxBundleSize) > $@

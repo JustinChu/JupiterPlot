@@ -34,6 +34,7 @@ ng=75               #use largest scaffolds that are equal to 75% of the genome
 maxGap=100000       #maximum alignment gap allowed to consider a region contiguous
 maxBundleSize=10000 #maximum size of a contiguous region to render
 m=100000            #only use genomic reference chromosomes larger than this value
+i=0                 #increment for colouring chromosomes (HSV 1-360), when set to 0 it generates random colour for chromosomes.
 ```
 
 If everything runs smoothly it will generate the following files:
