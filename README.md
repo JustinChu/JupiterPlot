@@ -11,14 +11,14 @@ Name after the type of plot you get if your assembly is actually error free (loo
 * GNU make
 * Some perl modules - Use CPAN when you encounter missing module errors
 
-###Starting inputs
+### Starting inputs
 
 * Set of scaffolds in fasta format
 * Reference genome in fasta format
 
 To generate a plot given these inputs all samtools and bwa must be in your path.
 
-###Usage
+### Usage
 
 Simply run:
 ```{bash}
