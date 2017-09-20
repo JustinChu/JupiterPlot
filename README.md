@@ -4,6 +4,7 @@ Generates plots similar to those found in the [ABySS 2](http://genome.cshlp.org/
 Nicknamed after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter).
 
 <img src="./dm.svg">
+
 Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event) between L2 and L3. There are also smaller events internal to 3R. Note that by default only large scale events (>10kb) can be see in this plot, and small misassemblies, possibly medidated by repeats cannot be seen (unless `maxBundleSize` is changed). The black lines on the reference indicate gaps of Ns, which can explain why some regions of the assembly are not covered (often found in telemeric or centromeric regions).
 
 ### Requirements (for full pipeline):
