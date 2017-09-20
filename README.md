@@ -4,10 +4,10 @@ Generates plots similar to those found in the [ABySS 2](http://genome.cshlp.org/
 Nicknamed after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter).
 
 <img src="./dm.svg">
-Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event). The black lines on the reference indicate gaps of Ns, which can explain why some regions of the assembly are not covered.
+Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event) between L2 and L3. There is also a smaller event internal to 3R. Note that by default only large scale events (>100kb) can be see in this plot, and small misassemblies, possibly medidated by repeats cannot be see. The black lines on the reference indicate gaps of Ns, which can explain why some regions of the assembly are not covered (often found in telemeric or centromeric regions).
 
-### Requires (for full pipeline):
-* [Circos](http:__circos.ca_software_download_)
+### Requirements (for full pipeline):
+* [Circos and Circos tools](http:__circos.ca_software_download_) (currently included in repo)
 * [bwa](https:__github.com_lh3_bwa)
 * [samtools](https:__github.com_samtools_samtools)
 * GNU make
@@ -20,7 +20,7 @@ Example plot on a Drosophila assembly showing a misassembly (or possible chromos
 
 To generate a plot given these inputs all samtools and bwa must be in your path.
 
-### Usage
+### Usage:
 
 Simply run:
 ```{bash}
