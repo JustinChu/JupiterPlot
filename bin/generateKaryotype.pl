@@ -23,9 +23,16 @@ while ($line) {
 	
 	#TODO assign colours in meaningful way
 	print "chr - " . $chrName . " " . $chrName. " 0 " . length($currentStr) . " hue-$hueNum\n";
-	++$hueNum;
+	if($maxHue == $hueNum)
+	{
+		$hueNum = 3;
+	}
+	else
+	{
+		++$hueNum;
+	}
 	#TODO process gaps 
-#	while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
-#		print $chrName . "\t" . $-[0] . "\t" . $+[0] . "\n";
-#	}
+	while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
+		print "band $chrName N N $-[0] $+[0] black\n";
+	}
 }

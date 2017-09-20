@@ -7,18 +7,17 @@ use warnings;
 use Getopt::Long qw(GetOptions);
 use IO::File;
 
-my $rawKaryotype    = "";
-my $genomeIndexFile = "";
-my $scaffoldFiles   = "";
-my $scafftigsBED    = "";
-my $agpFile         = "";
-my $numScaff        = 90;
-my $rawConf         = "rawConf.conf";
-my $prefix          = "circos";
-my $result          = GetOptions(
+my $rawKaryotype  = "";
+my $scaffoldFiles = "";
+my $scafftigsBED  = "";
+my $agpFile       = "";
+my $numScaff      = 90;
+my $minChrSize    = 100000;           #TODO MAKE LENGTH THRESHOLD A PARAMETER
+my $rawConf       = "rawConf.conf";
+my $prefix        = "circos";
+my $result        = GetOptions(
 	'k=s' => \$rawKaryotype,
 	's=s' => \$scaffoldFiles,
-	'g=s' => \$genomeIndexFile,
 	'n=i' => \$numScaff,
 	'b=s' => \$scafftigsBED,
 	'a=s' => \$agpFile,
@@ -30,8 +29,8 @@ my $outputkaryotype = $prefix . ".karyotype";
 
 $numScaff = $numScaff / 100;
 
-if ( $genomeIndexFile eq "" || $scaffoldFiles eq "" ) {
-	die "-s -b and -g parameters needed";
+if ( $scaffoldFiles eq "" ) {
+	die "-s -b and parameters needed";
 }
 
 my @chrOrder;
@@ -55,23 +54,8 @@ sub outputKaryotype {
 
 	print STDERR "Generating Karyotype file\n";
 
-	#load in genome file
-	my $genomeFileFH = new IO::File($genomeIndexFile);
-	my $line         = $genomeFileFH->getline();
-	my $genomeSize   = 0;
-	my $numChr       = 0;
-
-	while ($line) {
-		chomp($line);
-		my @tempArray = split( "\t", $line );
-		$genomeSize += $tempArray[1];
-		$line = $genomeFileFH->getline();
-		$numChr++;
-	}
-	$genomeFileFH->close();
-
 	my $scaffFH = new IO::File($scaffoldFiles);
-	$line = $scaffFH->getline();
+	my $line    = $scaffFH->getline();
 
 	my %scaffoldLengths;
 	my $karyotype = new IO::File(">$outputkaryotype");
@@ -88,7 +72,8 @@ sub outputKaryotype {
 
 	my $rawKaryotypeFH = new IO::File($rawKaryotype);
 	$line = $rawKaryotypeFH->getline();
-	my $tempID = 1;
+	my $genomeSize = 0;
+	my $numChr     = 0;
 
 	#load in base karyotype
 	while ($line) {
@@ -96,17 +81,27 @@ sub outputKaryotype {
 		#Generate circos friendly name
 		chomp($line);
 		my @tempArray = split( " ", $line );
+		if( $tempArray[0] eq "band" && exists($refIDMap{ $tempArray[1] }))
+		{
+			$tempArray[1] = $refIDMap{ $tempArray[1] };
+			my $tempStr = join( " ", @tempArray ) . "\n";
+			$karyotype->write($tempStr);
+		}
+		elsif ( $tempArray[5] > $minChrSize ) {
 
 #chr - gi|453232067|ref|NC_003281.10| gi|453232067|ref|NC_003281.10| 0 13783801 greychr
-		$refIDMap{ $tempArray[2] }    = "ref" . $tempID;
-		$chrColorMap{ $tempArray[2] } = $tempArray[6];
-		$tempArray[2]                 = "ref" . $tempID;
-		$tempArray[3] =~ s/[_]//g;
-		my $tempStr = join( " ", @tempArray ) . "\n";
-		push( @chrOrder, $tempArray[2] );
-		$karyotype->write($tempStr);
+
+			$refIDMap{ $tempArray[2] }    = "ref" . $numChr;
+			$chrColorMap{ $tempArray[2] } = $tempArray[6];
+			$tempArray[2]                 = "ref" . $numChr;
+			$tempArray[3] =~ s/[_]//g;
+			my $tempStr = join( " ", @tempArray ) . "\n";
+			push( @chrOrder, $tempArray[2] );
+			$karyotype->write($tempStr);
+			$numChr++;
+			$genomeSize += $tempArray[5];
+		}
 		$line = $rawKaryotypeFH->getline();
-		$tempID++;
 	}
 	$rawKaryotypeFH->close();
 
@@ -127,17 +122,17 @@ sub outputKaryotype {
 		#remove underscores
 		$scaffolds{$scaffoldID} = "scaf" . $count;
 		$direction{$scaffoldID} = 0;
-		$karyotype->write( "chr - "
-			  . $scaffolds{$scaffoldID}
+		$karyotype->write(
+			"chr - " . $scaffolds{$scaffoldID}
 			  . " $scaffolds{$scaffoldID} 0 "
 			  . $scaffoldLengths{$scaffoldID}
-			  . " vvlgrey"
-			  . "\n" );
+			  . " vvlgrey" . "\n"
+		);
 		$scaffoldSum += $scaffoldLengths{$scaffoldID};
 		$scaffoldsSize{$scaffoldID} = $scaffoldLengths{$scaffoldID};
 		$count++;
 	}
-	print STDERR "Selecting " . $count . " contigs to render\n";
+	print STDERR "Selecting " . $count . " scaffolds to render\n";
 
 	#print out spacing information:
 	my $defaultSpacing = 0.002;
@@ -178,11 +173,6 @@ sub outputLinks {
 
 		if ( exists( $scaffolds{$scaffoldID} ) && $tempArray[4] eq "W" ) {
 			my $contigID = $tempArray[5];
-
-			#special removal for LINKS created scaffolds
-			#			if ( $contigID =~ /_[rf]/ ) {
-			#				$contigID =~ s/_([rf])/$1/g;
-			#			}
 			if ( exists( $scafftigSize{$contigID} ) ) {
 				print STDERR "$tempArray[5] exists!\n";
 				print STDERR $scafftigLocationsFW{$contigID} . "\n";
@@ -214,7 +204,9 @@ sub outputLinks {
 		$scaffoldID =~ s/^contig//;
 		$scaffoldID =~ s/_\d+$//;
 		my $linkSize = $tempArray[2] - $tempArray[1];
-		if ( exists $scaffolds{$scaffoldID} ) {
+		if (   exists $scaffolds{$scaffoldID}
+			&& exists $refIDMap{ $tempArray[0] } )
+		{
 
 			if (
 				!exists(
@@ -223,11 +215,20 @@ sub outputLinks {
 				)
 			  )
 			{
-				$bestScaffToChrStart{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } = [];
-				 $bestScaffToChrSize{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } = 0;
+				$bestScaffToChrStart{$scaffoldID}
+				  ->{ $refIDMap{ $tempArray[0] } } = [];
+				$bestScaffToChrSize{$scaffoldID}->{ $refIDMap{ $tempArray[0] } }
+				  = 0;
 			}
-			$bestScaffToChrSize{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } += $linkSize;
-			push(@{$bestScaffToChrStart{$scaffoldID}->{ $refIDMap{ $tempArray[0] } }},$tempArray[1]);
+			$bestScaffToChrSize{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } +=
+			  $linkSize;
+			push(
+				@{
+					$bestScaffToChrStart{$scaffoldID}
+					  ->{ $refIDMap{ $tempArray[0] } }
+				},
+				$tempArray[1]
+			);
 
 			if ( $tempArray[5] eq "+" ) {
 				$direction{$scaffoldID}++;
@@ -251,7 +252,7 @@ sub outputLinks {
 		$scaffoldID =~ s/^contig//;
 		$scaffoldID =~ s/_\d+$//;
 		my $linkSize = $tempArray[2] - $tempArray[1];
-		if ( exists $scaffolds{$scaffoldID} ) {
+		if ( exists $scaffolds{$scaffoldID} && $refIDMap{ $tempArray[0] } ) {
 
 			if ( $direction{$scaffoldID} >= 0 ) {
 				my $contigID = $tempArray[3];
@@ -290,7 +291,7 @@ sub outputLinks {
 
 	#for reordering the scaffolds to best location
 	foreach my $key ( keys(%bestScaffToChrSize) ) {
-		my $sizeRef = $bestScaffToChrSize{$key};
+		my $sizeRef   = $bestScaffToChrSize{$key};
 		my $startsRef = $bestScaffToChrStart{$key};
 		my $bestChr   = 0;
 		my $bestNum   = 0;
@@ -298,7 +299,7 @@ sub outputLinks {
 		foreach my $i ( keys( %{$sizeRef} ) ) {
 			if ( $sizeRef->{$i} > $bestNum ) {
 				$bestNum = $sizeRef->{$i};
-				$start   = median(@{$startsRef->{$i}});
+				$start   = median( @{ $startsRef->{$i} } );
 				$bestChr = $i;
 			}
 		}
@@ -312,8 +313,10 @@ sub outputLinks {
 	foreach ( reverse(@chrOrder) ) {
 		my @tempArray = sort { $scaffoldStart{$b} <=> $scaffoldStart{$a} }
 		  @{ $scaffoldOrder{$_} };
-		print $fd join( ",", @tempArray ) . ",";
-		print STDERR join( ",", @tempArray ) . ",";
+		if ( scalar(@tempArray) != 0 ) {
+			print $fd join( ",", @tempArray ) . ",";
+			print STDERR join( ",", @tempArray ) . ",";
+		}
 	}
 
 	for ( my $i = 0 ; $i < scalar(@chrOrder) - 1 ; ++$i ) {
@@ -323,32 +326,30 @@ sub outputLinks {
 	print $fd $chrOrder[ scalar(@chrOrder) - 1 ] . "\n";
 	print STDERR $chrOrder[ scalar(@chrOrder) - 1 ] . "\n";
 
-	my $scaffoldFD = new IO::File(">".$prefix .".scaffold.txt");
-	
-	
+	my $scaffoldFD = new IO::File( ">" . $prefix . ".scaffold.txt" );
+
 	foreach my $key ( keys(%scaffolds) ) {
-		$scaffoldFD->write($scaffolds{$key} . "\t" . $key ."\n");
+		$scaffoldFD->write( $scaffolds{$key} . "\t" . $key . "\n" );
 		if ( !exists $scaffoldStart{ $scaffolds{$key} } ) {
 			print STDERR $key . " has no alignments\n";
 		}
 	}
-	
+
 	$scaffoldFD->close();
 	$bedFH->close();
 	$links->close();
 }
 
 #taken from http://www.perlmonks.org/?node_id=474564
-sub median
-{
-    my @vals = sort {$a <=> $b} @_;
-    my $len = @vals;
-    if($len%2) #odd?
-    {
-        return $vals[int($len/2)];
-    }
-    else #even
-    {
-        return ($vals[int($len/2)-1] + $vals[int($len/2)])/2;
-    }
+sub median {
+	my @vals = sort { $a <=> $b } @_;
+	my $len = @vals;
+	if ( $len % 2 )    #odd?
+	{
+		return $vals[ int( $len / 2 ) ];
+	}
+	else               #even
+	{
+		return ( $vals[ int( $len / 2 ) - 1 ] + $vals[ int( $len / 2 ) ] ) / 2;
+	}
 }
