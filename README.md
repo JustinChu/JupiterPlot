@@ -1,10 +1,10 @@
 Circos Assembly Consistency (Jupiter) plot
 ======================
 Generates plots similar to those found in the [ABySS 2](http://genome.cshlp.org/content/27/5/768) paper. Good for getting a quick qualitative view of the missassemblies in a genome assembly.
-Name after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter).
+Nicknamed after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter).
 
 <img src="./dm.svg">
-Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event)
+Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event). The black lines on the reference indicate gaps of Ns, which can explain why some regions of the assembly are not covered.
 
 ### Requires (for full pipeline):
 * [Circos](http:__circos.ca_software_download_)
