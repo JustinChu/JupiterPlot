@@ -12,7 +12,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 #------------------------------------------------------------
 
 ng=75
-maxGap=10000
+maxGap=100000
 maxBundleSize=10000
 m=100000
 
