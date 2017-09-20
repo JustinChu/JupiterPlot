@@ -1,6 +1,8 @@
 Circos Assembly Consistency (Jupiter) plot
 ======================
 
+[Example plot on a Drosophila assembly showing a possible chromosomal fusion event or misassembly](https://github.com/JustinChu/JupiterPlot/dm.svg)
+
 Generates plots similar to those found in the [ABySS 2](http://genome.cshlp.org/content/27/5/768) paper. Good for getting a quick qualitative view of the missassemblies in a genome assembly.
 Name after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter).
 
@@ -25,7 +27,7 @@ Simply run:
 jupiter name=$prefix ref=$reference fa=$scaffolds
 ```
 
-Optional commands
+Optional commands:
 ```
 ng=75 #Use largest scaffolds that are equal to around 75% of the genome 
 maxGap=10000 #maximum scaffold or alignment gap allowed to consider a region contiguous
