@@ -18,6 +18,7 @@ my $prefix        = "circos";
 my $result        = GetOptions(
 	'k=s' => \$rawKaryotype,
 	's=s' => \$scaffoldFiles,
+	'm=i' => \$minChrSize,
 	'n=i' => \$numScaff,
 	'b=s' => \$scafftigsBED,
 	'a=s' => \$agpFile,

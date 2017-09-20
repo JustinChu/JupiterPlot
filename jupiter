@@ -14,6 +14,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 ng=75
 maxGap=100000
 maxBundleSize=100000
+m=100000
 
 #------------------------------------------------------------
 # meta rules
@@ -71,7 +72,7 @@ $(name)_scaffolds.fa: $(fa)
 	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | awk '{OFS="\t"; if (and($$2, 16)) print $$3,$$4,$$4+length($$10),$$1,$$5,"-"; else print $$3,$$4,$$4+length($$10),$$1,$$5,"+" }' > $@
 
 %.conf %.karyotype %.links %.scaffold.txt: %.agp %.bed %_reference.karyotype %_scaffolds.fa.fai
-	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*.bed -a $*.agp -k $*_reference.karyotype
+	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -m $(m) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*.bed -a $*.agp -k $*_reference.karyotype
 
 $(name)_reference.karyotype: $(name)_reference.fa
 	perl $(ROOT_DIR)/bin/generateKaryotype.pl $(name)_reference.fa > $@
