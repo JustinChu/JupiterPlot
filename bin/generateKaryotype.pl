@@ -5,10 +5,21 @@
 #Adds bands on chromosomes based on content of Ns (gaps) in the file
 #Other features, like centromeres or other cytogentic bands must be added manually (i.e. by altering file and running again)
 
-my $line = <>;
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
+use IO::File;
 
-my $hueNum = 3;
-my $maxHue = 30;
+my $hueNum    = 0;
+my $increment = 53;
+my $maxHue    = 360;
+my $random    = 1;
+my $result    = GetOptions(
+	'r'   => \!$random,
+	'i=i' => \$increment
+);
+
+my $line = <>;
 
 while ($line) {
 	my $header = $line;
@@ -20,18 +31,23 @@ while ($line) {
 		$line = <>;
 	}
 	my ($chrName) = $header =~ /^>([^\s]+)\s/;
-	
+
 	#TODO assign colours in meaningful way
-	print "chr - " . $chrName . " " . $chrName. " 0 " . length($currentStr) . " hue-$hueNum\n";
-	if($maxHue == $hueNum)
-	{
-		$hueNum = 3;
+	print "chr - "
+	  . $chrName . " "
+	  . $chrName . " 0 "
+	  . length($currentStr) . " hue";
+	if ($random) {
+		printf '%03s', int( rand( $maxHue + 1 ) );
 	}
-	else
-	{
-		++$hueNum;
+	else {
+		printf '%03s', $hueNum;
 	}
-	#TODO process gaps 
+	$hueNum += $increment;
+	if ( $hueNum > $maxHue ) {
+		$hueNum = $hueNum - $maxHue;
+	}
+	print "\n";
 	while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
 		print "band $chrName N N $-[0] $+[0] black\n";
 	}
