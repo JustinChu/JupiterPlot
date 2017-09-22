@@ -35,6 +35,7 @@ maxGap=100000       #maximum alignment gap allowed to consider a region contiguo
 maxBundleSize=10000 #maximum size of a contiguous region to render
 m=100000            #only use genomic reference chromosomes larger than this value
 i=0                 #increment for colouring chromosomes (HSV 1-360), when set to 0 it generates random colour for chromosomes.
+```
 
 If everything runs smoothly it will generate the following files:
 ```
@@ -57,3 +58,12 @@ prefix.agp
 
 Most likely, you will want to work with the svg file as perl image processing module Circos uses has difficulty rendering transparency on png files.
 
+### Possible issue:
+If you end up with too many chromosomes to render e.g.:
+```
+You have asked to draw [831] ideograms, but the maximum is currently set at
+  [500]. To increase this number change max_ideograms in etc/housekeeping.conf.
+  Keep in mind that drawing that many ideograms may create an image that is too
+  busy and uninterpretable.
+```
+You can decrease `ng` to smaller value or alter the housekeeping.conf to allow for more scaffolds to render (keeping in mind it may become quite unwieldy.
