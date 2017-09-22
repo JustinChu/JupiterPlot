@@ -14,7 +14,7 @@ Example plot on a Drosophila assembly showing a misassembly (or possible chromos
 * GNU make
 * Some perl modules - Use CPAN when you encounter missing module errors
 
-### Starting inputs
+### Starting inputs:
 
 * Set of scaffolds in fasta format
 * Reference genome in fasta format
@@ -58,7 +58,7 @@ prefix.agp
 
 Most likely, you will want to work with the svg file as perl image processing module Circos uses has difficulty rendering transparency on png files.
 
-### Possible issue:
+### Possible issues:
 If you end up with too many chromosomes to render e.g.:
 ```
 You have asked to draw [831] ideograms, but the maximum is currently set at
