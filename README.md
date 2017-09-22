@@ -59,11 +59,11 @@ prefix.agp
 Most likely, you will want to work with the svg file as perl image processing module Circos uses has difficulty rendering transparency on png files.
 
 ### Possible issues:
-If you end up with too many chromosomes to render e.g.:
+1 . Error regarding too may ideograms - Example:
 ```
 You have asked to draw [831] ideograms, but the maximum is currently set at
   [500]. To increase this number change max_ideograms in etc/housekeeping.conf.
   Keep in mind that drawing that many ideograms may create an image that is too
   busy and uninterpretable.
 ```
-You can decrease `ng` to smaller value or alter the housekeeping.conf to allow for more scaffolds to render (keeping in mind it may become quite unwieldy.
+This basically means the assembly may be too fragmented. You can decrease `ng` to smaller value or alter the housekeeping.conf to allow for more scaffolds to render (keeping in mind it may become quite unwieldy).
