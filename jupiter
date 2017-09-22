@@ -61,7 +61,7 @@ $(name)_scaffolds.fa: $(fa)
 	bwa index $*
 
 %.agp %-agp.fa : %_scaffolds.fa
-	perl $(ROOT_DIR)/bin/fatoagp.pl -f $*.fa $< > $*-agp.agp
+	perl $(ROOT_DIR)/bin/fatoagp.pl -f $*-agp.fa $< > $*.agp
 	
 %.fa.bwt %.fa.ann %.fa.pac %.fa.sa: %.fa
 	bwa index $<
