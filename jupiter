@@ -67,7 +67,7 @@ $(name)_scaffolds.fa: $(fa)
 	bwa index $<
 
 %-agp.sam: %_reference.fa %-agp.fa %_reference.fa.bwt %_reference.fa.pac %_reference.fa.sa %_reference.fa.ann
-	bwa mem -t 8 -x intractg $*_reference.fa $*.fa > $@
+	bwa mem -t 8 -x intractg $*_reference.fa $-agp*.fa > $@
 
 %.bed: %.sam
 	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | awk '{OFS="\t"; if (and($$2, 16)) print $$3,$$4,$$4+length($$10),$$1,$$5,"-"; else print $$3,$$4,$$4+length($$10),$$1,$$5,"+" }' > $@
