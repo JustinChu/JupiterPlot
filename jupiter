@@ -60,20 +60,20 @@ $(name)_scaffolds.fa: $(fa)
 %.bwt: %.fa
 	bwa index $*
 
-%.agp %.fa : %_scaffolds.fa
-	perl $(ROOT_DIR)/bin/fatoagp.pl -f $*.fa $< > $*.agp
+%.agp %-agp.fa : %_scaffolds.fa
+	perl $(ROOT_DIR)/bin/fatoagp.pl -f $*.fa $< > $*-agp.agp
 	
 %.fa.bwt %.fa.ann %.fa.pac %.fa.sa: %.fa
 	bwa index $<
 
-%.sam: %_reference.fa %.fa %_reference.fa.bwt %_reference.fa.pac %_reference.fa.sa %_reference.fa.ann
+%-agp.sam: %_reference.fa %-agp.fa %_reference.fa.bwt %_reference.fa.pac %_reference.fa.sa %_reference.fa.ann
 	bwa mem -t 8 -x intractg $*_reference.fa $*.fa > $@
 
 %.bed: %.sam
 	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | awk '{OFS="\t"; if (and($$2, 16)) print $$3,$$4,$$4+length($$10),$$1,$$5,"-"; else print $$3,$$4,$$4+length($$10),$$1,$$5,"+" }' > $@
 
-%.conf %.karyotype %.links %.scaffold.txt: %.agp %.bed %_reference.karyotype %_scaffolds.fa.fai
-	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -m $(m) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*.bed -a $*.agp -k $*_reference.karyotype
+%.conf %.karyotype %.links %.scaffold.txt: %.agp %-agp.bed %_reference.karyotype %_scaffolds.fa.fai
+	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -m $(m) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*-agp.bed -a $*.agp -k $*_reference.karyotype
 
 $(name)_reference.karyotype: $(name)_reference.fa
 	perl $(ROOT_DIR)/bin/generateKaryotype.pl -i $(i) $(name)_reference.fa > $@
