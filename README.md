@@ -35,7 +35,6 @@ maxGap=100000       #maximum alignment gap allowed to consider a region contiguo
 maxBundleSize=10000 #maximum size of a contiguous region to render
 m=100000            #only use genomic reference chromosomes larger than this value
 i=0                 #increment for colouring chromosomes (HSV 1-360), when set to 0 it generates random colour for chromosomes.
-```
 
 If everything runs smoothly it will generate the following files:
 ```
@@ -48,10 +47,10 @@ prefix_reference.fa.amb
 prefix_reference.fa (symlink)
 prefix.svg
 prefix.scaffold.txt
-prefix.sam
+prefix-agp.sam
 prefix.links
 prefix.karyotype
-prefix.fa
+prefix-agp.fa
 prefix.conf
 prefix.agp
 ```

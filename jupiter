@@ -21,7 +21,7 @@ i=0
 # meta rules
 #------------------------------------------------------------
 
-.PRECIOUS: %.sam %.agp
+.PRECIOUS: %-agp.sam %.agp
 .DELETE_ON_ERROR:
 .PHONY: check-params generateplot
 
