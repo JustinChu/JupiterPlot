@@ -59,7 +59,7 @@ prefix.agp
 Most likely, you will want to work with the svg file as perl image processing module Circos uses has difficulty rendering transparency on png files.
 
 ### Possible issues:
-1 . Error regarding too may ideograms - Example:
+1. Error regarding too may ideograms - Example:
 ```
 You have asked to draw [831] ideograms, but the maximum is currently set at
   [500]. To increase this number change max_ideograms in etc/housekeeping.conf.
