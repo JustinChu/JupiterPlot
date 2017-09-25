@@ -22,6 +22,7 @@ my $result     = GetOptions(
 
 my %chrlengths;
 my %bandStr;
+my @chrOrder;
 
 my $line = <>;
 
@@ -40,10 +41,11 @@ while ($line) {
 		while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
 			$bandStr{$chrName} .= "band $chrName N N $-[0] $+[0] black\n";
 		}
+		push(@chrOrder,$chrName);
 	}
 }
 my $incSize = $maxHue/scalar( keys(%chrlengths) );
-foreach my $chrName ( keys(%chrlengths) ) {
+foreach my $chrName ( @chrOrder ) {
 	#TODO assign colours in meaningful way
 	print "chr - "
 	  . $chrName . " "
