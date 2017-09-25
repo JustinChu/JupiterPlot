@@ -8,11 +8,11 @@ Nicknamed after the type of plot you get if your assembly is relatively error fr
 Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event) between L2 and L3. There are also smaller events internal to 3R. Note that by default only large scale events (>10kb) can be see in this plot, and small misassemblies, possibly medidated by repeats cannot be seen (unless `maxBundleSize` is changed). The black lines on the reference indicate gaps of Ns, which can explain why some regions of the assembly are not covered (often found in telomeric or centromeric regions).
 
 ### Requirements (for full pipeline):
-* [Circos and Circos tools](http:__circos.ca_software_download_) (currently included in repo)
-* [bwa](https:__github.com_lh3_bwa)
-* [samtools](https:__github.com_samtools_samtools)
+* [Circos and Circos tools](http://circos.ca/software/download/circos/) (currently included in repo)
+* [bwa](https://github.com/lh3/bwa)
+* [samtools](https://github.com/samtools/samtools)
 * GNU make
-* Some perl modules - Use CPAN when you encounter missing module errors
+* Some perl modules - Use CPAN when you encounter missing module errors (if someone wants to give a list of non-standard modules they needed I would be grateful)
 
 ### Starting inputs:
 
