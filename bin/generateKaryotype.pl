@@ -21,6 +21,7 @@ my $result     = GetOptions(
 );
 
 my %chrlengths;
+my %bandStr;
 
 my $line = <>;
 
@@ -37,7 +38,7 @@ while ($line) {
 		my ($chrName) = $header =~ /^>([^\s]+)\s/;
 		$chrlengths{$chrName} = length($currentStr);
 		while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
-			print "band $chrName N N $-[0] $+[0] black\n";
+			$bandStr{$chrName} .= "band $chrName N N $-[0] $+[0] black\n";
 		}
 	}
 }
@@ -55,5 +56,5 @@ foreach my $chrName ( keys(%chrlengths) ) {
 		printf '%03s', int( ($hueNum + $increment) % $maxHue );
 		$hueNum += $incSize;
 	}
-	print "\n";
+	print "\n$bandStr{$chrName}";
 }
