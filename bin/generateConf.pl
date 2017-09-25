@@ -12,13 +12,11 @@ my $scaffoldFiles = "";
 my $scafftigsBED  = "";
 my $agpFile       = "";
 my $numScaff      = 90;
-my $minChrSize    = 100000;
 my $rawConf       = "rawConf.conf";
 my $prefix        = "circos";
 my $result        = GetOptions(
 	'k=s' => \$rawKaryotype,
 	's=s' => \$scaffoldFiles,
-	'm=i' => \$minChrSize,
 	'n=i' => \$numScaff,
 	'b=s' => \$scafftigsBED,
 	'a=s' => \$agpFile,
@@ -58,7 +56,7 @@ sub outputKaryotype {
 	my $scaffFH = new IO::File($scaffoldFiles);
 	my $line    = $scaffFH->getline();
 
-	my %scaffoldLengths;
+	#	my %scaffoldLengths;
 	my $karyotype = new IO::File(">$outputkaryotype");
 
 	#load in fai file
@@ -66,7 +64,7 @@ sub outputKaryotype {
 		my @tempArray = split( /\t/, $line );
 		my $scaffoldID = $tempArray[0];
 		chomp($line);
-		$scaffoldLengths{$scaffoldID} = $tempArray[1];
+		$scaffoldsSize{$scaffoldID} = $tempArray[1];
 		$line = $scaffFH->getline();
 	}
 	$scaffFH->close();
@@ -78,23 +76,19 @@ sub outputKaryotype {
 
 	#load in base karyotype
 	while ($line) {
-
-		#Generate circos friendly name
 		chomp($line);
 		my @tempArray = split( " ", $line );
-		if( $tempArray[0] eq "band" && exists($refIDMap{ $tempArray[1] }))
-		{
+		if ( $tempArray[0] eq "band" && exists( $refIDMap{ $tempArray[1] } ) ) {
 			$tempArray[1] = $refIDMap{ $tempArray[1] };
 			my $tempStr = join( " ", @tempArray ) . "\n";
 			$karyotype->write($tempStr);
 		}
-		elsif ( $tempArray[5] > $minChrSize ) {
-
-#chr - gi|453232067|ref|NC_003281.10| gi|453232067|ref|NC_003281.10| 0 13783801 greychr
-
+		else {
 			$refIDMap{ $tempArray[2] }    = "ref" . $numChr;
 			$chrColorMap{ $tempArray[2] } = $tempArray[6];
 			$tempArray[2]                 = "ref" . $numChr;
+
+			#Generate circos friendly label
 			$tempArray[3] =~ s/[_]//g;
 			my $tempStr = join( " ", @tempArray ) . "\n";
 			push( @chrOrder, $tempArray[2] );
@@ -108,8 +102,8 @@ sub outputKaryotype {
 
 	#sort by length
 	my @lengthOrder =
-	  sort { $scaffoldLengths{$a} <=> $scaffoldLengths{$b} }
-	  keys %scaffoldLengths;
+	  sort { $scaffoldsSize{$a} <=> $scaffoldsSize{$b} }
+	  keys %scaffoldsSize;
 
 	my $count       = 1;
 	my $scaffoldSum = 0;
@@ -123,18 +117,16 @@ sub outputKaryotype {
 		#remove underscores
 		$scaffolds{$scaffoldID} = "scaf" . $count;
 		$direction{$scaffoldID} = 0;
-		$karyotype->write(
-			"chr - " . $scaffolds{$scaffoldID}
+		$karyotype->write( "chr - "
+			  . $scaffolds{$scaffoldID}
 			  . " $scaffolds{$scaffoldID} 0 "
-			  . $scaffoldLengths{$scaffoldID}
-			  . " vvlgrey" . "\n"
-		);
-		$scaffoldSum += $scaffoldLengths{$scaffoldID};
-		$scaffoldsSize{$scaffoldID} = $scaffoldLengths{$scaffoldID};
+			  . $scaffoldsSize{$scaffoldID}
+			  . " vvlgrey"
+			  . "\n" );
+		$scaffoldSum += $scaffoldsSize{$scaffoldID};
 		$count++;
 	}
 	print STDERR "Selecting " . $count . " scaffolds to render\n";
-
 	#print out spacing information:
 	my $defaultSpacing = 0.002;
 	print $fd "<ideogram>\n<spacing>\ndefault = " . $defaultSpacing . "r\n";

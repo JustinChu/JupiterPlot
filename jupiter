@@ -73,10 +73,10 @@ $(name)_scaffolds.fa: $(fa)
 	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | awk '{OFS="\t"; if (and($$2, 16)) print $$3,$$4,$$4+length($$10),$$1,$$5,"-"; else print $$3,$$4,$$4+length($$10),$$1,$$5,"+" }' > $@
 
 %.conf %.karyotype %.links %.scaffold.txt: %.agp %-agp.bed %_reference.karyotype %_scaffolds.fa.fai
-	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -m $(m) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*-agp.bed -a $*.agp -k $*_reference.karyotype
+	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*-agp.bed -a $*.agp -k $*_reference.karyotype
 
 $(name)_reference.karyotype: $(name)_reference.fa
-	perl $(ROOT_DIR)/bin/generateKaryotype.pl -i $(i) $(name)_reference.fa > $@
+	perl $(ROOT_DIR)/bin/generateKaryotype.pl -i $(i) -m $(m) $(name)_reference.fa > $@
 
 %.links.bundled: %.links %.karyotype %.conf
 	cat $< | $(ROOT_DIR)/circos-tools-0.22/tools/bundlelinks/bin/bundlelinks -max_gap $(maxGap) -min_bundle_size $(maxBundleSize) > $@
