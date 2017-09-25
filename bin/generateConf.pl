@@ -127,6 +127,7 @@ sub outputKaryotype {
 		$count++;
 	}
 	print STDERR "Selecting " . $count . " scaffolds to render\n";
+
 	#print out spacing information:
 	my $defaultSpacing = 0.002;
 	print $fd "<ideogram>\n<spacing>\ndefault = " . $defaultSpacing . "r\n";
@@ -303,12 +304,14 @@ sub outputLinks {
 	print STDERR "chromosomes_order = ";
 	print $fd "chromosomes_order = ";
 
-	foreach ( reverse(@chrOrder) ) {
-		my @tempArray = sort { $scaffoldStart{$b} <=> $scaffoldStart{$a} }
-		  @{ $scaffoldOrder{$_} };
-		if ( scalar(@tempArray) != 0 ) {
-			print $fd join( ",", @tempArray ) . ",";
-			print STDERR join( ",", @tempArray ) . ",";
+	foreach my $key (reverse(@chrOrder) ) {
+		if ( exists $scaffoldOrder{$key} ) {
+			my @tempArray = sort { $scaffoldStart{$b} <=> $scaffoldStart{$a} }
+			  @{ $scaffoldOrder{$key} };
+			if ( scalar(@tempArray) != 0 ) {
+				print $fd join( ",", @tempArray ) . ",";
+				print STDERR join( ",", @tempArray ) . ",";
+			}
 		}
 	}
 
@@ -318,6 +321,12 @@ sub outputLinks {
 	}
 	print $fd $chrOrder[ scalar(@chrOrder) - 1 ] . "\n";
 	print STDERR $chrOrder[ scalar(@chrOrder) - 1 ] . "\n";
+
+	foreach my $key (reverse(@chrOrder) ) {
+		if ( !exists $scaffoldOrder{$key} ) {
+			print STDERR $key . " has no alignments\n";
+		}
+	}
 
 	my $scaffoldFD = new IO::File( ">" . $prefix . ".scaffold.txt" );
 

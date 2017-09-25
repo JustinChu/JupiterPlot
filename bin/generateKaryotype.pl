@@ -14,12 +14,13 @@ use IO::File;
 my $hueNum     = 0;
 my $increment  = 0;
 my $maxHue     = 360;
-my $count      = 0;
 my $minChrSize = 100000;
 my $result     = GetOptions(
 	'i=i' => \$increment,
 	'm=i' => \$minChrSize
 );
+
+my %chrlengths;
 
 my $line = <>;
 
@@ -34,32 +35,25 @@ while ($line) {
 	}
 	if ( length($currentStr) > $minChrSize ) {
 		my ($chrName) = $header =~ /^>([^\s]+)\s/;
-
-		#TODO assign colours in meaningful way
-		print "chr - "
-		  . $chrName . " "
-		  . $chrName . " 0 "
-		  . length($currentStr) . " hue";
-		if ( $increment == 0 ) {
-			printf '%03s', int( rand( $maxHue + 1 ) );
-		}
-		else {
- #flip the colour wheel around for odds a evens to contrast adjacent chromosomes
-#			printf '%03s',
-#			  int(
-#				  $count % 2 == 0
-#				? $hueNum / 2 % $maxHue
-#				: ( $hueNum + $maxHue / 2 ) % $maxHue
-#			  );
-
-			printf '%03s',
-			  int($hueNum % $maxHue);
-			$hueNum += $increment;
-		}
-		print "\n";
+		$chrlengths{$chrName} = length($currentStr);
 		while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
 			print "band $chrName N N $-[0] $+[0] black\n";
 		}
-		$count++;
 	}
+}
+my $incSize = $maxHue/scalar( keys(%chrlengths) );
+foreach my $chrName ( keys(%chrlengths) ) {
+	#TODO assign colours in meaningful way
+	print "chr - "
+	  . $chrName . " "
+	  . $chrName . " 0 "
+	  . $chrlengths{$chrName} . " hue";
+	if ( $increment > $maxHue ) {
+		printf '%03s', int( rand( $maxHue + 1 ) );
+	}
+	else {
+		printf '%03s', int( ($hueNum + $increment) % $maxHue );
+		$hueNum += $incSize;
+	}
+	print "\n";
 }
