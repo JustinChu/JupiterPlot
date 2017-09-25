@@ -70,7 +70,7 @@ $(name)_scaffolds.fa: $(fa)
 	bwa mem -t 8 -x intractg $*_reference.fa $*-agp.fa > $@
 
 %.bed: %.sam
-	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | awk '{OFS="\t"; if (and($$2, 16)) print $$3,$$4,$$4+length($$10),$$1,$$5,"-"; else print $$3,$$4,$$4+length($$10),$$1,$$5,"+" }' > $@
+	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | perl $(ROOT_DIR)/bin/samToBed.pl > $@
 
 %.conf %.karyotype %.links %.scaffold.txt: %.agp %-agp.bed %_reference.karyotype %_scaffolds.fa.fai
 	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*-agp.bed -a $*.agp -k $*_reference.karyotype
