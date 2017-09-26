@@ -38,6 +38,7 @@ my %scaffoldsSize;
 my %direction;
 my %refIDMap;
 my %chrColorMap;
+my %chromosomes;
 
 system( "cp " . $rawConf . " $prefix.conf -f" );
 system("sed -i -e 's/karyotype.txt/$prefix.karyotype/g' $prefix.conf");
@@ -87,6 +88,7 @@ sub outputKaryotype {
 			$refIDMap{ $tempArray[2] }    = "ref" . $numChr;
 			$chrColorMap{ $tempArray[2] } = $tempArray[6];
 			$tempArray[2]                 = "ref" . $numChr;
+			$chromosomes{$tempArray[2] } = $tempArray[3];
 
 			#Generate circos friendly label
 			$tempArray[3] =~ s/[_]//g;
@@ -322,22 +324,23 @@ sub outputLinks {
 	print $fd $chrOrder[ scalar(@chrOrder) - 1 ] . "\n";
 	print STDERR $chrOrder[ scalar(@chrOrder) - 1 ] . "\n";
 
-	foreach my $key (reverse(@chrOrder) ) {
+	my $scaffoldFH = new IO::File( ">" . $prefix . ".scaffold.txt" );
+	
+	foreach my $key (@chrOrder) {
+		$scaffoldFH->write( $key . "\t" . $chromosomes{$key} . "\n" );
 		if ( !exists $scaffoldOrder{$key} ) {
 			print STDERR $key . " has no alignments\n";
 		}
 	}
 
-	my $scaffoldFD = new IO::File( ">" . $prefix . ".scaffold.txt" );
-
 	foreach my $key ( keys(%scaffolds) ) {
-		$scaffoldFD->write( $scaffolds{$key} . "\t" . $key . "\n" );
+		$scaffoldFH->write( $scaffolds{$key} . "\t" . $key . "\n" );
 		if ( !exists $scaffoldStart{ $scaffolds{$key} } ) {
 			print STDERR $key . " has no alignments\n";
 		}
 	}
 
-	$scaffoldFD->close();
+	$scaffoldFH->close();
 	$bedFH->close();
 	$links->close();
 }

@@ -15,9 +15,9 @@ while (<>) {
 	  . ( $line[3] + length( $line[9] ) )
 	  . "\t$line[0]\t$line[4]\t";
 	if ( $line[1] & 16 == 0 ) {
-		print "+\n";
+		print "-\n";
 	}
 	else {
-		print "-\n";
+		print "+\n";
 	}
 }
