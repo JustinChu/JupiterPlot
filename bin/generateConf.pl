@@ -329,7 +329,7 @@ sub outputLinks {
 	foreach my $key (@chrOrder) {
 		$scaffoldFH->write( $key . "\t" . $chromosomes{$key} . "\n" );
 		if ( !exists $scaffoldOrder{$key} ) {
-			print STDERR $key . " has no alignments\n";
+			print STDERR $chromosomes{$key} . " has no alignments\n";
 		}
 	}
 
