@@ -16,6 +16,7 @@ maxGap=100000
 maxBundleSize=10000
 m=100000
 i=0
+t=8
 
 #------------------------------------------------------------
 # meta rules
@@ -67,7 +68,7 @@ $(name)_scaffolds.fa: $(fa)
 	bwa index $<
 
 %-agp.sam: %_reference.fa %-agp.fa %_reference.fa.bwt %_reference.fa.pac %_reference.fa.sa %_reference.fa.ann
-	bwa mem -t 8 -x intractg $*_reference.fa $*-agp.fa > $@
+	bwa mem -t $(t) -x intractg $*_reference.fa $*-agp.fa > $@
 
 %.bed: %.sam
 	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | perl $(ROOT_DIR)/bin/samToBed.pl > $@
