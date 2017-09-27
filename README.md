@@ -75,7 +75,7 @@ ref5	X	scaf68	361536	+
 ...
 ```
 
-Chromosome X matches scaffold 361740 as the first segment (- direction) then scaffold 361915 (+ direction) occurs as the next alignment in the 5\`->3\` (relative to the reference). 
+Chromosome X matches scaffold 361740 as the first segment (in the - direction relative to the orignal sequence) then scaffold 361915 (in the + direction relative to the orignal sequence) occurs as the next alignment (ordered in the 5'->3'relative to the reference). 
 
 ### Possible issues:
  1. Error regarding too mamy ideograms - Example:
