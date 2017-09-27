@@ -256,6 +256,29 @@ sub outputLinks {
 	}
 	$bedFH->close();
 
+	my %scaffoldOrder;
+	my %scaffoldStart;
+	my %bestDirection;
+
+	#for reordering the scaffolds to best location
+	foreach my $key ( keys(%bestScaffToChrSize) ) {
+		my $sizeRef   = $bestScaffToChrSize{$key};
+		my $startsRef = $bestScaffToChrStart{$key};
+		my $bestChr   = 0;
+		my $bestNum   = 0;
+		my $start     = 0;
+		foreach my $i ( keys( %{$sizeRef} ) ) {
+			if ( $sizeRef->{$i} > $bestNum ) {
+				$bestNum = $sizeRef->{$i};
+				$start   = median( @{ $startsRef->{$i} } );
+				$bestChr = $i;
+			}
+		}
+		push( @{ $scaffoldOrder{$bestChr} }, $scaffolds{$key} );
+		$scaffoldStart{ $scaffolds{$key} } = $start;
+		$bestDirection{ $key } = $direction{$key}->{ $bestChr };
+	}
+	
 	my $links = new IO::File(">$prefix.links");
 	$bedFH = new IO::File($scafftigsBED);
 	$line  = $bedFH->getline();
@@ -269,7 +292,7 @@ sub outputLinks {
 		if ( exists $scaffolds{$scaffoldID} && $refIDMap{ $tempArray[0] } ) {
 
 			#this is flipped because we want to mirror the orientation
-			if ( $direction{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } >= 0 ) {
+			if ( $bestDirection{$scaffoldID} >= 0 ) {
 				my $contigID = $tempArray[3];
 				$links->write( $refIDMap{ $tempArray[0] } . " "
 					  . $tempArray[1] . " "
@@ -293,27 +316,6 @@ sub outputLinks {
 			}
 		}
 		$line = $bedFH->getline();
-	}
-
-	my %scaffoldOrder;
-	my %scaffoldStart;
-
-	#for reordering the scaffolds to best location
-	foreach my $key ( keys(%bestScaffToChrSize) ) {
-		my $sizeRef   = $bestScaffToChrSize{$key};
-		my $startsRef = $bestScaffToChrStart{$key};
-		my $bestChr   = 0;
-		my $bestNum   = 0;
-		my $start     = 0;
-		foreach my $i ( keys( %{$sizeRef} ) ) {
-			if ( $sizeRef->{$i} > $bestNum ) {
-				$bestNum = $sizeRef->{$i};
-				$start   = median( @{ $startsRef->{$i} } );
-				$bestChr = $i;
-			}
-		}
-		push( @{ $scaffoldOrder{$bestChr} }, $scaffolds{$key} );
-		$scaffoldStart{ $scaffolds{$key} } = $start;
 	}
 
 	print STDERR "chromosomes_order = ";
