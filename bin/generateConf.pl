@@ -135,17 +135,33 @@ sub outputKaryotype {
 	#print out spacing information:
 	my $defaultSpacing = 0.002;
 	print $fd "<ideogram>\n<spacing>\ndefault = " . $defaultSpacing . "r\n";
-	my $spacingSize =
-	  ( $defaultSpacing * $numChr +
-		  ( $genomeSize - $scaffoldSum ) / ( $genomeSize + $scaffoldSum ) ) /
-	  $count / $defaultSpacing;
+	if ( $genomeSize > $scaffoldSum ) {
+		my $spacingSize =
+		  ( $defaultSpacing * $numChr +
+			  ( $genomeSize - $scaffoldSum ) / ( $genomeSize + $scaffoldSum ) )
+		  / $count / $defaultSpacing;
 
-	foreach ( keys(%scaffolds) ) {
-		print $fd "<pairwise "
-		  . $scaffolds{$_}
-		  . ">\nspacing = "
-		  . $spacingSize
-		  . "r\n</pairwise>\n";
+		foreach ( keys(%scaffolds) ) {
+			print $fd "<pairwise "
+			  . $scaffolds{$_}
+			  . ">\nspacing = "
+			  . $spacingSize
+			  . "r\n</pairwise>\n";
+		}
+	}
+	else {
+		my $spacingSize =
+		  ( $defaultSpacing * $count +
+			  ( $scaffoldSum - $genomeSize ) / ( $scaffoldSum + $genomeSize ) )
+		  / $numChr / $defaultSpacing;
+
+		foreach ( keys(%chromosomes) ) {
+			print $fd "<pairwise "
+			  . $_
+			  . ">\nspacing = "
+			  . $spacingSize
+			  . "r\n</pairwise>\n";
+		}
 	}
 	print $fd "</spacing>\n</ideogram>\n";
 	print $fd "<image>\nfile  = $prefix.png\n</image>\n";
@@ -180,7 +196,7 @@ sub outputLinks {
 			#correct for 0th position? (index starts at 1)
 			$scafftigLocationsFW{$contigID} = $tempArray[1] - 1;
 			$scafftigLocationsRV{$contigID} =
-			  ( $scaffoldsSize{$scaffoldID} - $tempArray[2]);
+			  ( $scaffoldsSize{$scaffoldID} - $tempArray[2] );
 			$scafftigSize{$contigID} = $tempArray[2] - $tempArray[1];
 		}
 		$line = $agpFH->getline();
@@ -259,9 +275,9 @@ sub outputLinks {
 					  . $tempArray[1] . " "
 					  . $tempArray[2] . " "
 					  . $scaffolds{$scaffoldID} . " "
-					  . ( $scafftigLocationsRV{$contigID} + $tempArray[6])
+					  . ( $scafftigLocationsRV{$contigID} + $tempArray[6] )
 					  . " "
-					  . ( $scafftigLocationsRV{$contigID} + $tempArray[7])
+					  . ( $scafftigLocationsRV{$contigID} + $tempArray[7] )
 					  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
 			}
 			else {
@@ -270,9 +286,9 @@ sub outputLinks {
 					  . $tempArray[1] . " "
 					  . $tempArray[2] . " "
 					  . $scaffolds{$scaffoldID} . " "
-					  . ( $scafftigLocationsFW{$contigID} + $tempArray[6])
+					  . ( $scafftigLocationsFW{$contigID} + $tempArray[6] )
 					  . " "
-					  . ( $scafftigLocationsFW{$contigID} + $tempArray[7])
+					  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
 					  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
 			}
 		}
