@@ -36,7 +36,6 @@ my @chrOrder;
 my %scaffolds;
 my %scaffoldsSize;
 my %scaffoldIDMap;
-my %direction;
 my %refIDMap;
 my %chrColorMap;
 my %chromosomes;
@@ -120,7 +119,6 @@ sub outputKaryotype {
 		#remove underscores
 		$scaffolds{$scaffoldID}           = "scaf" . $count;
 		$scaffoldIDMap{ "scaf" . $count } = $scaffoldID;
-		$direction{$scaffoldID}           = 0;
 		$karyotype->write( "chr - "
 			  . $scaffolds{$scaffoldID}
 			  . " $scaffolds{$scaffoldID} 0 "
@@ -205,20 +203,17 @@ sub outputLinks {
 
 	my %bestScaffToChrSize;
 	my %bestScaffToChrStart;
+	my %direction;
 
 	my $bedFH = new IO::File($scafftigsBED);
 	$line = $bedFH->getline();
-	my $count2 = 0;
 
 	while ($line) {
 		chomp($line);
 		my @tempArray = split( /\t/, $line );
 		my $scaffoldID = $tempArray[3];
-		$count2++;
 		$scaffoldID =~ s/^contig//;
 		$scaffoldID =~ s/_\d+$//;
-
-		#		my $linkSize = $tempArray[2] - $tempArray[1];
 		my $linkSize = $tempArray[7] - $tempArray[6];
 		if (   exists $scaffolds{$scaffoldID}
 			&& exists $refIDMap{ $tempArray[0] } )
@@ -235,6 +230,8 @@ sub outputLinks {
 				  ->{ $refIDMap{ $tempArray[0] } } = [];
 				$bestScaffToChrSize{$scaffoldID}->{ $refIDMap{ $tempArray[0] } }
 				  = 0;
+				$direction{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } =
+				  0
 			}
 			$bestScaffToChrSize{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } +=
 			  $linkSize;
@@ -247,10 +244,12 @@ sub outputLinks {
 			);
 
 			if ( $tempArray[5] eq "+" ) {
-				$direction{$scaffoldID} += $linkSize;
+				$direction{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } +=
+				  $linkSize;
 			}
 			else {
-				$direction{$scaffoldID} -= $linkSize;
+				$direction{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } -=
+				  $linkSize;
 			}
 		}
 		$line = $bedFH->getline();
@@ -269,7 +268,8 @@ sub outputLinks {
 		$scaffoldID =~ s/_\d+$//;
 		if ( exists $scaffolds{$scaffoldID} && $refIDMap{ $tempArray[0] } ) {
 
-			if ( $direction{$scaffoldID} >= 0 ) {
+			#this is flipped because we want to mirror the orientation
+			if ( $direction{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } >= 0 ) {
 				my $contigID = $tempArray[3];
 				$links->write( $refIDMap{ $tempArray[0] } . " "
 					  . $tempArray[1] . " "
@@ -335,7 +335,7 @@ sub outputLinks {
 						  . $scaffoldKey . "\t"
 						  . $scaffoldIDMap{$scaffoldKey} . "\t"
 						  . (
-							$direction{ $scaffoldIDMap{$scaffoldKey} } >= 0
+							$direction{ $scaffoldIDMap{$scaffoldKey} } > 0
 							? "+"
 							: "-"
 						  )
