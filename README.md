@@ -63,18 +63,18 @@ This file is a way of mapping the scaffold order back to the chromosomes listed.
 
 Here is the format:
 ```
-internalRefID	refID	internalScaffoldID	scaffoldID
+internalRefID	refID	internalScaffoldID	scaffoldID strand
 ```
 
 For example:
 ```
-ref5	X	scaf109	361740
-ref5	X	scaf120	361915
-ref5	X	scaf68	361536
+ref5	X	scaf109	361740	-
+ref5	X	scaf120	361915	+
+ref5	X	scaf68	361536	+
 ...
 ```
 
-Chromosome X matches scaffold 361740 as the first segment then scaffold 361915 occurs as the next alignment in the 5`->3` (relative to the reference). 
+Chromosome X matches scaffold 361740 as the first segment (- direction) then scaffold 361915 (+ direction) occurs as the next alignment in the 5`->3` (relative to the reference). 
 
 ### Possible issues:
  1. Error regarding too mamy ideograms - Example:
