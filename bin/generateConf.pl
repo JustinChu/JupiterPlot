@@ -178,9 +178,9 @@ sub outputLinks {
 			}
 
 			#correct for 0th position? (index starts at 1)
-			$scafftigLocationsFW{$contigID} = $tempArray[1];
+			$scafftigLocationsFW{$contigID} = $tempArray[1] - 1;
 			$scafftigLocationsRV{$contigID} =
-			  ( $scaffoldsSize{$scaffoldID} - $tempArray[2] );
+			  ( $scaffoldsSize{$scaffoldID} - $tempArray[2]);
 			$scafftigSize{$contigID} = $tempArray[2] - $tempArray[1];
 		}
 		$line = $agpFH->getline();
@@ -259,9 +259,9 @@ sub outputLinks {
 					  . $tempArray[1] . " "
 					  . $tempArray[2] . " "
 					  . $scaffolds{$scaffoldID} . " "
-					  . ( $scafftigLocationsRV{$contigID} + $tempArray[6] )
+					  . ( $scafftigLocationsRV{$contigID} + $tempArray[6])
 					  . " "
-					  . ( $scafftigLocationsRV{$contigID} + $tempArray[7] )
+					  . ( $scafftigLocationsRV{$contigID} + $tempArray[7])
 					  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
 			}
 			else {
@@ -270,9 +270,9 @@ sub outputLinks {
 					  . $tempArray[1] . " "
 					  . $tempArray[2] . " "
 					  . $scaffolds{$scaffoldID} . " "
-					  . ( $scafftigLocationsFW{$contigID} + $tempArray[6] )
+					  . ( $scafftigLocationsFW{$contigID} + $tempArray[6])
 					  . " "
-					  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
+					  . ( $scafftigLocationsFW{$contigID} + $tempArray[7])
 					  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
 			}
 		}
