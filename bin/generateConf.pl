@@ -35,6 +35,7 @@ if ( $scaffoldFiles eq "" ) {
 my @chrOrder;
 my %scaffolds;
 my %scaffoldsSize;
+my %scaffoldIDMap;
 my %direction;
 my %refIDMap;
 my %chrColorMap;
@@ -117,8 +118,9 @@ sub outputKaryotype {
 		}
 
 		#remove underscores
-		$scaffolds{$scaffoldID} = "scaf" . $count;
-		$direction{$scaffoldID} = 0;
+		$scaffolds{$scaffoldID}           = "scaf" . $count;
+		$scaffoldIDMap{ "scaf" . $count } = $scaffoldID;
+		$direction{$scaffoldID}           = 0;
 		$karyotype->write( "chr - "
 			  . $scaffolds{$scaffoldID}
 			  . " $scaffolds{$scaffoldID} 0 "
@@ -199,7 +201,9 @@ sub outputLinks {
 		$count2++;
 		$scaffoldID =~ s/^contig//;
 		$scaffoldID =~ s/_\d+$//;
-		my $linkSize = $tempArray[2] - $tempArray[1];
+
+		#		my $linkSize = $tempArray[2] - $tempArray[1];
+		my $linkSize = $tempArray[7] - $tempArray[6];
 		if (   exists $scaffolds{$scaffoldID}
 			&& exists $refIDMap{ $tempArray[0] } )
 		{
@@ -227,10 +231,10 @@ sub outputLinks {
 			);
 
 			if ( $tempArray[5] eq "+" ) {
-				$direction{$scaffoldID}++;
+				$direction{$scaffoldID} += $linkSize;
 			}
 			else {
-				$direction{$scaffoldID}--;
+				$direction{$scaffoldID} -= $linkSize;
 			}
 		}
 		$line = $bedFH->getline();
@@ -299,11 +303,29 @@ sub outputLinks {
 	print STDERR "chromosomes_order = ";
 	print $fd "chromosomes_order = ";
 
+	my $scaffoldFH = new IO::File( ">" . $prefix . ".seqOrder.txt" );
+
 	foreach my $key ( reverse(@chrOrder) ) {
 		if ( exists $scaffoldOrder{$key} ) {
 			my @tempArray = sort { $scaffoldStart{$b} <=> $scaffoldStart{$a} }
 			  @{ $scaffoldOrder{$key} };
 			if ( scalar(@tempArray) != 0 ) {
+				foreach my $scaffoldKey (@tempArray) {
+
+					#I:scaffold876:1
+					$scaffoldFH->write(
+						    $key . "\t"
+						  . $chromosomes{$key} . "\t"
+						  . $scaffoldKey . "\t"
+						  . $scaffoldIDMap{$scaffoldKey} . "\t"
+						  . (
+							$direction{ $scaffoldIDMap{$scaffoldKey} } >= 0
+							? "+"
+							: "-"
+						  )
+						  . "\n"
+					);
+				}
 				print $fd join( ",", @tempArray ) . ",";
 				print STDERR join( ",", @tempArray ) . ",";
 			}
@@ -317,17 +339,17 @@ sub outputLinks {
 	print $fd $chrOrder[ scalar(@chrOrder) - 1 ] . "\n";
 	print STDERR $chrOrder[ scalar(@chrOrder) - 1 ] . "\n";
 
-	my $scaffoldFH = new IO::File( ">" . $prefix . ".scaffold.txt" );
-
 	foreach my $key (@chrOrder) {
-		$scaffoldFH->write( $key . "\t" . $chromosomes{$key} . "\n" );
+
+		#		$scaffoldFH->write( $key . "\t" . $chromosomes{$key} . "\n" );
 		if ( !exists $scaffoldOrder{$key} ) {
 			print STDERR $chromosomes{$key} . " has no alignments\n";
 		}
 	}
 
 	foreach my $key ( keys(%scaffolds) ) {
-		$scaffoldFH->write( $scaffolds{$key} . "\t" . $key . "\n" );
+
+		#		$scaffoldFH->write( $scaffolds{$key} . "\t" . $key . "\n" );
 		if ( !exists $scaffoldStart{ $scaffolds{$key} } ) {
 			print STDERR $key . " has no alignments\n";
 		}

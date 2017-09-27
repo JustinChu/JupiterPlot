@@ -1,7 +1,7 @@
 Circos Assembly Consistency (Jupiter) plot
 ======================
 Generates plots similar to those found in the [ABySS 2](http://genome.cshlp.org/content/27/5/768) paper, given only a reference genome fasta file and an assembly scaffolds fasta file. Good for getting a quick qualitative view of the missassemblies in a genome assembly.
-Nicknamed after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter).
+Nicknamed after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter). If you think of features or some useful auxiliary information (i.e. for tracing back where a translocation event occurred) that the plot uses that I could report better let me know. 
 
 <img src="./dm.svg">
 
@@ -46,8 +46,8 @@ prefix_reference.fa.pac
 prefix_reference.fa.ann
 prefix_reference.fa.amb
 prefix_reference.fa (symlink)
+prefix.seqOrder.txt
 prefix.svg
-prefix.scaffold.txt
 prefix-agp.sam
 prefix.links
 prefix.karyotype
@@ -57,6 +57,24 @@ prefix.agp
 ```
 
 Most likely, you will want to work with the svg file as perl image processing module Circos uses has difficulty rendering transparency on png files.
+
+Note about the prefix.seqOrder.txt file:
+This file is a way of mapping the scaffold order back to the chromosomes listed. It lists, which scaffold aligned in which order to which chromsome.
+
+Here is the format:
+```
+internalRefID	refID	internalScaffoldID	scaffoldID
+```
+
+For example:
+```
+ref5	X	scaf109	361740
+ref5	X	scaf120	361915
+ref5	X	scaf68	361536
+...
+```
+
+Chromosome X matches scaffold 361740 as the first segment then scaffold 361915 occurs as the next alignment in the 5`->3` (relative to the reference). 
 
 ### Possible issues:
  1. Error regarding too mamy ideograms - Example:
