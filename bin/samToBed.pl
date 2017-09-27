@@ -16,7 +16,7 @@ while (<>) {
 	  . ( $line[3] - 1 + getPaddedReferenceLength( $line[5] ) ) . "\t"
 	  . $line[0] . "\t"
 	  . $line[4] . "\t";
-	if ( $line[1] & 16 == 0 ) {
+	if ($line[1] & 16) {
 		print "-";
 	}
 	else {
