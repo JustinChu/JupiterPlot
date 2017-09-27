@@ -61,7 +61,7 @@ Most likely, you will want to work with the svg file as perl image processing mo
 
 ### Relating image back to assembly:
 `prefix.seqOrder.txt` file:
-This file is a way of mapping the scaffold order back to the chromosomes listed. It lists, which scaffold aligned in which order to which chromsome.
+This file is a way of mapping the scaffold order back to the chromosomes listed. It lists which scaffold aligned in its order relative to each from top to bottom.
 
 Here is the format:
 ```
