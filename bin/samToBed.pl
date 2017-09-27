@@ -17,22 +17,46 @@ while (<>) {
 	  . $line[0] . "\t"
 	  . $line[4] . "\t";
 	if ( $line[1] & 16 == 0 ) {
-		print "-\n";
+		print "-";
 	}
 	else {
-		print "+\n";
+		print "+";
 	}
+	print "\t"
+	  . getStartQueryAlignment( $line[5] ) . "\t"
+	  . (getStartQueryAlignment($line[5]) +
+	  getPaddedQueryLength( $line[5] ));
+	print "\n";
 }
 
 #parse from cigar string
 sub getPaddedReferenceLength {
-	my $cigar  = shift;
-	my $length = 0;
-	if ( $cigar =~ /\d+M|D|N|EQ|X|P/ ) {
-		my @elements = ( $cigar =~ /(\d+)(?:M|D|N|EQ|X|P)/g );
-		for my $value (@elements) {
-			$length += $value;
-		}
+	my $cigar    = shift;
+	my $length   = 0;
+	my @elements = ( $cigar =~ /(\d+)(?:M|D|N|=|X)/g );
+	for my $value (@elements) {
+		$length += $value;
 	}
 	return $length;
 }
+
+#parse from cigar string
+sub getPaddedQueryLength {
+	my $cigar    = shift;
+	my $length   = 0;
+	my @elements = ( $cigar =~ /(\d+)(?:M|I|=|X|P)/g );
+	for my $value (@elements) {
+		$length += $value;
+	}
+	return $length;
+}
+
+#get start of read alignment
+sub getStartQueryAlignment {
+	my $cigar = shift;
+	if ( $cigar =~ /^(\d+)(?:S|G)/ ) {
+		return $1 - 1;
+	}
+	return 0;
+}
+

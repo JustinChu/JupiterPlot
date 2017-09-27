@@ -88,7 +88,7 @@ sub outputKaryotype {
 			$refIDMap{ $tempArray[2] }    = "ref" . $numChr;
 			$chrColorMap{ $tempArray[2] } = $tempArray[6];
 			$tempArray[2]                 = "ref" . $numChr;
-			$chromosomes{$tempArray[2] } = $tempArray[3];
+			$chromosomes{ $tempArray[2] } = $tempArray[3];
 
 			#Generate circos friendly label
 			$tempArray[3] =~ s/[_]//g;
@@ -247,35 +247,28 @@ sub outputLinks {
 		my $scaffoldID = $tempArray[3];
 		$scaffoldID =~ s/^contig//;
 		$scaffoldID =~ s/_\d+$//;
-		my $linkSize = $tempArray[2] - $tempArray[1];
 		if ( exists $scaffolds{$scaffoldID} && $refIDMap{ $tempArray[0] } ) {
 
 			if ( $direction{$scaffoldID} >= 0 ) {
 				my $contigID = $tempArray[3];
-				$linkSize =
-				    $linkSize < $scafftigSize{$contigID}
-				  ? $linkSize
-				  : $scafftigSize{$contigID};
 				$links->write( $refIDMap{ $tempArray[0] } . " "
 					  . $tempArray[1] . " "
 					  . $tempArray[2] . " "
 					  . $scaffolds{$scaffoldID} . " "
-					  . $scafftigLocationsRV{$contigID} . " "
-					  . ( $scafftigLocationsRV{$contigID} + $linkSize )
+					  . ( $scafftigLocationsRV{$contigID} + $tempArray[6] )
+					  . " "
+					  . ( $scafftigLocationsRV{$contigID} + $tempArray[7] )
 					  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
 			}
 			else {
 				my $contigID = $tempArray[3];
-				$linkSize =
-				    $linkSize < $scafftigSize{$contigID}
-				  ? $linkSize
-				  : $scafftigSize{$contigID};
 				$links->write( $refIDMap{ $tempArray[0] } . " "
 					  . $tempArray[1] . " "
 					  . $tempArray[2] . " "
 					  . $scaffolds{$scaffoldID} . " "
-					  . $scafftigLocationsFW{$contigID} . " "
-					  . ( $scafftigLocationsFW{$contigID} + $linkSize )
+					  . ( $scafftigLocationsFW{$contigID} + $tempArray[6] )
+					  . " "
+					  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
 					  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
 			}
 		}
@@ -306,7 +299,7 @@ sub outputLinks {
 	print STDERR "chromosomes_order = ";
 	print $fd "chromosomes_order = ";
 
-	foreach my $key (reverse(@chrOrder) ) {
+	foreach my $key ( reverse(@chrOrder) ) {
 		if ( exists $scaffoldOrder{$key} ) {
 			my @tempArray = sort { $scaffoldStart{$b} <=> $scaffoldStart{$a} }
 			  @{ $scaffoldOrder{$key} };
@@ -325,7 +318,7 @@ sub outputLinks {
 	print STDERR $chrOrder[ scalar(@chrOrder) - 1 ] . "\n";
 
 	my $scaffoldFH = new IO::File( ">" . $prefix . ".scaffold.txt" );
-	
+
 	foreach my $key (@chrOrder) {
 		$scaffoldFH->write( $key . "\t" . $chromosomes{$key} . "\n" );
 		if ( !exists $scaffoldOrder{$key} ) {
