@@ -59,8 +59,9 @@ prefix.agp
 
 Most likely, you will want to work with the svg file as perl image processing module Circos uses has difficulty rendering transparency on png files.
 
-Note about the prefix.seqOrder.txt file:
-This file is a way of mapping the scaffold order back to the chromosomes listed. It lists, which scaffold aligned in which order to which chromsome.
+### Relating image back to assembly:
+`prefix.seqOrder.txt` file:
+This file is a way of mapping the scaffold order back to the chromosomes listed. It lists which scaffold aligned in its order relative to each from top to bottom.
 
 Here is the format:
 ```
@@ -75,7 +76,7 @@ ref5	X	scaf68	361536	+
 ...
 ```
 
-Chromosome X matches scaffold 361740 as the first segment (- direction) then scaffold 361915 (+ direction) occurs as the next alignment in the 5`->3` (relative to the reference). 
+Chromosome X matches scaffold 361740 as the first segment (in the - direction relative to the orignal sequence) then scaffold 361915 (in the + direction relative to the orignal sequence) occurs as the next alignment (ordered in the 5'->3' direction relative to the reference). 
 
 ### Possible issues:
  1. Error regarding too mamy ideograms - Example:
