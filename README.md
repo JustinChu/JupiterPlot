@@ -32,7 +32,7 @@ Optional commands:
 ```
 ng=75               #use largest scaffolds that are equal to 75% of the genome 
 maxGap=100000       #maximum alignment gap allowed to consider a region contiguous
-maxBundleSize=10000 #maximum size of a contiguous region to render
+minBundleSize=10000 #minimum size of a contiguous region to render
 m=100000            #only use genomic reference chromosomes larger than this value
 i=0                 #increment for colouring chromosomes (HSV colour shift by setting 0-360), when set to >360 it generates random colours
 t=8                 #number of threads to use for bwa
