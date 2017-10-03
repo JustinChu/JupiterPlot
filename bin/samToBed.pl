@@ -10,13 +10,14 @@ my %chrlengths;
 my %bandStr;
 
 while (<>) {
-	my @line = split( /\t/, $_ );
+	my $line = $_;
+	my @line = split( /\t/, $line );
 	print $line[2] . "\t"
 	  . ( $line[3] - 1 ) . "\t"
 	  . ( $line[3] - 1 + getPaddedReferenceLength( $line[5] ) ) . "\t"
 	  . $line[0] . "\t"
 	  . $line[4] . "\t";
-	if ($line[1] & 16) {
+	if ( $line[1] & 16 ) {
 		print "-";
 	}
 	else {
@@ -24,9 +25,12 @@ while (<>) {
 	}
 	print "\t"
 	  . getStartQueryAlignment( $line[5] ) . "\t"
-	  . (getStartQueryAlignment($line[5]) +
-	  getPaddedQueryLength( $line[5] ));
+	  . (
+		getStartQueryAlignment( $line[5] ) + getPaddedQueryLength( $line[5] ) );
 	print "\n";
+	if ( $line[1] != 16 && $line[1] != 0 ) {
+		print $line;
+	}
 }
 
 #parse from cigar string
@@ -54,7 +58,7 @@ sub getPaddedQueryLength {
 #get start of read alignment
 sub getStartQueryAlignment {
 	my $cigar = shift;
-	if ( $cigar =~ /^(\d+)(?:S|G)/ ) {
+	if ( $cigar =~ /^(\d+)(?:S|G|H)/ ) {
 		return $1 - 1;
 	}
 	return 0;
