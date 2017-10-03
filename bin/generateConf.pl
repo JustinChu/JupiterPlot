@@ -337,7 +337,7 @@ sub outputLinks {
 						  . $scaffoldKey . "\t"
 						  . $scaffoldIDMap{$scaffoldKey} . "\t"
 						  . (
-							$direction{ $scaffoldIDMap{$scaffoldKey} } > 0
+							$bestDirection{ $scaffoldIDMap{$scaffoldKey} } > 0
 							? "+"
 							: "-"
 						  )
