@@ -28,9 +28,9 @@ while (<>) {
 	  . (
 		getStartQueryAlignment( $line[5] ) + getPaddedQueryLength( $line[5] ) );
 	print "\n";
-	if ( $line[1] != 16 && $line[1] != 0 ) {
-		print $line;
-	}
+#	if ( $line[1] != 16 && $line[1] != 0 ) {
+#		print $line;
+#	}
 }
 
 #parse from cigar string
