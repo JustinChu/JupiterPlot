@@ -80,7 +80,7 @@ $(name)_reference.karyotype: $(name)_reference.fa
 	perl $(ROOT_DIR)/bin/generateKaryotype.pl -i $(i) -m $(m) $(name)_reference.fa > $@
 
 %.links.bundled: %.links %.karyotype %.conf
-	cat $< | $(ROOT_DIR)/circos-tools-0.22/tools/bundlelinks/bin/bundlelinks -max_gap $(maxGap) -min_bundle_size $(maxBundleSize) > $@
+	cat $< | $(ROOT_DIR)/circos-tools-0.22/tools/bundlelinks/bin/bundlelinks -max_gap $(maxGap) -min_bundle_size $(minBundleSize) > $@
 
 %.svg: %.conf %.karyotype %.links.bundled
 	perl $(ROOT_DIR)/circos-0.69-3/bin/circos -noparanoid -conf $<
