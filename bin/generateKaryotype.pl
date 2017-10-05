@@ -25,6 +25,7 @@ my %bandStr;
 my @chrOrder;
 
 my $line = <>;
+srand($hueNum);
 
 while ($line) {
 	my $header = $line;
