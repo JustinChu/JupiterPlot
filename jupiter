@@ -82,10 +82,10 @@ $(name)_reference.karyotype: $(name)_reference.fa
 %.links.bundled: %.links
 	cat $< | $(ROOT_DIR)/circos-tools-0.22/tools/bundlelinks/bin/bundlelinks -max_gap $(maxGap) -min_bundle_size $(minBundleSize) > $@
 
-%.rv.links.bundled.flipped : %.rv.links.bundled
+%.fw.links.bundled.flipped : %.fw.links.bundled
 	awk ' { t = $$5; $$5 = $$6; $$6 = t; print; } ' $< > $@
 
-%.links.final : %.rv.links.bundled.flipped %.fw.links.bundled
+%.links.final : %.rv.links.bundled %.fw.links.bundled.flipped
 	cat $^ > $@
 
 %.svg: %.conf %.karyotype %.links.final

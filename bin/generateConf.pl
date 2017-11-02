@@ -309,14 +309,14 @@ sub outputLinks {
 						  . $tempArray[1] . " "
 						  . $tempArray[2] . " "
 						  . $scaffolds{$scaffoldID} . " "
-						  . ( $scafftigLocationsRV{$contigID} + $tempArray[7] )
-						  . " "
 						  . ( $scafftigLocationsRV{$contigID} + $tempArray[6] )
+						  . " "
+						  . ( $scafftigLocationsRV{$contigID} + $tempArray[7] )
 						  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
 				}
 			}
 			else {
-				if ( $tempArray[5] eq "+" ) {
+				if ( $tempArray[5] eq "-" ) {
 					$linksFW->write( $refIDMap{ $tempArray[0] } . " "
 						  . $tempArray[1] . " "
 						  . $tempArray[2] . " "
@@ -331,9 +331,9 @@ sub outputLinks {
 						  . $tempArray[1] . " "
 						  . $tempArray[2] . " "
 						  . $scaffolds{$scaffoldID} . " "
-						  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
-						  . " "
 						  . ( $scafftigLocationsFW{$contigID} + $tempArray[6] )
+						  . " "
+						  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
 						  . " color=$chrColorMap{$tempArray[0]}_a5\n" )
 					  ;
 				}
