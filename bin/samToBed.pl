@@ -18,19 +18,19 @@ while (<>) {
 	  . $line[0] . "\t"
 	  . $line[4] . "\t";
 	if ( $line[1] & 16 ) {
-		print "-";
+		print "-\t"
+		  . getStartQueryAlignmentRV( $line[5] )
+		  . "\t"
+		  . ( getStartQueryAlignmentRV( $line[5] ) +
+			  getPaddedQueryLength( $line[5] ) );
 	}
 	else {
-		print "+";
+		print "+\t"
+		  . getStartQueryAlignmentFW( $line[5] ) . "\t"
+		  . ( getStartQueryAlignmentFW( $line[5] ) +
+			  getPaddedQueryLength( $line[5] ) );
 	}
-	print "\t"
-	  . getStartQueryAlignment( $line[5] ) . "\t"
-	  . (
-		getStartQueryAlignment( $line[5] ) + getPaddedQueryLength( $line[5] ) );
 	print "\n";
-#	if ( $line[1] != 16 && $line[1] != 0 ) {
-#		print $line;
-#	}
 }
 
 #parse from cigar string
@@ -56,7 +56,7 @@ sub getPaddedQueryLength {
 }
 
 #get start of read alignment
-sub getStartQueryAlignment {
+sub getStartQueryAlignmentFW {
 	my $cigar = shift;
 	if ( $cigar =~ /^(\d+)(?:S|G|H)/ ) {
 		return $1 - 1;
@@ -64,3 +64,11 @@ sub getStartQueryAlignment {
 	return 0;
 }
 
+#get start of read alignment
+sub getStartQueryAlignmentRV {
+	my $cigar = shift;
+	if ( $cigar =~ /(\d+)(?:S|G|H)$/ ) {
+		return $1 - 1;
+	}
+	return 0;
+}
