@@ -30,6 +30,7 @@ jupiter name=$prefix ref=$reference fa=$scaffolds
 
 Optional commands:
 ```
+sam=                #Specify an existing alignment of scafftigs to if they already exist (naming convention that fatoagp.pl produces must be consistent)
 ng=75               #use largest scaffolds that are equal to 75% of the genome 
 maxGap=100000       #maximum alignment gap allowed to consider a region contiguous
 minBundleSize=10000 #minimum size of a contiguous region to render

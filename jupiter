@@ -43,16 +43,20 @@ ifndef fa
 	$(error missing required param 'fa' (FASTA contigs file))
 endif
 
+#optional command for sam files
+ifdef sam
+	$(attempting to skip alignments given $(sam))
+endif
 
 #------------------------------------------------------------
 # pipeline rules
 #------------------------------------------------------------
 
 $(name)_reference.fa: $(ref)
-	ln -s $< $(name)_reference.fa
+	ln -s $< $@
 	
 $(name)_scaffolds.fa: $(fa)
-	ln -s $< $(name)_scaffolds.fa
+	ln -s $< $@
 
 # index FASTA file
 %.fa.fai: %.fa
@@ -63,12 +67,16 @@ $(name)_scaffolds.fa: $(fa)
 
 %.agp %-agp.fa : %_scaffolds.fa
 	perl $(ROOT_DIR)/bin/fatoagp.pl -f $*-agp.fa $< > $*.agp
-	
+
+ifdef sam
+$(name)-agp.sam: $(sam)
+	ln -s $< $@
+else
 %.fa.bwt %.fa.ann %.fa.pac %.fa.sa: %.fa
 	bwa index $<
-
 %-agp.sam: %_reference.fa %-agp.fa %_reference.fa.bwt %_reference.fa.pac %_reference.fa.sa %_reference.fa.ann
 	bwa mem -t $(t) -x intractg $*_reference.fa $*-agp.fa > $@
+endif
 
 %.bed: %.sam
 	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | perl $(ROOT_DIR)/bin/samToBed.pl > $@
