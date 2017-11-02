@@ -42,7 +42,7 @@ my %chromosomes;
 
 system( "cp " . $rawConf . " $prefix.conf -f" );
 system("sed -i -e 's/karyotype.txt/$prefix.karyotype/g' $prefix.conf");
-system("sed -i -e 's/links.txt/$prefix.links.bundled/g' $prefix.conf");
+system("sed -i -e 's/links.txt/$prefix.links.final/g' $prefix.conf");
 open( my $fd, ">>$prefix.conf" );
 
 #create karyotype file
@@ -117,7 +117,7 @@ sub outputKaryotype {
 		}
 
 		#remove underscores
-		$scaffolds{$scaffoldID}           = "scaf" . $count;
+		$scaffolds{$scaffoldID} = "scaf" . $count;
 		$scaffoldIDMap{ "scaf" . $count } = $scaffoldID;
 		$karyotype->write( "chr - "
 			  . $scaffolds{$scaffoldID}
@@ -230,8 +230,7 @@ sub outputLinks {
 				  ->{ $refIDMap{ $tempArray[0] } } = [];
 				$bestScaffToChrSize{$scaffoldID}->{ $refIDMap{ $tempArray[0] } }
 				  = 0;
-				$direction{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } =
-				  0
+				$direction{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } = 0;
 			}
 			$bestScaffToChrSize{$scaffoldID}->{ $refIDMap{ $tempArray[0] } } +=
 			  $linkSize;
@@ -276,10 +275,11 @@ sub outputLinks {
 		}
 		push( @{ $scaffoldOrder{$bestChr} }, $scaffolds{$key} );
 		$scaffoldStart{ $scaffolds{$key} } = $start;
-		$bestDirection{ $key } = $direction{$key}->{ $bestChr };
+		$bestDirection{$key} = $direction{$key}->{$bestChr};
 	}
-	
-	my $links = new IO::File(">$prefix.links");
+
+	my $linksRV = new IO::File(">$prefix.rv.links");
+	my $linksFW = new IO::File(">$prefix.fw.links");
 	$bedFH = new IO::File($scafftigsBED);
 	$line  = $bedFH->getline();
 
@@ -290,29 +290,53 @@ sub outputLinks {
 		$scaffoldID =~ s/^contig//;
 		$scaffoldID =~ s/_\d+$//;
 		if ( exists $scaffolds{$scaffoldID} && $refIDMap{ $tempArray[0] } ) {
-
-			#this is flipped because we want to mirror the orientation
+			my $contigID = $tempArray[3];
 			if ( $bestDirection{$scaffoldID} >= 0 ) {
-				my $contigID = $tempArray[3];
-				$links->write( $refIDMap{ $tempArray[0] } . " "
-					  . $tempArray[1] . " "
-					  . $tempArray[2] . " "
-					  . $scaffolds{$scaffoldID} . " "
-					  . ( $scafftigLocationsRV{$contigID} + $tempArray[6] )
-					  . " "
-					  . ( $scafftigLocationsRV{$contigID} + $tempArray[7] )
-					  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
+				if ( $tempArray[5] eq "+" ) {
+
+		#this is LocationsRV (flipped) because we want to mirror the orientation
+					$linksFW->write( $refIDMap{ $tempArray[0] } . " "
+						  . $tempArray[1] . " "
+						  . $tempArray[2] . " "
+						  . $scaffolds{$scaffoldID} . " "
+						  . ( $scafftigLocationsRV{$contigID} + $tempArray[6] )
+						  . " "
+						  . ( $scafftigLocationsRV{$contigID} + $tempArray[7] )
+						  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
+				}
+				else {
+					$linksRV->write( $refIDMap{ $tempArray[0] } . " "
+						  . $tempArray[1] . " "
+						  . $tempArray[2] . " "
+						  . $scaffolds{$scaffoldID} . " "
+						  . ( $scafftigLocationsRV{$contigID} + $tempArray[7] )
+						  . " "
+						  . ( $scafftigLocationsRV{$contigID} + $tempArray[6] )
+						  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
+				}
 			}
 			else {
-				my $contigID = $tempArray[3];
-				$links->write( $refIDMap{ $tempArray[0] } . " "
-					  . $tempArray[1] . " "
-					  . $tempArray[2] . " "
-					  . $scaffolds{$scaffoldID} . " "
-					  . ( $scafftigLocationsFW{$contigID} + $tempArray[6] )
-					  . " "
-					  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
-					  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
+				if ( $tempArray[5] eq "+" ) {
+					$linksFW->write( $refIDMap{ $tempArray[0] } . " "
+						  . $tempArray[1] . " "
+						  . $tempArray[2] . " "
+						  . $scaffolds{$scaffoldID} . " "
+						  . ( $scafftigLocationsFW{$contigID} + $tempArray[6] )
+						  . " "
+						  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
+						  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
+				}
+				else {
+					$linksRV->write( $refIDMap{ $tempArray[0] } . " "
+						  . $tempArray[1] . " "
+						  . $tempArray[2] . " "
+						  . $scaffolds{$scaffoldID} . " "
+						  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
+						  . " "
+						  . ( $scafftigLocationsFW{$contigID} + $tempArray[6] )
+						  . " color=$chrColorMap{$tempArray[0]}_a5\n" )
+					  ;
+				}
 			}
 		}
 		$line = $bedFH->getline();
@@ -375,7 +399,8 @@ sub outputLinks {
 
 	$scaffoldFH->close();
 	$bedFH->close();
-	$links->close();
+	$linksRV->close();
+	$linksFW->close();
 }
 
 #taken from http://www.perlmonks.org/?node_id=474564

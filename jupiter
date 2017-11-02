@@ -73,15 +73,21 @@ $(name)_scaffolds.fa: $(fa)
 %.bed: %.sam
 	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | perl $(ROOT_DIR)/bin/samToBed.pl > $@
 
-%.conf %.karyotype %.links %.seqOrder.txt: %.agp %-agp.bed %_reference.karyotype %_scaffolds.fa.fai
+%.conf %.karyotype %.rv.links %.fw.links %.seqOrder.txt: %.agp %-agp.bed %_reference.karyotype %_scaffolds.fa.fai
 	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*-agp.bed -a $*.agp -k $*_reference.karyotype
 
 $(name)_reference.karyotype: $(name)_reference.fa
 	perl $(ROOT_DIR)/bin/generateKaryotype.pl -i $(i) -m $(m) $(name)_reference.fa > $@
 
-%.links.bundled: %.links %.karyotype %.conf
+%.links.bundled: %.links
 	cat $< | $(ROOT_DIR)/circos-tools-0.22/tools/bundlelinks/bin/bundlelinks -max_gap $(maxGap) -min_bundle_size $(minBundleSize) > $@
 
-%.svg: %.conf %.karyotype %.links.bundled
+%.rv.links.bundled.flipped : %.rv.links.bundled
+	awk ' { t = $$5; $$5 = $$6; $$6 = t; print; } ' $< > $@
+
+%.links.final : %.rv.links.bundled.flipped %.fw.links.bundled
+	cat $^ > $@
+
+%.svg: %.conf %.karyotype %.links.final
 	perl $(ROOT_DIR)/circos-0.69-3/bin/circos -noparanoid -conf $<
  
