@@ -14,7 +14,7 @@ my $opt_fasta = $opt{'f'};
 my $opt_min_scaf_len = defined $opt{'s'} ? $opt{'s'} : 200;
 
 # scaftigs shorter than this length will be masked with "N"s
-my $opt_min_ctg_len = defined $opt{'S'} ? $opt{'S'} : 50;
+my $opt_min_ctg_len = defined $opt{'S'} ? $opt{'S'} : 0;
 
 open FASTA, ">$opt_fasta"
   or die "error: `$opt_fasta': $!\n"
