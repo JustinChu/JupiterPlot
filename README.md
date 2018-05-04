@@ -1,5 +1,6 @@
 Circos Assembly Consistency (Jupiter) plot
 ======================
+[![DOI](https://zenodo.org/badge/83077852.svg)](https://zenodo.org/badge/latestdoi/83077852)
 Generates plots similar to those found in the [ABySS 2](http://genome.cshlp.org/content/27/5/768) paper, given only a reference genome fasta file and an assembly scaffolds fasta file. Good for getting a quick qualitative view of the missassemblies in a genome assembly.
 Nicknamed after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter). If you think of features or some useful auxiliary information (e.g. for tracing back where a translocation event occurred) that the plot uses that I could report better let me know. 
 
