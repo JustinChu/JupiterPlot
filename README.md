@@ -68,11 +68,11 @@ prefix.conf
 prefix.agp
 ```
 
-Most likely, you will want to work with the svg file as perl image processing module Circos uses has difficulty rendering transparency on png files.
+Most likely, you will want to work with the svg file as the perl image processing module Circos uses has difficulty rendering transparency on png files.
 
 ### Relating image back to assembly:
 `prefix.seqOrder.txt` file:
-This file helps to relate of mapping order of each scaffold rendered back to the reference chromosomes in the plot. It lists what scaffold is rendered in the order to each reference chromosome from top of the plot to bottom.
+This file helps to relate of mapping order of each scaffold rendered back to the reference chromosomes in the plot. It lists what scaffold is rendered in the order to each reference chromosome from top of the plot to the bottom.
 
 Here is the format:
 ```
