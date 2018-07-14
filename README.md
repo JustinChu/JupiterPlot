@@ -100,5 +100,5 @@ You have asked to draw [831] ideograms, but the maximum is currently set at
 This basically means the assembly may be too fragmented. You can decrease `ng` to smaller value or alter the housekeeping.conf to allow for more scaffolds to render (keeping in mind it may become quite unwieldy).
 
 ### Acknowledgements
-Members of the [BTL lab](http://www.birollab.ca/) at the [BCGSC](https://github.com/bcgsc) for testing and feedback.
-[ckeeling](https://github.com/ckeeling) for helping identify required perl modules.
+* Members of the [BTL lab](http://www.birollab.ca/) at the [BCGSC](https://github.com/bcgsc) for testing and feedback.
+* [ckeeling](https://github.com/ckeeling) for helping identify required perl modules.
