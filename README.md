@@ -2,7 +2,7 @@ Circos Assembly Consistency (Jupiter) plot
 ======================
 [![DOI](https://zenodo.org/badge/83077852.svg)](https://zenodo.org/badge/latestdoi/83077852)
 
-This is a pipeline for generating a Circos based genome assembly consistency plot given a set of contigs relative to reference genome. Intended to visualize large scale translocation or missassemblies. 
+This is a pipeline for generating a Circos based genome assembly consistency plot given a set of contigs relative to reference genome. Intended to visualize large scale translocations or missassemblies. 
 
 Generates plots similar to those found in the [ABySS 2](http://genome.cshlp.org/content/27/5/768) paper, given only a reference genome fasta file and an assembly scaffolds fasta file. Good for getting a quick qualitative view of the missassemblies in a genome assembly.
 Nicknamed after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter). If you think of features or some useful auxiliary information (e.g. for tracing back where a translocation event occurred) that the plot uses that I could report better let me know. 
@@ -72,7 +72,7 @@ Most likely, you will want to work with the svg file as perl image processing mo
 
 ### Relating image back to assembly:
 `prefix.seqOrder.txt` file:
-This file is a way of mapping the scaffold order back to the chromosomes listed. It lists which scaffold aligned in its order relative to each from top to bottom.
+This file helps to relate of mapping order of each scaffold rendered back to the reference chromosomes in the plot. It lists what scaffold is rendered in the order to each reference chromosome from top of the plot to bottom.
 
 Here is the format:
 ```
