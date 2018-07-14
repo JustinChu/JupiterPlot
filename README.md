@@ -16,7 +16,13 @@ Example plot on a Drosophila assembly showing a misassembly (or possible chromos
 * [bwa](https://github.com/lh3/bwa)
 * [samtools](https://github.com/samtools/samtools)
 * GNU make
-* Some perl modules - Use CPAN when you encounter missing module errors (if someone wants to give a list of non-standard modules they needed I would be grateful)
+
+Perl Modules Needed:
+* Config::General.pm
+* Math::VecStat
+* Set::IntSpan
+* List::MoreUtils
+* Modules needed for Circos: [http://www.circos.ca/documentation/tutorials/configuration/perl_and_modules/](http://www.circos.ca/documentation/tutorials/configuration/perl_and_modules/)
 
 ### Starting inputs:
 
