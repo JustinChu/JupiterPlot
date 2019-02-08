@@ -23,6 +23,7 @@ my $result     = GetOptions(
 my %chrlengths;
 my %bandStr;
 my @chrOrder;
+my $sum = 0;
 
 my $line = <>;
 srand($hueNum);
@@ -42,9 +43,11 @@ while ($line) {
 		while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
 			$bandStr{$chrName} .= "band $chrName N N $-[0] $+[0] black\n";
 		}
+		$sum += length($currentStr);
 		push(@chrOrder,$chrName);
 	}
 }
+print STDERR "Reference Genome Size after removing short seqeunces: " . $sum . "\n";
 my $incSize = $maxHue/scalar( keys(%chrlengths) );
 foreach my $chrName ( @chrOrder ) {
 	#TODO assign colours in meaningful way
