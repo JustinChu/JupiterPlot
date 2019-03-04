@@ -89,6 +89,21 @@ ref5	X	scaf68	361536	+
 
 Chromosome X matches scaffold 361740 as the first segment (in the - direction relative to the orignal sequence) then scaffold 361915 (in the + direction relative to the orignal sequence) occurs as the next alignment (ordered in the 5'->3' direction relative to the reference). 
 
+### Tips and Tricks:
+ 1. Renaming Chromosomes
+You can relable chromosomes by running to the `prefix.karyotype` stage, editing the file and run the rest of the pipeline:
+
+```{bash}
+#Run pipeline to prefix.karyotype stage
+jupiter name=prefix $OPTS prefix.karyotype
+#Edit the file prefix.karyotype file in some way
+sed -i 's/chromosome/chr/g' prefix.karyotype
+#Finish pipeline
+jupiter name=prefix $OPTS
+```
+
+In this example, if the labels had `chromosome1` and they were then changed to `chr1`.
+
 ### Possible issues:
  1. Error regarding too mamy ideograms - Example:
 ```
