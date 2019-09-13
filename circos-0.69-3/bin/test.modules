@@ -1,5 +1,0 @@
-#!/bin/bash
-
-echo "Circos can now list its own modules."
-echo
-echo "> circos -modules"
