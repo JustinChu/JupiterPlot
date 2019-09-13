@@ -43,10 +43,10 @@ Optional commands:
 sam=                #Specify an existing alignment of scafftigs to if they already exist (naming convention that fatoagp.pl produces must be consistent)
 ng=75               #use largest scaffolds that are equal to 75% of the genome 
 maxGap=100000       #maximum alignment gap allowed to consider a region contiguous
-minBundleSize=10000 #minimum size of a contiguous region to render
+minBundleSize=50000 #minimum size of a contiguous region to render
 m=100000            #only use genomic reference chromosomes larger than this value
 i=0                 #increment for colouring chromosomes (HSV colour shift by setting 0-360), when set to >360 it generates random colours
-t=8                 #number of threads to use for bwa
+t=4                 #number of threads to use for bwa
 ```
 
 If everything runs smoothly it will generate the following files:
