@@ -13,7 +13,7 @@ Example plot on a Drosophila assembly showing a misassembly (or possible chromos
 
 ### Requirements (for full pipeline):
 * [Circos and Circos tools](http://circos.ca/software/download/circos/) (currently included in repo)
-* [minimap2](https://github.com/lh3/minimap2)
+* [minimap2](https://github.com/lh3/minimap2) (currently included in repo)
 * [samtools](https://github.com/samtools/samtools)
 * GNU make
 
