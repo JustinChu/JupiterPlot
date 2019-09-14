@@ -92,5 +92,5 @@ $(name)_reference.karyotype: $(name)_reference.fa
 	cat $^ > $@
 
 %.svg: %.conf %.karyotype %.links.final 
-	perl $(ROOT_DIR)/circos-0.69-3/bin/circos -noparanoid -conf $<
+	circos -noparanoid -conf $<
  
