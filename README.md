@@ -29,7 +29,7 @@ Perl Modules Needed:
 * Set of scaffolds in fasta format
 * Reference genome in fasta format
 
-To generate a plot given these inputs, samtools and bwa must be in your path.
+To generate a plot given these inputs, samtools and minimap2 must be in your path.
 
 ### Usage:
 
