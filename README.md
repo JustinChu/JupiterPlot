@@ -12,12 +12,18 @@ Nicknamed after the type of plot you get if your assembly is relatively error fr
 Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event) between L2 and L3. There are also smaller events internal to 3R. Note that by default only large scale events (>10kb) can be see in this plot, and small misassemblies, possibly medidated by repeats, cannot be seen (unless `maxBundleSize` is changed). The black lines on the reference indicate gaps of Ns, which can explain why some regions of the assembly are not covered (often found in telomeric or centromeric regions). Default settings except for ng=80 used.
 
 ### Requirements (for full pipeline):
-* [Circos and Circos tools](http://circos.ca/software/download/circos/) (removed circos from repo, leaving circos_tools as is. use conda for an easier installation time for circos, given that many perl modules need to be installed for this)
+* [Circos and Circos tools](http://circos.ca/software/download/circos/) (Installation Options below)
 * [minimap2](https://github.com/lh3/minimap2) (currently included in repo, feel free to remove it)
 * [samtools](https://github.com/samtools/samtools) (assumes that this is in the path of the user)
 * GNU make
 
-Perl Modules Needed:
+### Installing Circos
+Circos can be installed with [linuxbrew](https://docs.brew.sh/Homebrew-on-Linux) using the command:
+```{bash}
+brew install circos
+```
+
+Perl Modules Needed (If downloading and installating Circos without a package manager):
 * Config::General.pm
 * Math::VecStat
 * Set::IntSpan
@@ -117,3 +123,4 @@ This basically means the assembly may be too fragmented. You can decrease `ng` t
 ### Acknowledgements
 * Members of the [BTL lab](http://www.birollab.ca/) at the [BCGSC](https://github.com/bcgsc) for testing and feedback.
 * [ckeeling](https://github.com/ckeeling) for helping identify required perl modules.
+*[harish0201)(https://github.com/harish0201) for helping add minimap2 functionality.
