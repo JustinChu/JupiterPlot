@@ -123,4 +123,4 @@ This basically means the assembly may be too fragmented. You can decrease `ng` t
 ### Acknowledgements
 * Members of the [BTL lab](http://www.birollab.ca/) at the [BCGSC](https://github.com/bcgsc) for testing and feedback.
 * [ckeeling](https://github.com/ckeeling) for helping identify required perl modules.
-*[harish0201)(https://github.com/harish0201) for helping add minimap2 functionality.
+* [harish0201](https://github.com/harish0201) for helping add minimap2 functionality.
