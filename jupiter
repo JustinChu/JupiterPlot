@@ -13,10 +13,10 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 ng=75
 maxGap=100000
-minBundleSize=10000
+minBundleSize=50000
 m=100000
 i=0
-t=8
+t=4
 
 #------------------------------------------------------------
 # meta rules
@@ -62,9 +62,6 @@ $(name)_scaffolds.fa: $(fa)
 %.fa.fai: %.fa
 	samtools faidx $<
 	
-%.bwt: %.fa
-	bwa index $*
-
 %.agp %-agp.fa : %_scaffolds.fa
 	perl $(ROOT_DIR)/bin/fatoagp.pl -f $*-agp.fa $< > $*.agp
 
@@ -72,10 +69,8 @@ ifdef sam
 $(name)-agp.sam: $(sam)
 	ln -s $< $@
 else
-%.fa.bwt %.fa.ann %.fa.pac %.fa.sa: %.fa
-	bwa index $<
-%-agp.sam: %_reference.fa %-agp.fa %_reference.fa.bwt %_reference.fa.pac %_reference.fa.sa %_reference.fa.ann
-	bwa mem -t $(t) -x intractg $*_reference.fa $*-agp.fa > $@
+%-agp.sam: %_reference.fa %-agp.fa
+	$(ROOT_DIR)/bin/minimap2 -ax asm10 -t $(t) $*_reference.fa $*-agp.fa > $@
 endif
 
 %.bed: %.sam
@@ -96,6 +91,6 @@ $(name)_reference.karyotype: $(name)_reference.fa
 %.links.final : %.rv.links.bundled %.fw.links.bundled.flipped
 	cat $^ > $@
 
-%.svg: %.conf %.karyotype %.links.final
-	perl $(ROOT_DIR)/circos-0.69-3/bin/circos -noparanoid -conf $<
+%.svg: %.conf %.karyotype %.links.final 
+	circos -noparanoid -conf $<
  

@@ -12,9 +12,9 @@ Nicknamed after the type of plot you get if your assembly is relatively error fr
 Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event) between L2 and L3. There are also smaller events internal to 3R. Note that by default only large scale events (>10kb) can be see in this plot, and small misassemblies, possibly medidated by repeats, cannot be seen (unless `maxBundleSize` is changed). The black lines on the reference indicate gaps of Ns, which can explain why some regions of the assembly are not covered (often found in telomeric or centromeric regions). Default settings except for ng=80 used.
 
 ### Requirements (for full pipeline):
-* [Circos and Circos tools](http://circos.ca/software/download/circos/) (currently included in repo)
-* [bwa](https://github.com/lh3/bwa)
-* [samtools](https://github.com/samtools/samtools)
+* [Circos and Circos tools](http://circos.ca/software/download/circos/) (removed circos from repo, leaving circos_tools as is. use conda for an easier installation time for circos, given that many perl modules need to be installed for this)
+* [minimap2](https://github.com/lh3/minimap2) (currently included in repo, feel free to remove it)
+* [samtools](https://github.com/samtools/samtools) (assumes that this is in the path of the user)
 * GNU make
 
 Perl Modules Needed:
@@ -29,7 +29,7 @@ Perl Modules Needed:
 * Set of scaffolds in fasta format
 * Reference genome in fasta format
 
-To generate a plot given these inputs, samtools and bwa must be in your path.
+To generate a plot given these inputs, samtools and minimap2 must be in your path.
 
 ### Usage:
 
@@ -43,10 +43,10 @@ Optional commands:
 sam=                #Specify an existing alignment of scafftigs to if they already exist (naming convention that fatoagp.pl produces must be consistent)
 ng=75               #use largest scaffolds that are equal to 75% of the genome 
 maxGap=100000       #maximum alignment gap allowed to consider a region contiguous
-minBundleSize=10000 #minimum size of a contiguous region to render
+minBundleSize=50000 #minimum size of a contiguous region to render
 m=100000            #only use genomic reference chromosomes larger than this value
 i=0                 #increment for colouring chromosomes (HSV colour shift by setting 0-360), when set to >360 it generates random colours
-t=8                 #number of threads to use for bwa
+t=4                 #number of threads to use for minimap2
 ```
 
 If everything runs smoothly it will generate the following files:
