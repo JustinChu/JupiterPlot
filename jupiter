@@ -70,7 +70,7 @@ $(name)-agp.sam: $(sam)
 	ln -s $< $@
 else
 %-agp.sam: %_reference.fa %-agp.fa
-	$(ROOT_DIR)/bin/minimap2 -ax asm10 -t $(t) $*_reference.fa $*-agp.fa > $@
+	minimap2 -ax asm10 -t $(t) $*_reference.fa $*-agp.fa > $@
 endif
 
 %.bed: %.sam
