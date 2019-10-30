@@ -78,7 +78,7 @@ Most likely, you will want to work with the svg file as the perl image processin
 
 ### Relating image back to assembly:
 `prefix.seqOrder.txt` file:
-This file helps to relate of mapping order of each scaffold rendered back to the reference chromosomes in the plot. It lists what scaffold is rendered in the order to each reference chromosome from top of the plot to the bottom.
+This file helps to relate the mapping order of each scaffold rendered back to the reference chromosomes in the plot. It lists what scaffold is rendered in the order to each reference chromosome from top of the plot to the bottom.
 
 Here is the format:
 ```
@@ -97,7 +97,7 @@ Chromosome X matches scaffold 361740 as the first segment (in the - direction re
 
 ### Tips and Tricks:
  1. Renaming Chromosomes
-You can relable chromosomes by running to the `prefix.karyotype` stage, editing the file and run the rest of the pipeline:
+You can relabel chromosomes by running to the `prefix.karyotype` stage, editing the file and run the rest of the pipeline:
 
 ```{bash}
 #Run pipeline to prefix.karyotype stage
@@ -111,7 +111,7 @@ jupiter name=prefix $OPTS
 In this example, if the labels had `chromosome1` and they were then changed to `chr1`.
 
 ### Possible issues:
- 1. Error regarding too mamy ideograms - Example:
+ 1. Error regarding too many ideograms - Example:
 ```
 You have asked to draw [831] ideograms, but the maximum is currently set at
   [500]. To increase this number change max_ideograms in etc/housekeeping.conf.
@@ -122,5 +122,5 @@ This basically means the assembly may be too fragmented. You can decrease `ng` t
 
 ### Acknowledgements
 * Members of the [BTL lab](http://www.birollab.ca/) at the [BCGSC](https://github.com/bcgsc) for testing and feedback.
-* [ckeeling](https://github.com/ckeeling) for helping identify required perl modules.
-* [harish0201](https://github.com/harish0201) for helping add minimap2 functionality.
+* [ckeeling](https://github.com/ckeeling) for helping with identifying required perl modules.
+* [harish0201](https://github.com/harish0201) for helping with adding minimap2 functionality.
