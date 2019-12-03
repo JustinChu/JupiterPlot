@@ -15,9 +15,11 @@ my $hueNum     = 0;
 my $increment  = 0;
 my $maxHue     = 360;
 my $minChrSize = 100000;
+my $maxGap     = 1;
 my $result     = GetOptions(
 	'i=i' => \$increment,
-	'm=i' => \$minChrSize
+	'm=i' => \$minChrSize,
+	'g=i' => \$maxGap
 );
 
 my %chrlengths;
@@ -41,15 +43,19 @@ while ($line) {
 		my ($chrName) = $header =~ /^>([^\s]+)\s/;
 		$chrlengths{$chrName} = length($currentStr);
 		while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
-			$bandStr{$chrName} .= "band $chrName N N $-[0] $+[0] black\n";
+			if ( $maxGap < ($-[0] - $+[0]) ) {
+				$bandStr{$chrName} .= "band $chrName N N $-[0] $+[0] black\n";
+			}
 		}
 		$sum += length($currentStr);
-		push(@chrOrder,$chrName);
+		push( @chrOrder, $chrName );
 	}
 }
-print STDERR "Reference Genome Size after removing short seqeunces: " . $sum . "\n";
-my $incSize = $maxHue/scalar( keys(%chrlengths) );
-foreach my $chrName ( @chrOrder ) {
+print STDERR "Reference Genome Size after removing short seqeunces: " . $sum
+  . "\n";
+my $incSize = $maxHue / scalar( keys(%chrlengths) );
+foreach my $chrName (@chrOrder) {
+
 	#TODO assign colours in meaningful way
 	print "chr - "
 	  . $chrName . " "
@@ -59,8 +65,9 @@ foreach my $chrName ( @chrOrder ) {
 		printf '%03s', int( rand( $maxHue + 1 ) );
 	}
 	else {
-		printf '%03s', int( ($hueNum + $increment) % $maxHue );
+		printf '%03s', int( ( $hueNum + $increment ) % $maxHue );
 		$hueNum += $incSize;
 	}
+	print "\n";
 	print "\n$bandStr{$chrName}";
 }
