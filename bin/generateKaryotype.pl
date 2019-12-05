@@ -43,7 +43,7 @@ while ($line) {
 		my ($chrName) = $header =~ /^>([^\s]+)\s/;
 		$chrlengths{$chrName} = length($currentStr);
 		while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
-			if ( $maxGap < ($+[0] - $-[0]) ) {
+			if ( $maxGap < ( $+[0] - $-[0] ) ) {
 				$bandStr{$chrName} .= "band $chrName N N $-[0] $+[0] black\n";
 			}
 		}
@@ -69,5 +69,7 @@ foreach my $chrName (@chrOrder) {
 		$hueNum += $incSize;
 	}
 	print "\n";
-	print "\n$bandStr{$chrName}";
+	if ( exists( $bandStr{$chrName} ) ) {
+		print "\n$bandStr{$chrName}";
+	}
 }
