@@ -2,7 +2,7 @@ Circos Assembly Consistency (Jupiter) plot
 ======================
 [![DOI](https://zenodo.org/badge/83077852.svg)](https://zenodo.org/badge/latestdoi/83077852)
 
-This is a pipeline for generating a Circos based genome assembly consistency plot given a set of contigs relative to reference genome. Intended to visualize large scale translocations or missassemblies. 
+This is a pipeline for generating a Circos based genome assembly consistency plot given a set of contigs relative to reference genome. Intended to visualize large scale translocations or missassemblies in draft assemblies, but it can also be useful when trying to show synteny between whole genomes.
 
 Generates plots similar to those found in the [ABySS 2](http://genome.cshlp.org/content/27/5/768) and [Tigmint](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2425-6) papers, given only a reference genome fasta file and an assembly scaffolds fasta file. Good for getting a quick qualitative view of the missassemblies in a genome assembly.
 Nicknamed after the type of plot you get if your assembly is relatively error free (looks like the planet Jupiter). If you think of features or some useful auxiliary information (e.g. for tracing back where a translocation event occurred) that the plot uses that I could report better let me know. 
