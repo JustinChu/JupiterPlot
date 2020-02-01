@@ -1,0 +1,40 @@
+Hive plots are excellent at communicating cumulative data, such as
+would be shown in a stacked bar plot or steam graph. 
+
+A stacked bar plot is transformed into its hive plot equivalent by
+replacing the edges of adjacent bar stacks with an axis. In this way,
+the two sides of a bar component are no longer dependent. When they
+are allowe to vary, you can communicate a change in quantity, or a
+ratio.
+
+The stacked bar representation is fundamentally the same hive plot as you've seen for a graph, except now the "node" is replaced by the y-value of the bar and the "edge" is drawn as a ribbon to make up the bar.
+
+The circular composition makes it easy to compare adjacent bar plots.
+
+Run ./run to generate some sample images in img/.
+
+
+DETAILS
+
+Much like for .dot files, the ../../bin/linnet image drawer does not know how to deal with stacked bar plots directly. These must be first parsed and turned into a data format that linnet understands.
+
+This parsing is done by bin/stackedbar. The input stacked bar plot files are expected to be a matrix with columns corresponding to each bar plot and rows to each bar. For example, three stacked bar plots with 4 bars each may look like this
+
+  2 3 1
+  4 8 5
+  1 3 5
+  4 2 2
+
+bin/stackedbar affects the output image by one or more of the following
+
+ -dual  interprets two columns as data on a single axes
+ -cumul interprets data to be cumulative, which is drawn as a stack
+ -norm  normalizes the data either by its max or sum
+
+For other parameters, see the man page
+
+  bin/stackedbar -man
+
+
+
+

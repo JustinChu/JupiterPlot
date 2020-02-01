@@ -1,0 +1,61 @@
+These examples walk you through how to use linnet to create hive plots
+from various data sources.
+
+Keep in mind that the bin/linnet tool draws hive plots using
+pre-parsed files as input. These files specify the name and length of
+each axis segment and the list of links between the axes, including
+link position, color, thickness and so on. Other tools covered in the
+examples, take common format files (e.g. .dot) and parse them into
+linnet input. This separation of interpreting and parsing the data and
+drawing the data is maintained to keep the visualization
+application-agnostic.
+
+The network example (3) has several helper scripts in
+examples/network/bin, which are indispensable for visualizing
+networks. These scripts are used by graph-based examples.
+
+Typically each example contains
+
+  etc/  - configuration file for linnet and other helper scripts
+  dot/  - .dot graph files, if applicable
+  data/ - data files parsed by helper scripts into format understood by linnet
+  img/  - hive plot images
+
+I suggest that you go through them in the following order.
+
+
+1. randomgraph.1
+
+Hive plot of a small random graph. 
+
+Demonstrates basic .dot file processing, axis assignment and placement.
+
+
+
+2. randomgraph.2
+
+Several versions of a hive plot of a random graph. Multiple graphs are available (number of nodes, density of edges) to play with.
+
+Demonstrates edge formatting rules and axis segments and axis cloning.
+
+
+
+3. network
+
+Comparison of two networks
+
+ - E coli gene regulation 
+ - Linux function call 
+
+Different hive plots are drawn for each network. Expands on the randomgraph.2 example by using real-world data. 
+
+Data taken from Yan KK, Fang G, Bhardwaj N, Alexander RP, Gerstein M. 2010. Comparing genomes to computer operating systems in terms of the topology and evolution of their regulatory control networks. Proc Natl Acad Sci U S A 107(20): 9186-9191.
+
+
+
+4. stackedbar
+
+Demonstrates the use of hive plots for visualization of ratios. For details of this approach, see
+
+http://mkweb.bcgsc.ca/embo/hiveplot
+

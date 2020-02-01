@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./list.modules | xargs -I MODULE perl -e 'print "MODULE ok\n"' -MMODULE
+

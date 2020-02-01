@@ -1,0 +1,250 @@
+#!/bin/env perl
+
+=pod
+
+=head1 NAME
+
+linnet - creates an image of a linear layout network visualization
+
+=head1 SYNOPSIS
+
+  linnet -conf etc/linnet.conf [-debug] [-help] [-man]
+
+=head1 DESCRIPTION
+
+See L<http://mkweb.bcgsc.ca/linnet>.
+
+=head1 HISTORY
+
+=over
+
+=item * v0.02 21 Oct 2010
+
+v0.02 Added documentation and missing module checks.
+
+=item * v0.01 5 Oct 2010
+
+Initial release.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+Martin Krzywinski
+
+=head1 CONTACT
+
+  Martin Krzywinski
+  Genome Sciences Centre
+  Vancouver BC Canada
+  www.bcgsc.ca
+  martink@bcgsc.ca
+
+=cut
+
+use strict;
+eval "use Config::General";
+if($@) {
+    missing_module("Config::General","http://search.cpan.org/~tlinden/Config-General-2.49/General.pm");
+}
+use Carp;
+use Cwd;
+use Data::Dumper;
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+eval "use GD";
+if($@) {
+    missing_module("GD","http://search.cpan.org/~lds/GD-2.45/GD.pm");
+}
+use GD::Image;
+eval "use GD::Polygon";
+if($@) {
+    missing_module("GD::Polygon","http://search.cpan.org/~lds/GD-2.45/GD/Polygon.pm");
+}
+use IO::File;
+eval "use Math::Bezier";
+if($@) {
+    missing_module("Math::Bezier","http://search.cpan.org/~abw/Math-Bezier-0.01/Bezier.pm");
+}
+eval "use List::Util";
+if($@) {
+    missing_module("List::Util","http://search.cpan.org/~gbarr/Scalar-List-Utils-1.23/lib/List/Util.pm");
+}
+eval "use List::MoreUtils";
+if($@) {
+    missing_module("List::MoreUtils","http://search.cpan.org/~vparseval/List-MoreUtils-0.22/lib/List/MoreUtils.pm");
+}
+eval "use Math::VecStat qw(sum min max average)";
+if($@) {
+    missing_module("Math::VecStat","http://search.cpan.org/~aspinelli/Math-VecStat-0.08/VecStat.pm");
+}
+eval "use Math::Round";
+if($@) {
+    missing_module("Math::Round","http://search.cpan.org/~grommel/Math-Round-0.06/Round.pm");
+}
+eval "use Pod::Usage";
+if($@) {
+    missing_module("Pod::Usage","http://search.cpan.org/~marekr/Pod-Parser-1.38/lib/Pod/Usage.pm");
+}
+eval "use Set::IntSpan";
+if($@) {
+    missing_module("Set::IntSpan","http://search.cpan.org/~swmcd/Set-IntSpan-1.14/IntSpan.pm");
+}
+eval "use Statistics::Descriptive";
+if($@) {
+    missing_module("Statistics::Descriptive","http://search.cpan.org/~shlomif/Statistics-Descriptive-3.0201/lib/Statistics/Descriptive.pm");
+}
+use Storable;
+use Readonly;
+if($@) {
+    missing_module("Readonly","http://search.cpan.org/~roode/Readonly-1.03/Readonly.pm");
+}
+eval "use Time::HiRes qw(gettimeofday tv_interval)";
+if($@) {
+    missing_module("Time::HiRes","http://search.cpan.org/~jhi/Time-HiRes-1.9721/HiRes.pm");
+}
+
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+use vars qw(%OPT %CONF $fnstamp);
+
+exit_if_missing();
+{
+    my $missing;
+    sub missing_module {
+	printf("You need to install the %s module for this program to run. See %s\n",@_);
+	$missing = 1;
+	exit;
+    }    
+    sub exit_if_missing {
+	exit if $missing;
+    }    
+}
+
+use linnet::conf;
+use linnet::color;
+use linnet::io;
+use linnet::image;
+use linnet::segment;
+use linnet::link;
+use linnet::axis;
+use linnet::draw;
+use linnet::util;
+
+Readonly my $DEG2RAD => 0.0174532925;
+Readonly my $RAD2DEG => 57.29577951;
+
+################################################################
+#
+# *** YOUR MODULE IMPORTS HERE
+#
+################################################################
+
+GetOptions( \%OPT, 
+	    "file=s", 
+	    "dir=s", 
+	    "polarity",
+	    "polarity_thickness=i",
+	    "polarity_thickness_mult=f",
+	    "configfile=s", "help", "man", "debug+", "cdump", 
+    );
+
+pod2usage() if $OPT{help};
+pod2usage( -verbose => 2 ) if $OPT{man};
+%CONF = linnet::conf::loadconfiguration( $OPT{configfile} );
+populateconfiguration();    # copy command line options to config hash
+validateconfiguration();
+linnet::conf::dump() if $CONF{cdump};
+
+my $imbrushes;
+
+# create the image, allocate colors and image brushes
+my ( $im, $imc, $imb ) = linnet::image::create( linnet::conf::getitem( "image", "size" ) );
+
+# construct the segment data structure
+my $segments = linnet::segment::read( linnet::conf::getitem( "segments", "file" ) );
+linnet::segment::process();
+
+# construct the axis data structure - requires that segments be allocated
+my $axes = linnet::axis::create($segments);
+
+my $links = linnet::link::read();
+linnet::link::process();
+
+#printdumper($axes);
+#printdumper($segments);
+
+# draw axes and segments
+for my $aid ( linnet::axis::get_ids() ) {
+  my $axis = linnet::axis::get_by_id($aid);
+  linnet::debug::printdebug( 1, "drawing axis", $aid, "angle", $axis->{angle} );
+  linnet::draw::box( $im, $imc, $axis->{xy}[0], $axis->{xy}[1], "white",
+                     linnet::conf::getitem( "segments", "width" ) );
+  for my $axis_sid ( linnet::axis::get_segment_ids($axis) ) {
+    linnet::debug::printdebug( 1, "drawing segment", $axis_sid );
+    my $s = linnet::segment::get_by_id($axis_sid);
+    linnet::draw::box( $im, $imc, $s->{xy}[0], $s->{xy}[1], $s->{color},
+                       linnet::conf::getitem( "segments", "width" ) );
+  }
+}
+
+for my $link_track ( linnet::link::get_link_tracks() ) {
+  for my $link ( sort { ($a->{options}{z}||0) <=> ($b->{options}{z}||0)} linnet::link::get_links($link_track) ) {
+    # links between segments on the same axis are not shown
+    my $s1 = linnet::segment::get_by_id($link->{s1}{id});
+    my $s2 = linnet::segment::get_by_id($link->{s2}{id});
+    next if $s1->{_axis} eq $s2->{_axis};
+    linnet::link::draw($im,$imc,$link_track,$link);
+  }
+}
+linnet::image::write($im);
+
+exit;
+
+################################################################
+#
+# *** DO NOT EDIT BELOW THIS LINE ***
+#
+################################################################
+
+sub populateconfiguration {
+  foreach my $key ( keys %OPT ) {
+    $CONF{$key} = $OPT{$key};
+  }
+  repopulateconfiguration( \%CONF );
+}
+
+sub validateconfiguration {
+  $CONF{image}{file} = $OPT{file} if $OPT{file};
+  $CONF{image}{dir}  = $OPT{dir}  if $OPT{dir};
+
+}
+
+sub repopulateconfiguration {
+  my $root = shift;
+  for my $key ( keys %$root ) {
+    my $value = $root->{$key};
+    if ( ref($value) eq "HASH" ) {
+      repopulateconfiguration($value);
+    }
+    elsif ( ref($value) eq "ARRAY" ) {
+      for my $item (@$value) {
+        repopulateconfiguration($item);
+      }
+    }
+    else {
+      while ( $value =~ /__([^_].+?)__/g ) {
+        my $source = "__" . $1 . "__";
+        my $target = eval $1;
+        $value =~ s/\Q$source\E/$target/g;
+	$value = eval $value;
+      }
+      $root->{$key} = $value;
+    }
+  }
+}
+

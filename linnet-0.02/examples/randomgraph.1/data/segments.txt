@@ -1,0 +1,3 @@
+axisall 0 505 axisall yellow
+axisin 0 244 axisin green
+axisout 0 248 axisout red

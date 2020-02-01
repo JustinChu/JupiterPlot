@@ -1,0 +1,5 @@
+# creates a panel of ecoli and linux network images
+convert -size 1500x1500 xc:white -draw "image SrcOver 0,0 500,500, 'img/hiveplot.ecoli.1.png'" -draw "image SrcOver 500,0 500,500, 'img/hiveplot.ecoli.2.png'" -draw "image SrcOver 1000,0 500,500, 'img/hiveplot.ecoli.3.png'" -draw "image SrcOver 0,500 500,500, 'img/hiveplot.ecoli.4.png'" -draw "image SrcOver 500,500 500,500, 'img/hiveplot.ecoli.5.png'" -draw "image SrcOver 1000,500 500,500, 'img/hiveplot.ecoli.6.png'" -draw "image SrcOver 0,1000 500,500, 'img/hiveplot.ecoli.7.png'" img/panel.ecoli.png
+
+convert -size 1500x1500 xc:white -draw "image SrcOver 0,0 500,500, 'img/hiveplot.linux.1.png'" -draw "image SrcOver 500,0 500,500, 'img/hiveplot.linux.2.png'" -draw "image SrcOver 1000,0 500,500, 'img/hiveplot.linux.3.png'" -draw "image SrcOver 0,500 500,500, 'img/hiveplot.linux.4.png'" -draw "image SrcOver 500,500 500,500, 'img/hiveplot.linux.5.png'" -draw "image SrcOver 1000,500 500,500, 'img/hiveplot.linux.6.png'" -draw "image SrcOver 0,1000 500,500, 'img/hiveplot.linux.7.png'" img/panel.linux.png
+

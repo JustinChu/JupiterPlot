@@ -1,0 +1,201 @@
+#!/bin/env perl
+
+=pod
+
+=head1 NAME
+
+sif2dot - convert a .sif file to .dot
+
+=head1 SYNOPSIS
+
+  cat graph.dot | sif2dot [-directed] > graph.sif
+
+  sif2dot -file graph.dot [-directed] > graph.sif
+
+=head1 DESCRIPTION
+
+See L<http://mkweb.bcgsc.ca/linnet>.
+
+=head1 HISTORY
+
+=over
+
+=item * v0.01 1 Nov 2010
+
+Initial release.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+Martin Krzywinski
+
+=head1 CONTACT
+
+  Martin Krzywinski
+  Genome Sciences Centre
+  Vancouver BC Canada
+  www.bcgsc.ca
+  martink@bcgsc.ca
+
+=cut
+
+use strict;
+eval "use Config::General";
+if($@) {
+    missing_module("Config::General","http://search.cpan.org/~tlinden/Config-General-2.49/General.pm");
+}
+use Carp;
+use Cwd;
+use Data::Dumper;
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+use IO::File;
+eval "use List::Util";
+if($@) {
+    missing_module("List::Util","http://search.cpan.org/~gbarr/Scalar-List-Utils-1.23/lib/List/Util.pm");
+}
+eval "use List::MoreUtils";
+if($@) {
+    missing_module("List::MoreUtils","http://search.cpan.org/~vparseval/List-MoreUtils-0.22/lib/List/MoreUtils.pm");
+}
+eval "use Math::VecStat qw(sum min max average)";
+if($@) {
+    missing_module("Math::VecStat","http://search.cpan.org/~aspinelli/Math-VecStat-0.08/VecStat.pm");
+}
+eval "use Pod::Usage";
+if($@) {
+    missing_module("Pod::Usage","http://search.cpan.org/~marekr/Pod-Parser-1.38/lib/Pod/Usage.pm");
+}
+use Storable;
+use Readonly;
+if($@) {
+    missing_module("Readonly","http://search.cpan.org/~roode/Readonly-1.03/Readonly.pm");
+}
+
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/../../lib";
+use lib "$FindBin::RealBin/lib";
+use vars qw(%OPT %CONF $fnstamp);
+
+exit_if_missing();
+{
+    my $missing;
+    sub missing_module {
+	printf("You need to install the %s module for this program to run. See %s\n",@_);
+	$missing = 1;
+	exit;
+    }    
+    sub exit_if_missing {
+	exit if $missing;
+    }    
+}
+
+use linnet::conf;
+use linnet::io;
+use linnet::util;
+
+################################################################
+#
+# *** YOUR MODULE IMPORTS HERE
+#
+################################################################
+
+GetOptions( \%OPT, "file=s", "directed", "configfile=s", "help", "man", "debug+", "cdump" );
+
+pod2usage() if $OPT{help};
+pod2usage( -verbose => 2 ) if $OPT{man};
+%CONF = linnet::conf::loadconfiguration( $OPT{configfile} );
+populateconfiguration();    # copy command line options to config hash
+validateconfiguration();
+linnet::conf::dump() if $CONF{cdump};
+
+my $inputhandle;
+if($CONF{file}) {
+    linnet::debug::printdie("No such file $CONF{file}") unless -e $CONF{file};
+    $inputhandle = IO::File->new($CONF{file});
+} else {
+    $inputhandle = \*STDIN;
+}
+
+my %nodes;
+my @edges;
+while(<$inputhandle>) {
+    chomp;
+    next if /^\s*#/;
+    my ($n1,$interaction,$n2) = split;
+    $n1 =~ s/\W//g;
+    $n2 =~ s/\W//g;
+    $nodes{$n1}{$interaction}++;
+    $nodes{$n2}{$interaction}++;
+    push @edges, [$n1,$n2,$interaction];
+}
+
+linnet::debug::printinfo("graph g {");
+for my $node (sort keys %nodes) {
+    my @interactions = sort {$nodes{$node}{$b} <=> $nodes{$node}{$a}} keys %{$nodes{$node}};
+    my @types;
+    for my $i (0..@interactions-1) {
+	my $interaction = $interactions[$i];
+	push @types, sprintf('type%d="%s"',$i,$interaction);
+	push @types, sprintf('rank%d="%f"',$i,$nodes{$node}{$interaction} / sum(values %{$nodes{$node}}));
+    }
+    linnet::debug::printinfo(sprintf(qq{"%s" [%s];},$node,join(",",@types)));
+}
+my $delim = $CONF{directed} ? "->" : "--";
+for my $edge (@edges) {
+    linnet::debug::printinfo(sprintf(qq{"%s" %s "%s" [type="%s"];},
+				     $edge->[0],
+				     $delim,
+				     $edge->[1],$edge->[2]));
+}
+linnet::debug::printinfo("}");
+
+exit;
+
+################################################################
+#
+# *** DO NOT EDIT BELOW THIS LINE ***
+#
+################################################################
+
+sub populateconfiguration {
+  foreach my $key ( keys %OPT ) {
+    $CONF{$key} = $OPT{$key};
+  }
+  repopulateconfiguration( \%CONF );
+}
+
+sub validateconfiguration {
+  $CONF{image}{file} = $OPT{file} if $OPT{file};
+  $CONF{image}{dir}  = $OPT{dir}  if $OPT{dir};
+
+}
+
+sub repopulateconfiguration {
+  my $root = shift;
+  for my $key ( keys %$root ) {
+    my $value = $root->{$key};
+    if ( ref($value) eq "HASH" ) {
+      repopulateconfiguration($value);
+    }
+    elsif ( ref($value) eq "ARRAY" ) {
+      for my $item (@$value) {
+        repopulateconfiguration($item);
+      }
+    }
+    else {
+      while ( $value =~ /__([^_].+?)__/g ) {
+        my $source = "__" . $1 . "__";
+        my $target = eval $1;
+        $value =~ s/\Q$source\E/$target/g;
+      }
+      $root->{$key} = $value;
+    }
+  }
+}
+

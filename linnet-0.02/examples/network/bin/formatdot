@@ -1,0 +1,216 @@
+#!/bin/env perl
+
+=pod
+
+=head1 NAME
+
+formatdot - apply formatting to DOT file for rendering with neato
+
+=head1 SYNOPSIS
+
+  # optionally, create a random graph
+  bin/makedot -nodes 100 -edges 150 -sampling gaussian -fullyconnected > graph.dot
+
+  # pass the output of formatdot to neato
+  cat graph.dot | bin/formatdot | neato -Tpng > graph.png
+
+  # save for later use
+  cat graph.dot | bin/formatdot > formatted.dot
+
+=head1 DESCRIPTION
+
+Formatting attributes are added to nodes and the graph to create a legible graph with neato.
+
+Nodes are formatted as filled circles, with the color mapping
+
+  # directed graph
+  red     out degree only
+  orange  in/out degree
+  green   in degree only
+
+  # undirected graph
+  red     degree 1
+  orange  degree 2
+  green   degree >3
+
+=head1 LINEAR LAYOUT FOR NETWORK VISUALIZATION
+
+This script is part of the linear layout for network visualization package. For details, see L<http://mkweb.bcgsc.ca/linnet>.
+
+=head1 HISTORY
+
+=over
+
+=item * 27 Sep 2010
+
+Added color mappings.
+
+=item * 9 Sep 2010 
+
+First version.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+=head1 CONTACT
+
+Martin Krzywinski
+Genome Sciences Centre
+Vancouver BC Canada
+www.bcgsc.ca
+martink@bcgsc.ca
+
+=cut
+
+use strict;
+use warnings FATAL => "all";
+
+use Carp;
+use Config::General;
+use Cwd qw(getcwd abs_path);
+use Math::VecStat qw(min max sum);
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+use Pod::Usage;
+use Time::HiRes qw(gettimeofday tv_interval);
+use lib "$FindBin::RealBin/../../../lib";
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+
+our ( %OPT, %CONF, $conf );
+our $VERSION = 0.01;
+
+# common and custom module imports below
+use Graph::Reader::Dot;
+use Graph::Writer::Dot;
+use Graph;
+
+use linnet::conf;
+use linnet::io;
+use linnet::util;
+use linnet::debug;
+
+$linnet::debug::fnstamp_debug_level = 5;
+$linnet::debug::exit_on_dump = 1;
+
+GetOptions(
+            \%OPT,   
+	   "file=s",
+	   "cdump",
+	   "undirected",
+	   "configfile=s", 
+	   "help",
+	   "man",
+	   "debug+",     
+	   "cdump"
+          );
+
+# read and parse configuration file
+pod2usage() if $OPT{help};
+pod2usage( -verbose => 2 ) if $OPT{man};
+%CONF = linnet::conf::loadconfiguration( $OPT{configfile} );
+populateconfiguration();    # copy command line options to config hash
+validateconfiguration();
+linnet::conf::dump() if $CONF{cdump};
+
+my $t0 = [gettimeofday];
+
+################################################################
+# read/parse DOT file
+
+my $reader = Graph::Reader::Dot->new();
+my $graph  = $reader->read_graph( get_fh() );
+if($CONF{undirected}) {
+  my $graph_undirected = $graph->undirected_copy;
+  $graph = $graph_undirected;
+}
+
+linnet::debug::printdebug(1,"read",$graph->is_directed ? "directed" : "undirected","graph",int($graph->vertices),"nodes",int($graph->edges),"edges");
+
+linnet::debug::printinfo("graph G {");
+linnet::debug::printinfo("graph [size=30 ratio=1];");
+linnet::debug::printinfo("node [style=filled shape=circle fontsize=0 fixedsize=true height=0.1 width=0.1];");
+for my $vertex ($graph->vertices) {
+  my $fillcolor = "black";
+  my $node_out  = $graph->successors($vertex);
+  my $node_in   = $graph->predecessors($vertex);
+
+  if($graph->is_directed) {
+    if($node_out && $node_in) {
+      $fillcolor = "orange";
+    } elsif ($node_out) {
+      $fillcolor = "red";
+    } elsif ($node_in) {
+      $fillcolor = "green";
+    }
+  } else {
+    my $node_degree = $graph->degree($vertex);
+    if($node_degree == 1) {
+      $fillcolor = "red";
+    } elsif ($node_degree == 2) {
+      $fillcolor = "orange";
+    } else {
+      $fillcolor = "green";
+    }
+  }
+  linnet::debug::printinfo(sprintf('%s [label=" " fillcolor=%s fontcolor=invis];',$vertex,$fillcolor,$fillcolor));
+}
+for my $edge ($graph->edges) {
+  my ($node1,$node2) = @$edge;
+  linnet::debug::printinfo( sprintf("%s -- %s;",$node1,$node2));
+}
+linnet::debug::printinfo("}");
+
+sub get_fh {
+  my $fh;
+  if ( my $file = $CONF{file} ) {
+    $fh = linnet::util::open_file( $CONF{file} );
+  }
+  else {
+    $fh = \*STDIN;
+  }
+  return $fh;
+}
+
+sub populateconfiguration {
+  foreach my $key ( keys %OPT ) {
+    $CONF{$key} = $OPT{$key};
+  }
+  repopulateconfiguration( \%CONF );
+}
+
+sub validateconfiguration {
+  $CONF{files}{dir} ||= $OPT{dir};
+  $CONF{files}{dir} ||= ".";
+  
+}
+
+sub repopulateconfiguration {
+  my $root = shift;
+  return unless ref($root);
+  for my $key ( keys %$root ) {
+    my $value = $root->{$key};
+    if ( ref($value) eq "HASH" ) {
+      repopulateconfiguration($value);
+    }
+    elsif ( ref($value) eq "ARRAY" ) {
+      for my $item (@$value) {
+        repopulateconfiguration($item);
+      }
+    }
+    else {
+      while ( $value =~ /__([^_].+?)__/g ) {
+        my $source = "__" . $1 . "__";
+        my $target = eval $1;
+        $value =~ s/\Q$source\E/$target/g;
+      }
+      $root->{$key} = $value;
+    }
+  }
+}
+

@@ -1,0 +1,4 @@
+axisall_left 0 14 axisall_left red
+axisall_right 0 14 axisall_right red
+axisin 0 4 axisin green
+axisout 0 5 axisout yellow

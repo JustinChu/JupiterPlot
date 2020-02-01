@@ -1,0 +1,444 @@
+#!/bin/env perl
+
+=pod
+
+=head1 NAME
+
+stackedbar - generate a segment and link file for a stacked bar plot
+
+=head1 SYNOPSIS
+
+  cat input.txt | bin/stackedbar -dir data/ [-dual] [-norm VALUE] [-remap FUNCTION] [-sumnorm VALUE] [-axisnorm] [-axis_remap FUNCTION] [-cumul]
+
+=head1 DESCRIPTION
+
+This script generates input data files for C<linnet> that represent C<m> stacked bar plots.
+
+=head2 INPUT
+
+The input file is interpreted as follows. Columns are considered to be
+axes, with each column assigned to a unique axis. If -dual is used
+then two columns are assigned to an axis (one to the left of the axis
+and one to the right).
+
+Within a column, each row corresponds to a value in the stacked bar
+plot. Missing values are supported, but not encouraged. Instead, use 0.
+
+To support missing values, the input field delimiter is not collapsed.
+
+A blank line is considered to be the end of the file, even if more data exists. 
+
+As usual, leading # represent comments.
+
+=head2 DATA REMAPPING
+
+Input data can be remapped using a function provided by C<-remap>. The
+function syntax is a string in which X will be replaced by the data
+value. The string will be passed through C<eval()>.
+
+-over 
+
+=item * -norm FUNCTION
+
+Applies FUNCTION=f(X) to input data. For example
+
+  -norm X/1000
+  -norm log(X)
+  -norm X**2-X
+
+=item * -axis_remap FUNCTION
+
+Remaps the length of an axis, in the same way as -norm is used to remap the input data.
+
+=back
+
+=head2 NORMALIZATION
+
+=over
+
+=item * -norm VALUE
+
+The maximum in each stack is normalized to C<VALUE>.
+
+=item * -sumnorm VALUE
+
+The sum in each stack is normalized to C<VALUE>.
+
+=item * -axisnorm
+
+The sum in each axis stack is normalized to the maximum sum of the two
+stacks. This can be used together with -norm or -sumnorm.
+
+=item * -cumul
+
+Values will be stacked on the axes. If you are drawing stacked bar
+plots (links are drawn as ribbons), the -cumul optiion is probably
+what you want.
+
+=head1 HISTORY
+
+=over
+
+=item * 6 Sep 2010 
+
+First version.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+=head1 CONTACT
+
+Martin Krzywinski
+Genome Sciences Centre
+Vancouver BC Canada
+www.bcgsc.ca
+martink@bcgsc.ca
+
+=cut
+
+use strict;
+use warnings FATAL => "all";
+
+use Carp;
+use Config::General;
+use Cwd qw(getcwd abs_path);
+use Math::VecStat qw(min max sum);
+use File::Basename;
+use FindBin;
+use Number::Format qw(unformat_number);
+use Getopt::Long;
+use Pod::Usage;
+use Time::HiRes qw(gettimeofday tv_interval);
+use lib "$FindBin::RealBin/../../../lib";
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+
+our ( %OPT, %CONF, $conf );
+our $VERSION = 0.01;
+
+# common and custom module imports below
+
+use linnet::segment;
+use linnet::axis;
+use linnet::conf;
+use linnet::util;
+use linnet::io;
+use linnet::debug;
+
+GetOptions(
+    \%OPT,     "norm:f",      "sumnorm:f",    "axisnorm",
+    "cumul",   "file=s",      "dir=s",        "output=s",
+    "dual",    "delimiter=s", "configfile=s", "help",
+    "remap=s", "axis_remap=s", "man",         "debug+",       "cdump"
+);
+
+# read and parse configuration file
+pod2usage() if $OPT{help};
+pod2usage( -verbose => 2 ) if $OPT{man};
+%CONF = linnet::conf::loadconfiguration( $OPT{configfile} );
+populateconfiguration();    # copy command line options to config hash
+validateconfiguration();
+linnet::conf::dump() if $CONF{cdump};
+
+my $fh;
+if ( my $file = $CONF{file} ) {
+    $fh = linnet::util::open_file( $CONF{file} );
+}
+else {
+    $fh = \*STDIN;
+}
+
+my @axes;
+
+# read the input file
+#
+#
+# if not -dual
+# axis0 axis1 axis2 axis3
+#
+# if -dual
+# axis0 axis0 axis1 axis1 ...
+#
+# col0  col1  col2  col3 ...
+# x00		x10		x20		x30
+# x01		x11		x21		x31
+# x02		x12		x22		x32
+# x03		x13		x23		x33		...
+# ...	  ...	  ...   ...
+#
+
+while (<$fh>) {
+    chomp;
+    next if /^\s*\#/;
+    my @tok = split( /$CONF{delimiter}+/, $_ );
+    if ( !@tok ) {
+
+        # consider this the end of the file;
+        close($fh);
+        last;
+    }
+    if ( $CONF{dual} && @tok % 2 ) {
+        die "when -dual is used, the number of columns must be even.";
+    }
+    for my $col_idx ( 0 .. @tok - 1 ) {
+        my $axis   = col_idx_to_axis_id($col_idx);
+        my $side   = col_idx_to_axis_side($col_idx);
+        my $value  = unformat_number( $tok[$col_idx] );
+        my $rvalue = remap_value($value,$CONF{remap});
+        linnet::debug::printdebug( 1, "axis", $axis, $side, "value", $value,
+            "remap", $rvalue );
+        push @{ $axes[$axis][$side] }, $rvalue;
+    }
+}
+
+$fh->close();
+
+my $num_layers =
+  max( map { int(@$_) }
+      $CONF{dual} ? ( @{ $axes[0] }, @{ $axes[1] } ) : @{ $axes[0] } );
+linnet::debug::printdebug( 1, "layers", $num_layers );
+
+# norm - normalizes max of each axis
+# norm - normalizes sum of each axis
+if ( defined $CONF{norm} || defined $CONF{sumnorm} || $CONF{axisnorm} ) {
+    for my $axis_idx ( 0 .. @axes - 1 ) {
+        my @sidesum;
+        for my $side_idx ( 0 .. @{ $axes[$axis_idx] } - 1 ) {
+            my $side = $axes[$axis_idx][$side_idx];
+            if ( defined $CONF{norm} ) {
+                my $newmax = $CONF{norm} || 1;
+                my $max = max(@$side);
+                $side = [ map { $newmax * $_ / $max } @$side ];
+            }
+            if ( defined $CONF{sumnorm} ) {
+                my $newsum = $CONF{sumnorm} || 1;
+                my $sum = sum(@$side);
+                $side = [ map { $newsum * $_ / $sum } @$side ];
+            }
+            push @sidesum, sum(@$side);
+            $axes[$axis_idx][$side_idx] = $side;
+        }
+        if ( $CONF{axisnorm} ) {
+            my $newsum = max(@sidesum);
+            for my $side_idx ( 0 .. @{ $axes[$axis_idx] } - 1 ) {
+                my $side = $axes[$axis_idx][$side_idx];
+                my $sum  = sum(@$side);
+                $side = [ map { $newsum * $_ / $sum } @$side ];
+                $axes[$axis_idx][$side_idx] = $side;
+            }
+        }
+        for my $side_idx ( 0 .. @{ $axes[$axis_idx] } - 1 ) {
+            my $side = $axes[$axis_idx][$side_idx];
+            linnet::debug::printdebug( 1, "norm", $axis_idx, $side_idx, "max",
+                scalar max(@$side),
+                "sum", scalar sum(@$side) );
+        }
+    }
+}
+
+# create segments
+my $segment_file = "$CONF{files}{dir}/$CONF{files}{segments}";
+my $segment_fh   = IO::File->new(">$segment_file");
+linnet::debug::printdie("could not write to segment file [$segment_file]")
+  if !$segment_fh;
+linnet::debug::printdebug( 1, "writing segments to", $segment_file );
+for my $i ( 0 .. @axes - 1 ) {
+    my @maxsizes = map { max(@$_) } @{ $axes[$i] };
+    my @sums     = map { sum(@$_) } @{ $axes[$i] };
+    my $maxsum   = max(@sums);
+    my $maxsize  = max(@maxsizes);
+    my $segment_size = $CONF{cumul} ? $maxsum : $maxsize;
+    linnet::debug::printdebug( 1, "axis", $i, "sums", @sums, "size",
+        $segment_size );
+    my @colors = split( /\s*,\s*/, $CONF{axis_colors} );
+    my $color = $colors[ $i % @colors ];
+    printf $segment_fh ( "%s %s %s %s %s\n", 
+			 axis_id_to_name($i), 
+			 0,
+			 remap_value($segment_size,$CONF{axis_remap}),
+			 $i, $color );
+}
+$segment_fh->close();
+
+my $link_file = "$CONF{files}{dir}/$CONF{files}{links}";
+my $link_fh   = IO::File->new(">$link_file");
+linnet::debug::printdie("could not write to link file [$link_file]")
+  if !$link_fh;
+linnet::debug::printdebug( 1, "writing links to", $link_file );
+my @cumul;
+for my $i ( 0 .. @axes - 1 ) {
+
+    # this axis
+    my $a1idx = $i;
+
+    # next axis
+    my $a2idx = $i <= @axes - 2 ? $i + 1 : 0;
+    my $axis1 = axis_id_to_name($a1idx);
+    my $axis2 = axis_id_to_name($a2idx);
+
+    # initialize cumulative counts, if stacked is required
+    $cumul[$a1idx] = [ 0, 0 ];
+    $cumul[$a2idx] = [ 0, 0 ];
+
+    # from last stack to first stack
+    # if -dual is not used, then last stack IS the first stack
+    my @sides1 = @{ $axes[$a1idx][-1] };
+    my @sides2 = @{ $axes[$a2idx][0] };
+
+    for my $j ( 0 .. @sides1 - 1 ) {
+        my @colors = split( /\s*,\s*/, $CONF{layer_colors} );
+        my $color = $colors[ $j % @colors ];
+        $color .= sprintf( "_a%d", $CONF{layer_transparency} )
+	    if $CONF{layer_transparency};
+        my ( $a1start, $a1end );
+        my ( $a2start, $a2end );
+        if ( $CONF{cumul} ) {
+            $a1start = $cumul[$a1idx][-1];
+            $a1end   = $cumul[$a1idx][-1] + $sides1[$j];
+            $a2start = $cumul[$a2idx][0];
+            $a2end   = $cumul[$a2idx][0] + $sides2[$j];
+            $cumul[$a1idx][-1] += $sides1[$j];
+            $cumul[$a2idx][0]  += $sides2[$j];
+        }
+        else {
+            $a1start = $sides1[$j];
+            $a1end   = $sides1[$j];
+            $a2start = $sides2[$j];
+            $a2end   = $sides2[$j];
+        }
+        printf $link_fh (
+            "%s %f %f %s %f %f color=%s\n",
+            $axis1, 
+	    remap_value($a1start,$CONF{axis_remap}), 
+	    remap_value($a1end,$CONF{axis_remap}),
+	    $axis2, 
+	    remap_value($a2start,$CONF{axis_remap}),
+	    remap_value($a2end,$CONF{axis_remap}),
+	    $color,
+        );
+    }
+}
+
+$link_fh->close();
+
+exit;
+
+sub remap_value {
+    my ($value,$function) = @_;
+    if ( $function ) {
+        my $fn = $function;
+        $fn =~ s/X/$value/g;
+        $value = eval $fn;
+        if ($@) {
+            linnet::debug::printdie("Could not evaluate the remap function $function, which parsed to $fn.");
+        }
+	linnet::debug::printdebug(1,"remapping $fn $value");
+    }
+    return $value;
+}
+
+# return axis id for a given input file column
+sub col_idx_to_axis_id {
+    my $idx = shift;
+    return $CONF{dual} ? int( $idx / 2 ) : $idx;
+}
+
+# return side of axis (0 left, 1 right) for a given input file column
+sub col_idx_to_axis_side {
+    my $idx = shift;
+    return $CONF{dual} ? $idx % 2 : 0;
+}
+
+# return both axis id and side for a given input file column
+sub col_idx_to_axis {
+    my $idx = shift;
+    return ( col_idx_to_axis_id($idx), col_idx_to_axis_side($idx) );
+}
+
+sub axis_id_to_name {
+    my $id = shift;
+    return sprintf( "axis%s", $id );
+}
+
+my $cols;
+my $axes;
+my @stacks;
+
+# create stacks
+$link_file = "$CONF{dir}/links.stacked.txt";
+open( F, ">$link_file" )
+  || linnet::debug::printdie("could not write to link file [$link_file]");
+my $cumul;
+for my $layer_idx ( 0 .. $cols - 1 ) {
+    my $color = ( split( ",", $CONF{layer_colors} ) )[$layer_idx];
+    for my $stack_idx ( 0 .. $axes - 1 ) {
+        my $value_left  = $stacks[ 2 * $stack_idx ][$layer_idx];
+        my $value_right = $stacks[ 2 * $stack_idx + 1 ][$layer_idx];
+        linnet::debug::printdebug(
+            1,       "value",    "layer", $layer_idx,
+            "stack", $stack_idx, "left",  $value_left,
+            "right", $value_right
+        );
+
+        printf F (
+            "axis%s %d %d axis%s %d %d color=%s\n",
+            $stack_idx,
+            ( $cumul->[ 2 * $stack_idx ] || 0 ),
+            ( $cumul->[ 2 * $stack_idx ] || 0 ) + $value_left,
+            $stack_idx < 2 ? $stack_idx + 1 : 0,
+            ( $cumul->[ 2 * $stack_idx + 1 ] || 0 ),
+            ( $cumul->[ 2 * $stack_idx + 1 ] || 0 ) + $value_right,
+            $color
+        );
+
+        $cumul->[ 2 * $stack_idx ] += $value_left;
+        $cumul->[ 2 * $stack_idx + 1 ] += $value_right;
+
+    }
+}
+close(F);
+
+sub populateconfiguration {
+    foreach my $key ( keys %OPT ) {
+        $CONF{$key} = $OPT{$key};
+    }
+    repopulateconfiguration( \%CONF );
+}
+
+sub validateconfiguration {
+    if ( $CONF{dir} ) {
+        $CONF{files}{dir} = $CONF{dir};
+    }
+    else {
+        $CONF{files}{dir} = ".";
+
+    }
+}
+
+sub repopulateconfiguration {
+    my $root = shift;
+    for my $key ( keys %$root ) {
+        my $value = $root->{$key};
+        if ( ref($value) eq "HASH" ) {
+            repopulateconfiguration($value);
+        }
+        elsif ( ref($value) eq "ARRAY" ) {
+            for my $item (@$value) {
+                repopulateconfiguration($item);
+            }
+        }
+        else {
+            while ( $value =~ /__([^_].+?)__/g ) {
+                my $source = "__" . $1 . "__";
+                my $target = eval $1;
+                $value =~ s/\Q$source\E/$target/g;
+            }
+            $root->{$key} = $value;
+        }
+    }
+}
+

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# create a couple of medium-sized random graphs
+
+# random uniform distribution
+echo "Creating random graph with uniformly sampled edges"
+../network/bin/makedot -nodes 1000 -edges 2000 -sampling uniform -fullyconnected -directed > graph.uniform.dot
+
+# random gaussian distribution
+echo "Creating random graph with normally (Gaussian) sampled edges"
+../network/bin/makedot -nodes 1000 -edges 2000 -sampling gaussian -fullyconnected -directed > graph.gaussian.dot
+
+echo "Done. Now run ./makehiveplots"
+
+

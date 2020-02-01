@@ -1,0 +1,70 @@
+Sample input files for dot parser bin/parsedot and formatter bin/formatdot. 
+
+1. E. coli / Linux networks
+2. Random Graphs
+
+To generate images for each of these data sets, run
+
+./runme.ecoli-linux
+./runme.random
+
+Each image has a slightly different configuration. For configuration details, see etc/ where
+
+parsedot.N.conf - controls how nodes are mapped to axes (done by bin/parsedot)
+linnet.N.conf   - formats the image (axis placement, color, etc) (done by ../../bin/linnet)
+
+################################################################
+
+1. E. coli / Linux networks (ecoli-linux/)
+
+The E. coli gene regulatory network and Linux kernel function call network was obtained from
+
+Yan KK, Fang G, Bhardwaj N, Alexander RP, Gerstein M. 2010. Comparing genomes to computer operating systems in terms of the topology and evolution of their regulatory control networks. Proc Natl Acad Sci U S A 107(20): 9186-9191.
+
+The data set was formatted as .dot files. For more information about the .dot format, see http://en.wikipedia.org/wiki/DOT_language
+
+For both networks, nodes are classified as 'persistent' or 'nonpersistent' according to the definition in the original paper. Edges are classified using a type=N label where N=0,1,2,3 defined as follows. For E. coli
+
+type=0  - E. coli gene names share 0 common start characters (crp acea)
+type=1  - E. coli gene names share 1 common start characters (arca acee)
+type=2  - E. coli gene names share 2 common start characters (argr arti)
+type=3  - E. coli gene names share 3 common start characters (acrr acrb)
+
+and for Linux
+
+type=0  - Linux function names share 0 common start substrings (is_enabled_show sprintf)
+type=1  - Linux function names share 1 common start substrings (kobject_release kobject_cleanup)
+type=2  - Linux function names share 2 common start substrings (tty_ldisc_release tty_ldisc_put)
+type=3  - Linux function names share 3 common start substrings (acpi_ex_store acpi_ex_store_object_to_index)
+
+The edge type classification was added as an additional layer in the data to extend its use as an example data set. The edge classification was not included in the paper.
+
+The files are
+
+ecoli.dot - E. coli gene regulatory network
+linux.dot - Linux kernel function call network
+
+ecoli.terms.txt
+linux.terms.txt - frequency distribution of gene names and function substrings
+
+
+2. Random Graphs (random/)
+
+Created with ./makerandgraph, which calls
+tools/network/bin/makedot. Several sets of random graphs are available
+in input/, each named graph.SIZE.DENSITY.dot where the file name components stand for
+
+              nodes
+SIZE = small  100
+       medium 1000
+       large  2500
+       huge   5000
+
+                 edges/node
+DENSITY = sparse 0.5
+          medium 1.5
+          dense  5
+
+The graphs are random, in the sense that edge connections were sampled randomly between the nodes. For each of the edges, the node identity (1..N) was sampled from a normal distribution, with an average avg=N/2 and standard deviation N/8 = avg/4. 
+
+Adjust the 'g' variable in the ./runme bash script to generate example images from a different graph file.

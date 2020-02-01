@@ -1,0 +1,8 @@
+axisall_nonpersistent_left 0 468 axisall_nonpersistent_left yellow
+axisall_nonpersistent_right 0 468 axisall_nonpersistent_right yellow
+axisall_persistent_left 0 939 axisall_persistent_left dyellow
+axisall_persistent_right 0 939 axisall_persistent_right dyellow
+axisin_nonpersistent 0 704 axisin_nonpersistent green
+axisin_persistent 0 87 axisin_persistent dgreen
+axisout_nonpersistent 0 22 axisout_nonpersistent red
+axisout_persistent 0 30 axisout_persistent dred

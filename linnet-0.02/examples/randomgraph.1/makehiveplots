@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "Creating hive plot for uniformly sampled graph"
+echo "...parsing .dot file into data files understood by linnet (files written to ./data)"
+cat graph.uniform.dot | ../network/bin/parsedot -conf etc/parsedot.conf -dir data
+echo "...drawing hive plot (image written to ./img)"
+../../bin/linnet -conf etc/linnet.conf -file img/hiveplot.uniform.png
+
+echo "Creating linear network visualization for medium-sized random (gaussian) graph"
+cat graph.gaussian.dot | ../network/bin/parsedot -conf etc/parsedot.conf -dir data
+../../bin/linnet -conf etc/linnet.conf -file img/hiveplot.gaussian.png
+
+echo "Done. Look in img/"

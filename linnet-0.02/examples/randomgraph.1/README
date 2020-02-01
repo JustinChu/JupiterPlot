@@ -1,0 +1,92 @@
+To run the examples here, execute
+
+./run
+
+
+RANDOM GRAPHS
+
+In this example, a .dot file for a random graph is created using
+
+./makegraphs
+
+The .dot files are parsed parsed and hive plots are created using
+
+./makehiveplots
+
+The output is placed in
+
+./img
+
+The hive plot configuration file used for these plots is in
+
+./etc
+
+
+DETAILS
+
+The 'makegraphs' script calls
+
+../network/bin/makedot 
+
+which creates .dot files of the random graphs. You can generate graphs
+of any size and connectivity, and choose how nodes are selected for
+edges (uniform or gaussian).
+
+Take a look at the man page for 'makedot' to learn about how to
+control the random graph structure.
+
+../network/bin/makedot -man
+
+The two .dot files in this directory
+
+graph.gaussian.dot - gaussian edge sampling
+graph.uniform.dot  - uniform edge sampling
+
+vary only by how nodes are sampled for edge creation.
+
+For a graph with N nodes, in uniform sampling a node has a 1/N
+probability of participating in an edge. In gaussian sampling, the
+probability is normal with mean N/2 and default standard deviation
+N/8.
+
+In both .dot files, the graph has
+ 
+  - 1000 nodes
+  - 2000 edges
+  - fully connected (each node has at least one edge)
+  - directed
+
+The 'makehiveplots' script calls 
+
+../network/bin/parsedot
+
+which is responsible for parsing the .dot file into a segment and link
+file that is understood by linnet. During this step, nodes are
+assigned to and placed on axes. The configuration file
+
+etc/parsedot.conf
+
+controls how this is done.
+
+Once the .dot file is parsed (segment and link files are created in data/), 
+
+../../bin/linnet 
+
+is called and uses
+
+etc/linnet.conf
+
+configuration file to draw the hive plot. 
+
+
+THINGS TO TRY
+
+By commenting out node_index_position in etc/parsedot.conf, nodes are
+placed on axes based on absolute connectivity, not rank ordered.
+
+By commenting out scale_norm in etc/linnet.conf in some/all <axis>
+blocks, the axis length is not normalized and becomes proportional to
+(a) number of nodes, if rank ordered position is used or (b) maximum
+connectivity of a node group.
+
+Take a look at the format of the segment and link files in the data/ directory.

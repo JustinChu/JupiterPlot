@@ -1,0 +1,226 @@
+#!/bin/env perl
+
+=pod
+
+=head1 NAME
+
+makedot - create a dot file of a random directed graph
+
+=head1 SYNOPSIS
+
+  makedot -nodes 100 -edges 200 [-sampling uniform|gaussian] [-sd 0.5] [-directed] [-fullyconnected] > graph.dot
+
+=head1 DESCRIPTION
+
+Reports a C<.dot> file (to STDOUT) for a random graph.
+
+Nodes are arbitrarily named node1, node2, ...
+
+=head1 OPTIONS
+
+=head2 -nodes N
+
+The number of nodes in the graph.
+
+=head2 -edges N
+
+The number of edges in the graph. 
+
+=head2 -sampling SAMPLING
+
+The manner in which the nodes are sampled to create edges. Self-edges are avoided.
+
+If C<-sampling gaussian> is used, set the standard deviation of the distribution using C<-sd>.
+
+=head2 -sd STDEV
+
+The standard deviation of the node sampling distribution, expressed in units of the average of the distribution.
+
+  -sd 1     stdev = average
+  -sd 0.5   stdev = average/2
+  -sd 0.25  stdev = average/4
+  ...
+
+By default, this value is 0.25.
+
+=head2 -directed
+
+If used, the graph will be directed. Regardless whether this flag is used, nodes and edges are sampled in the same way. The only different in output is that for an undirected graph, the C<.dot> file starts with
+
+  graph ... {
+
+and edges are denoted by C<-->. For a directed graph, C<.dot> starts with
+
+  digraph ... {
+
+and edges are denoted by C<->>.
+
+=head2 -fullyconnected
+
+This flag ensures that every node in the graph has at least one edge. With this setting, it is still possible for the graph to have multiple strongly connected components. 
+
+If the number of requested edges is smaller than the number of nodes, and this flag is used, the script exists with an error.
+
+=over
+
+=item * -sampling uniform
+
+This is the default setting. For each edge, the nodes are selected randomly and uniformly. 
+
+=item * -sampling normal
+
+The node index is selected from a normal distribution with mean C<N/2> (C<N> = number of nodes) and standard deviation C<N/8>. 
+
+=back 
+
+=head1 LINEAR LAYOUT FOR NETWORK VISUALIZATION
+
+This script is part of the linear layout for network visualization package. For details, see L<http://mkweb.bcgsc.ca/linnet>.
+
+=head1 HISTORY
+
+=over
+
+=item * 27 Sep 2010
+
+Added C<-fullyconnected>.
+
+=item * 24 Sep 2010 
+
+First version.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+Martin Krzywinski
+Genome Sciences Centre
+Vancouver BC Canada
+www.bcgsc.ca
+martink@bcgsc.ca
+
+=cut
+
+use strict;
+use warnings FATAL => "all";
+
+use Carp;
+use Config::General;
+use Cwd qw(getcwd abs_path);
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+use Math::Random qw(random_normal);
+use Pod::Usage;
+use Time::HiRes qw(gettimeofday tv_interval);
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/../../lib";
+use lib "$FindBin::RealBin/../../../lib";
+use lib "$FindBin::RealBin/lib";
+
+our ( %OPT, %CONF, $conf );
+our $VERSION = 0.01;
+
+# common and custom module imports below
+
+use linnet::segment;
+use linnet::axis;
+use linnet::conf;
+use linnet::util;
+use linnet::io;
+use linnet::debug;
+
+GetOptions( \%OPT, "nodes=i", "edges=s", "sampling=s", "sd=f", "directed", "fullyconnected", "configfile=s", "help", "man", "debug+", "cdump" );
+
+# read and parse configuration file
+pod2usage() if $OPT{help};
+pod2usage( -verbose => 2 ) if $OPT{man};
+%CONF = linnet::conf::loadconfiguration( $OPT{configfile} );
+populateconfiguration();    # copy command line options to config hash
+validateconfiguration();
+linnet::conf::dump() if $CONF{cdump};
+
+my $num_nodes = $CONF{nodes};
+my $num_edges = $CONF{edges};
+linnet::debug::printinfo("// A random graph created with makedot");
+linnet::debug::printinfo("// $num_nodes nodes");
+linnet::debug::printinfo("// $num_edges edges");
+linnet::debug::printinfo( ($CONF{directed} ? "di" : "" ) . "graph random_${num_nodes}_${num_edges} {");
+
+# report nodes
+for my $i (1..$num_nodes) {
+  linnet::debug::printinfo("node$i;");
+}
+
+if($CONF{fullyconnected} && $num_edges < $num_nodes) {
+  linnet::debug::printdie("You've asked for a fully connected graph but the number of edges is smaller than number of nodes.");
+}
+# report edges
+my $seen;
+my $edge_string = $CONF{directed} ? "->" : "--";
+for my $j (1..$num_edges) {
+  my ($ni,$nj);
+  if($CONF{sampling} eq "uniform") {
+    ($ni,$nj) = map { int($_*$num_nodes)+1 } (rand(),rand());
+  } elsif ($CONF{sampling} eq "gaussian") {
+    my $avg = $num_nodes/2;
+    my $sd  = $avg * $CONF{sd};
+    ($ni,$nj) = map { int($_) } random_normal(2,$avg,$sd);
+  } else {
+    linnet::debug::printdie("Sampling mode [$CONF{sampling}] is not supported.");
+  }
+  if($CONF{fullyconnected} && $j <= $num_nodes) {
+    if(rand() < 0.5) {
+      $ni = $j;
+    } else {
+      $nj = $j;
+    }
+  }
+  redo if $ni < 1 || $nj < 1;
+  redo if $ni > $num_nodes || $nj > $num_nodes;
+  redo if $ni == $nj;
+  redo if $seen->{$ni}{$nj}++;
+  linnet::debug::printinfo("node$ni $edge_string node$nj;");
+  linnet::debug::printdebug(1,"// node $ni");
+  linnet::debug::printdebug(1,"// node $nj");
+}
+
+linnet::debug::printinfo("}");
+
+sub populateconfiguration {
+  foreach my $key ( keys %OPT ) {
+    $CONF{$key} = $OPT{$key};
+  }
+  repopulateconfiguration( \%CONF );
+}
+
+sub validateconfiguration {
+  $CONF{sd} ||= 0.25;
+}
+
+sub repopulateconfiguration {
+  my $root = shift;
+  for my $key ( keys %$root ) {
+    my $value = $root->{$key};
+    if ( ref($value) eq "HASH" ) {
+      repopulateconfiguration($value);
+    }
+    elsif ( ref($value) eq "ARRAY" ) {
+      for my $item (@$value) {
+        repopulateconfiguration($item);
+      }
+    }
+    else {
+      while ( $value =~ /__([^_].+?)__/g ) {
+        my $source = "__" . $1 . "__";
+        my $target = eval $1;
+        $value =~ s/\Q$source\E/$target/g;
+      }
+      $root->{$key} = $value;
+    }
+  }
+}
+

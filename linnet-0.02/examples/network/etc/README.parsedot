@@ -1,0 +1,158 @@
+
+The etc/*/parsedot.*.conf file controls the behaviour of bin/parsedot, which converts a graph .dot file into input files for linnet for visualization.
+
+Internally, parsedot maps nodes to segments (which are subsequently
+assigned to axes in linnet's configuration), and determines node
+position and link coloring. Each of these mappings is defined by
+rules.
+
+1. Node-to-segment mapping
+2. Rule evaluation
+3. Rule composition
+4. parsedot.conf syntax
+
+################################################################
+
+1. NODE-TO-SEGMENT MAPPING
+
+Network nodes are assigned to segments using rules. Each mapping must
+include one or more rules and the mapping with the highest number of
+matched rule is the one that is used.
+
+A segment is subsequently assigned to an axis in the configuration
+file of linnet. The axis itself is defined as an ordered set of one or
+more segments at a specific radial angle. A segment can belong to at
+most one axis.
+
+NOTE: The term "segment" and "axis" is used interchangeably, until I
+clean up the terminology.
+
+A rule is a short snippet of Perl code that uses keywords that refer
+to node properties. The keywords are replaced by the actual value of
+the corresponding variable for each node, and can participate in
+equality testing, regular expression, and any other Perl code. For
+example,
+
+  node_name eq "node1"
+  node_name =~ /[123]/
+
+Rule Key Words
+
+node_name  - name of the node
+
+node_in    - number of 'in' edges (directed graphs only)
+node_out   - number of 'out' edges (directed graphs only)
+node_inout - total number of edges 
+
+node_neighbours_in  - number of 'in' edges to all neighbours of a node
+node_neighbours_out - number of 'out' edges to all neighbours of a node
+node_neighbours_all - total number of edges to all neighbours of a node
+
+node_neighbours_in_strict  - same as above, but does not count edges from node
+node_neighbours_out_strict - same as above, but does not count edges to node
+node_neighbours_all_strict - same as above, but does not count edges from/to node
+
+attribute_xyz - value of attribute xyz of the node (or edge)
+                    e.g. node [label=abc] would have attribute_label 'abc'
+
+Attributes are specified in the .dot file on a node line as follows
+
+nodename [attribute=value];
+
+Example: Given the graph
+
+       <- d <-
+          ^
+          |
+          |
+ <- c --> a --> b <-
+    |
+    v
+
+statistics for node 'a' are
+
+node_name = a
+node_in   = 1
+node_out  = 2
+node_all  = 3
+node_neighbour_in  = 4 ( in edges to 'd' and 'b')
+node_neighbour_out = 4 ( out edges from 'c' and 'd')
+node_neighbour_all = 8
+node_neighbour_in_strict  = 2 ( excludes nodes from 'a')
+node_neighbour_out_strict = 3 ( excludes nodes to 'a')
+node_neighbour_all_strict = 5 ( excludes nodes from/to 'a')
+
+2. RULE EVALUATION
+
+Rules are evaluated by first substituting all key words with values
+for the node. For example, using node 'a' from the example above, the rule
+
+node_in == 1 && node_out > 1
+
+would be parsed to
+
+1 == 1 && 2 > 1
+
+and then evaluated (via Perl's eval()) to return 1 (Boolean truth).
+
+To have the rule return a value other than 0 or 1 (false or true),
+append the value to the condition using &&, so that the expression
+returns the value. For example,
+
+node_in == 1 && node_out > 1 && node_out
+
+would parse to
+
+1 == 1 && 2 > 1 && 2
+
+and return 2.
+
+3. RULE ACCOUNTING
+
+A segment's rule return values combine to produce a score for the segment. The
+node is assigned to the segment with the higest score. If more than one
+segment shares a highest score, the parser exits with an error, unless
+the axes involved have multi_assign_ok value set. For example, if
+node 'a' segment scores are
+
+axis1 0
+axis2 2
+axis3 2
+
+Then both axis2 and axis3 must define
+
+multi_assign_ok = axis2,axis3
+
+for the parser to proceed. In this case, node 'a' would be assigned
+initially to both axis2 and axis3.
+
+How links are drawn
+
+Edges in the figure are drawn between node positions. For example,
+if node 'a' is assigned to axis0 and node 'b' to axis1 then for the graph
+edge a->b a curve would be drawn between the nodes' respective positions
+on the axes.
+
+If edge nodes are assigned to multiple axes, the following procedure is applied.
+
+1. a node's segment is taken to be the alphabetically first segment
+
+   e.g. if node 'a' is assigned to axisc, axisb, axisa then the final
+        assignment will be to axisa
+
+2. if both nodes' segment is the same then the self_connection parameter
+   is used to select the second segment. For example, if the edge a->b 
+   has node 'a' initially assigned to (axisa,axisb,axisc) and node 'b' to
+   (axisa,axisb) the segment for node 'b' can be forcibly set to axisb by setting
+ 
+   in axisa definition
+   self_connection = axisb
+
+   This will only work if axisb is indeed one of the axes assigned for 'b'
+
+
+The return value of the rule is used as the score. The node is assigned
+to the segment whose rule has the highest score. If more than one
+segment share the higest score then the node is assigned to both axes
+but only as long as the segment names appears in the multi_assign_ok
+field.

@@ -1,0 +1,3 @@
+axisall 0 489 axisall regulator
+axisin 0 264 axisin workhorse
+axisout 0 244 axisout manager

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+echo "Creating stacked bar plot, 10 stacks in 5 axes"
+examples/stackedbar/bin/makestackeddata -axes 10 -n 10 > data/stackedbar.txt
+cat data/stackedbar.txt | examples/stackedbar/bin/stackedbar -dual -sumnorm 400 -cumul
+bin/linnet -conf etc/linnet.stacked.conf -file img/stacked.dual.5axes.png
+
+echo "Creating stacked bar plot, 5 stacks in 5 axes"
+examples/stackedbar/bin/makestackeddata -axes 5 -n 10 > data/stackedbar.txt
+cat data/stackedbar.txt | examples/stackedbar/bin/stackedbar -sumnorm 400 -cumul
+bin/linnet -conf etc/linnet.stacked.conf -file img/stacked.5axes.png
+
+echo "Creating linear network visualization for medium-sized random (uniform) graph"
+cat input/graph.uniform.dot | examples/network/bin/parsedot -conf examples/network/etc/random/parsedot.3.conf -dir data
+bin/linnet -conf etc/linnet.graph.conf -file img/graph.uniform.png
+
+echo "Creating linear network visualization for medium-sized random (gaussian) graph"
+cat input/graph.gaussian.dot | examples/network/bin/parsedot -conf examples/network/etc/random/parsedot.3.conf -dir data
+bin/linnet -conf etc/linnet.graph.conf -file img/graph.gaussian.png
+
+
+echo "Done. Look in img/"

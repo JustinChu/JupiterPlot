@@ -1,0 +1,163 @@
+#!/bin/env perl
+
+=pod
+
+=head1 NAME
+
+makelinks - create n random links between segments
+
+=head1 SYNOPSIS
+
+	makelinks -n num_links
+
+=head1 DESCRIPTION
+
+=head1 HISTORY
+
+=over
+
+=item * 6 Sep 2010 
+
+First version.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+=head1 CONTACT
+
+Martin Krzywinski
+Genome Sciences Centre
+Vancouver BC Canada
+www.bcgsc.ca
+martink@bcgsc.ca
+
+=cut
+
+use strict;
+use warnings FATAL => "all";
+
+use Carp;
+eval "use Config::General";
+if($@) {
+    missing_module("Config::General","http://search.cpan.org/~tlinden/Config-General-2.49/General.pm");
+}
+use Cwd qw(getcwd abs_path);
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+eval "use Pod::Usage";
+if($@) {
+    missing_module("Pod::Usage","http://search.cpan.org/~marekr/Pod-Parser-1.38/lib/Pod/Usage.pm");
+}
+eval "use Time::HiRes qw(gettimeofday tv_interval)";
+if($@) {
+    missing_module("Time::HiRes","http://search.cpan.org/~jhi/Time-HiRes-1.9721/HiRes.pm");
+}
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+
+our ( %OPT, %CONF, $conf );
+our $VERSION = 0.01;
+
+exit_if_missing();
+{
+    my $missing;
+    sub missing_module {
+	printf("You need to install the %s module for this program to run. See %s\n",@_);
+	$missing = 1;
+	exit;
+    }    
+    sub exit_if_missing {
+	exit if $missing;
+    }    
+}
+
+# common and custom module imports below
+
+use linnet::segment;
+use linnet::axis;
+use linnet::conf;
+use linnet::util;
+use linnet::io;
+use linnet::debug;
+
+GetOptions( \%OPT, "n=i", "output=s", "configfile=s", "help", "man", "debug+", "cdump" );
+
+# read and parse configuration file
+pod2usage() if $OPT{help};
+pod2usage( -verbose => 2 ) if $OPT{man};
+%CONF = linnet::conf::loadconfiguration( $OPT{configfile} );
+populateconfiguration();    # copy command line options to config hash
+validateconfiguration();
+linnet::conf::dump() if $CONF{cdump};
+
+my $segments = linnet::segment::read( linnet::conf::getitem( "segments", "file" ) );
+linnet::segment::process();
+my $axes = linnet::axis::create($segments);
+
+my $max_link_size = 0.5;
+
+my @aid = linnet::axis::get_ids();
+for my $link ( 1 .. $CONF{n} ) {
+  my ( $aidi, $aidj );
+  while ( !defined $aidi || $aidi eq $aidj ) {
+    $aidi = $aid[ rand(@aid) ];
+    $aidj = $aid[ rand(@aid) ];
+  }
+  my $ai = linnet::axis::get_by_id($aidi);
+  my $aj = linnet::axis::get_by_id($aidj);
+  my ($sidi) = sort { rand() <=> rand() } linnet::axis::get_segment_ids($ai);
+  my ($sidj) = sort { rand() <=> rand() } linnet::axis::get_segment_ids($aj);
+  my @xi = make_span( $segments->{$sidi} );
+  my @xj = make_span( $segments->{$sidj} );
+	linnet::debug::printinfo($sidi,@xi,$sidj,@xj,
+			sprintf("color=%s_a4",linnet::segment::get_by_id($sidi)->{color}));
+}
+
+sub make_span {
+  my $s = shift;
+  my $x = $s->{_length} * ( 1 - $max_link_size ) * rand();
+  my $y = $x + rand( $s->{_length} * $max_link_size );
+  linnet::debug::printdie(1,"start [$x] is not in segment") unless $s->{set}->member( int $x );
+  linnet::debug::printdie(1,"end [$y] is not in segment")   unless $s->{set}->member( int $y );
+  return ( $x, $y );
+}
+
+sub populateconfiguration {
+  foreach my $key ( keys %OPT ) {
+    $CONF{$key} = $OPT{$key};
+  }
+  repopulateconfiguration( \%CONF );
+}
+
+sub validateconfiguration {
+
+}
+
+sub repopulateconfiguration {
+  my $root = shift;
+  for my $key ( keys %$root ) {
+    my $value = $root->{$key};
+    if ( ref($value) eq "HASH" ) {
+      repopulateconfiguration($value);
+    }
+    elsif ( ref($value) eq "ARRAY" ) {
+      for my $item (@$value) {
+        repopulateconfiguration($item);
+      }
+    }
+    else {
+      while ( $value =~ /__([^_].+?)__/g ) {
+        my $source = "__" . $1 . "__";
+        my $target = eval $1;
+        $value =~ s/\Q$source\E/$target/g;
+      }
+      $root->{$key} = $value;
+    }
+  }
+}
+

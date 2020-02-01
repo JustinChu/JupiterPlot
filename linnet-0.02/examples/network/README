@@ -1,0 +1,59 @@
+################################################################
+# IMPATIENT?
+#
+# Examine and then run ./runme.random to see how the tools in this 
+# directory are combined to create visualizations of 
+# random graphs. The output images will be created in img/
+# as linnet.*.random.png
+#
+# If you have neato (part of Graphviz, see http://en.wikipedia.org/wiki/Graphviz),
+# runme will also create a traditional graph layout in img/neato.random.png
+#
+# To compose all the images into a single panel, use ./makepanel.random
+# (you need to have the Image Magick 'convert' command-line utility installed)
+################################################################
+
+This directory contains tools to
+
+- create random graphs, in .dot format (bin/makedot)
+- parse .dot files for ../../bin/linnet (bin/parsedot)
+- format .dot files for legible display with neato (bin/formatdot)
+
+Graph files are found in input/ and files ready to be parsed by linnet
+in output/. Files in output/ are replaced with each run of
+bin/parsedot.
+
+Several data sets are included to help you explore the visualization method.
+
+1. Random graphs
+
+Random graphs are created with bin/makedot. The batch file to create
+these is input/makerandgraph. There are 9 random graphs (.dot format)
+for each of the sizes: tiny, medium, large (50, 1000, 10000 nodes) and
+densities: sparse, medium, dense (0.5, 1.5, 5 edges per node).
+
+It is paticularly instructive to compare traditional graph layouts
+(e.g. such as those produced by dotty or neato) with the linear
+visualizations. To aid this, bin/formatdot annotates nodes in the dot
+file based on their connectivity, so that node color in the graph
+layout can be directly associated with axis color in the linear
+visualization.
+
+2. E. coli and Linux networks
+
+A real-world data set. The E. coli gene regulatory network and Linux
+kernel function call network was obtained from
+
+Yan KK, Fang G, Bhardwaj N, Alexander RP, Gerstein M. 2010. Comparing
+genomes to computer operating systems in terms of the topology and
+evolution of their regulatory control networks. Proc Natl Acad Sci U S
+A 107(20 ): 9186-9191.
+
+
+
+
+
+
+
+
+

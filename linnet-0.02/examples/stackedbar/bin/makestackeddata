@@ -1,0 +1,282 @@
+#!/bin/env perl
+
+=pod
+
+=head1 NAME
+
+makestackeddata.multiaxis
+
+=head1 SYNOPSIS
+
+  makestackeddata.multiaxis -axes 9 -n 12 [-k 1.5] [-min 0.05] [-norm | -sumnorm]
+
+=head1 DESCRIPTION
+
+Creates a random stacked bar plot file for use with F<bin/stackedbar>. 
+
+Values are randomly and uniformly sampled from from the range [0,1). No normalization is performed unless C<-norm> or C<-sumnorm> is used.
+
+=head1 OUTPUT
+
+The output is a matrix with -axes columns and -n rows.
+
+=head1 OPTIONS
+
+=head2 -axes
+
+Number of axes (columns). Required.
+
+=head2 -n
+
+Number of bars (rows). Required.
+
+=head2 -k
+
+Power factor for output data. By default, each value in the stacked bar is uniformly sampled x=[0,1]. If -k is used, x^k is returned.
+
+=head2 -min
+
+Specify a minimum value.
+
+=head2 -norm
+
+Columns are normalized to 1 by their sum.
+
+=head2 -sumnorm
+
+Columns are normalized to 1 by their maximum.
+
+=head1 HISTORY
+
+=over
+
+=item * 16 Mar 2011
+
+Error checks. Normalization, just in case.
+
+=item * 5 Oct 2010
+
+First version.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+=head1 CONTACT
+
+=cut
+
+use strict;
+use warnings FATAL=>"all";
+
+use Carp;
+use Config::General;
+use Cwd qw(getcwd abs_path);
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+use Math::VecStat qw(min max sum);
+use Pod::Usage;
+use Time::HiRes qw(gettimeofday tv_interval);
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+
+our (%OPT,%CONF,$conf);
+our $VERSION = 0.02;
+
+# common and custom module imports below
+
+# read and parse configuration file
+_parse_config();
+
+# to see what was passed in on the command line (%OPT) 
+# or the configuration tree %CONF created from .conf files and %OPT 
+# uncomment next line
+#printdumper(\%OPT,\%CONF);
+
+my @data;
+for my $i (0..$CONF{axes}-1) {
+    for my $j (0..$CONF{n}-1) {
+	$data[$i][$j] = max(rand() ** $CONF{k}, $CONF{min});
+    }
+}
+
+for my $i (0..@data-1) {
+    my @col = @{$data[$i]};
+    my $norm;
+    if($CONF{maxnorm}) {
+	$norm = max(@col);
+    } else {
+	$norm = sum(@col);
+    }
+    @col = map { $_/$norm } @col;
+    $data[$i] = \@col;
+}
+
+for my $j (0..$CONF{n}-1) {
+    my @line = map { $data[$_][$j] } (0..$CONF{axes}-1 );
+    printinfo(@line);
+}
+
+sub get_stacked {
+  my $n = shift;
+  my @x = map { rand() ** $CONF{k} } (1..$n);
+  if($CONF{rand}) {
+    @x = sort { $a+randsort($CONF{rand}) <=> $b+randsort($CONF{rand}) } @x;
+  }
+  return @x;
+}
+
+sub randsort {
+  return 0;
+  my $x = shift;
+  return $x * (rand()-0.5);
+}
+
+sub validateconfiguration {
+    confess "Must define number of axes with -axes parameter" unless $CONF{axes};
+    confess "Must define number of stacks with -n parameter" unless $CONF{n};
+    $CONF{k} ||= 1;
+    $CONF{min} ||= 0;
+}
+
+################################################################
+#
+# *** DO NOT EDIT BELOW THIS LINE ***
+#
+################################################################
+
+sub _parse_config {
+  my $dump_debug_level = 3;
+  GetOptions(\%OPT, 
+	     "axes=i",
+	     "n=i",
+	     "k=f",
+	     "maxnorm",
+	     "norm",
+	     "min=f",
+	     "configfile=s",
+	     "help",
+	     "man",
+	     "debug:i");
+  pod2usage() if $OPT{help};
+  pod2usage(-verbose=>2) if $OPT{man};
+  loadconfiguration($OPT{configfile});
+  populateconfiguration(); # copy command line options to config hash
+  validateconfiguration(); 
+  if(defined $CONF{debug} && $CONF{debug} == $dump_debug_level) {
+    $Data::Dumper::Indent    = 2;
+    $Data::Dumper::Quotekeys = 0;
+    $Data::Dumper::Terse     = 0;
+    $Data::Dumper::Sortkeys  = 1;
+    $Data::Dumper::Varname = "OPT";
+    printdumper(\%OPT);
+    $Data::Dumper::Varname = "CONF";
+    printdumper(\%CONF);
+    exit;
+  }
+}
+
+sub populateconfiguration {
+  for my $var (keys %OPT) {
+    $CONF{$var} = $OPT{$var};
+  }
+  repopulateconfiguration(\%CONF);
+}
+
+sub repopulateconfiguration {
+  my $root     = shift;
+	return unless ref($root) eq "HASH";
+  for my $key (keys %$root) {
+    my $value = $root->{$key};
+    if(ref($value) eq "HASH") {
+      repopulateconfiguration($value);
+    } elsif (ref($value) eq "ARRAY") {
+      for my $item (@$value) {
+        repopulateconfiguration($item);
+      }
+    } elsif(defined $value) {
+      while($value =~ /__([^_].+?)__/g) {
+        my $source = "__" . $1 . "__";
+        my $target = eval $1;
+        $value =~ s/\Q$source\E/$target/g;
+      }
+      $root->{$key} = $value;
+    }
+  }
+}
+
+################################################################
+#
+#
+
+sub loadconfiguration {
+  my $file = shift;
+  if(defined $file) {
+    if(-e $file && -r _) {
+      # provided configuration file exists and can be read
+      $file = abs_path($file);
+    } else {
+      confess "The configuration file [$file] passed with -configfile does not exist or cannot be read.";
+    }
+  } else {
+    # otherwise, try to automatically find a configuration file
+    my ($scriptname,$path,$suffix) = fileparse($0);
+    my $cwd     = getcwd();
+    my $bindir  = $FindBin::RealBin;
+    my $userdir = $ENV{HOME};
+    my @candidate_files = (
+			   "$cwd/$scriptname.conf",
+			   "$cwd/etc/$scriptname.conf",
+			   "$cwd/../etc/$scriptname.conf",
+			   "$bindir/$scriptname.conf",
+			   "$bindir/etc/$scriptname.conf",
+			   "$bindir/../etc/$scriptname.conf",
+			   "$userdir/.$scriptname.conf",
+			   );
+    my @additional_files = (
+
+			   );
+    for my $candidate_file (@additional_files,@candidate_files) {
+      #printinfo("configsearch",$candidate_file);
+      if(-e $candidate_file && -r _) {
+	$file = $candidate_file;
+	#printinfo("configfound",$candidate_file);
+	last;
+      }
+    }
+  }
+  if(defined $file) {
+    $OPT{configfile} = $file;
+    $conf = new Config::General(
+				-ConfigFile=>$file,
+				-IncludeRelative=>1,
+				-ExtendedAccess=>1,
+				-AllowMultiOptions=>"yes",
+				-LowerCaseNames=>1,
+				-AutoTrue=>1
+			       );
+    %CONF = $conf->getall;
+  }
+}
+
+sub printdebug {
+  my ($level,@msg) = @_;
+  my $prefix = "debug";
+  if(defined $CONF{debug} && $CONF{debug} >= $level) {
+    printinfo(sprintf("%s[%d]",$prefix,$level),@msg);
+  }
+}
+
+sub printinfo {
+  print join(" ",@_),"\n";
+}
+
+sub printdumper {
+  use Data::Dumper;
+  print Dumper(@_);
+}
+

@@ -1,0 +1,144 @@
+This software requires perl to run. If you're on a *NIX machine (any
+Linux, SunOS, Solaris, Mac OS X) you probably have perl installed
+already. 
+
+You may need to install a few modules.
+
+
+INSTALLING PERL
+
+Check if you have perl. 
+
+> which perl
+/usr/bin/perl
+
+If you see this, you have perl. 
+
+> which perl
+>
+
+If you see no output, you don't (or it's not in your PATH, which it should be).
+
+I won't go into the details of installing perl - there are too many
+ways to do it. Chances are a package (bundle, or whatever your
+operating system calls precompiled distributions) is available. Check at www.perl.org.
+
+If you are running Windows, your options are either Strawberry Perl or
+ActiveState Perl. Both are linked to from www.perl.org.
+
+Installing perl should be relatively painless.
+
+
+INSTALLING MODULES
+
+Perl comes with a large number of workhorse modules. In addition, a
+few other modules are required to run the software. All these modules
+are available from CPAN (www.cpan.org), the Comprehensive Perl Archive
+Network.
+
+Which modules do you need? Run ./list.modules to get the list. The
+list below may not necessarily be the most updated one - run
+list.modules to be sure.
+
+> ./list.modules
+Carp
+Config::General
+Cwd
+Data::Dumper
+File::Basename
+FindBin
+GD
+GD::Image
+GD::Polygon
+Getopt::Long
+Graph
+Graph::Layout::Aesthetic
+Graph::Reader::Dot
+Graph::Writer::Dot
+GraphViz
+IO::File
+List::MoreUtils
+List::Util
+Math::Bezier
+Math::Random
+Math::Round
+Math::VecStat
+Pod::Usage
+Readonly
+Set::IntSpan
+Statistics::Descriptive
+Storable
+Time::HiRes
+
+To test which modules you have, and which are missing, 
+
+> ./test.modules
+Carp ok
+Config::General ok
+Cwd ok
+Data::Dumper ok
+File::Basename ok
+FindBin ok
+...
+
+If you are missing any of the modules, an obvious error will be produced.
+
+If you attempt to run any script components that require a module you do not have, the error message looks like this
+
+You need to install the Missing::Module module for this program to run. See http://search.cpan.org/...
+
+(if I've added the error check to the code) or like this
+
+Can't locate Missing/Module.pm in @INC (@INC contains:
+/home/martink/perl/5.10.0/lib/5.10.0/x86_64-linux
+/home/martink/perl/5.10.0/lib/5.10.0
+/home/martink/perl/5.10.0/lib/site_perl/5.10.0/x86_64-linux
+/home/martink/perl/5.10.0/lib/site_perl/5.10.0 .).
+BEGIN failed--compilation aborted.
+
+Either way, these errors tell you Missing::Module is ... missing. Note that the module name uses :: to encode the directory of the module file. For example, if an error indicates that Set/IntSpan.pm is missing, the corresponding module name is Set::IntSpan.
+
+To install it, use the perl CPAN shell
+
+> perl -MCPAN -e shell
+...
+cpan[1]> install Missing::Module
+...
+... lengthy output here, should end with a message like
+...
+... /usr/bin/make install  -- OK
+...
+cpan[2]> exit
+>
+
+If you attempt to install a module you already have an up-to-date version for CPAN will duly inform you.
+
+cpan[1]> install Already::Installed::Module
+Already::Installed::Module is up to date (1.00)
+
+
+INSTALLING GD
+
+Except for GD, installing the modules should cause you no problems. 
+
+GD, on the other hand, can be tricky, since it depends on your
+system's C libgd library, among others. Getting all the dependency
+ducks in a row ranges across the full scale of pain, from "wow that
+was fast" to "omg omg we're all going to die".
+
+Many problems can arise when compiling perl's GD module. Any problem
+you encounter has likely been solved by others, so here's where a good
+Google will help.
+
+You should compile GD with TrueType font (TTF) support (requires freetype
+library) as well as PNG support. It's a good idea to also include
+JPEG, although this software does not use that output format.
+
+If you are not seeing any text in your output images, but expect to,
+this is invariably due to lack of TTF support in your GD
+compilation. You'll need to reinstall the module, making sure that TTF
+support is activated.
+
+
+
+

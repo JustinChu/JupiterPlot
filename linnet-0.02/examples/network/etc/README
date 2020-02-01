@@ -1,0 +1,3 @@
+Configuration files used by tools/network/bin.
+
+Each script in bin/ requires a configuration file, even if empty.

@@ -1,0 +1,42 @@
+This example expands on ../randomgraph.1 by drawing several different
+hive plots for the same graph.
+
+Small (100 nodes), medium (500 nodes), large (1000 nodes) and huge
+(2500 nodes) graph dot files are available in ./dot. Each is available
+in sparse (0.5 edge density), medium (1.5 edge density) and dense (5.0
+edge density). The number of edges is density*nodes.
+
+The graphs were created by
+
+./dot/makerandgraph
+
+which, as in the ../randomgraph.1 example, calls 
+
+../network/bin/makedot
+
+to create random graphs.
+
+Specify which dot file you wish to parse by editing the 'g' variable in
+
+./run
+
+and execute the script, which will first attempt to make a hairball
+(if you have neato, part of the graphviz package) and then create 9
+different hive plots based on parsedot and linnet configurations
+N=1..9
+
+./etc/parsedot.N.conf
+./etc/linnet.N.conf
+
+Recall that the job of parsedot is to read the .dot file, create
+node-to-axis assignments and node placements and generate the segment
+and link files for linnet.
+
+To learn about each of the hive plots, consult ./etc/README and look at the example image panel ./img/panel.png
+
+
+THINGS TO TRY
+
+Change the sampling of the graphs from gaussian to uniform in ./dot/makerandgraph
+
+Try creating a very large graph (10,000+ nodes)

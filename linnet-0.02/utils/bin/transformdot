@@ -1,0 +1,161 @@
+#!/bin/env perl
+
+=pod
+
+=head1 NAME
+
+transformdot - transform a dot file
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 LINEAR LAYOUT FOR NETWORK VISUALIZATION
+
+This script is part of the linear layout for network visualization package. For details, see L<http://mkweb.bcgsc.ca/linnet>.
+
+=head1 HISTORY
+
+=over
+
+=item * 2 Nov 2010
+
+First version.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+=head1 CONTACT
+
+Martin Krzywinski
+Genome Sciences Centre
+Vancouver BC Canada
+www.bcgsc.ca
+martink@bcgsc.ca
+
+=cut
+
+use strict;
+use warnings FATAL => "all";
+
+use Carp;
+use Config::General;
+use Cwd qw(getcwd abs_path);
+use Math::VecStat qw(min max sum);
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+use Pod::Usage;
+use Time::HiRes qw(gettimeofday tv_interval);
+use lib "$FindBin::RealBin/../../../lib";
+use lib "$FindBin::RealBin/../../lib";
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+
+our ( %OPT, %CONF, $conf );
+our $VERSION = 0.01;
+
+# common and custom module imports below
+use Graph::Reader::Dot;
+use Graph::Writer::Dot;
+use Graph;
+
+use linnet::conf;
+use linnet::io;
+use linnet::util;
+use linnet::debug;
+
+$linnet::debug::fnstamp_debug_level = 5;
+$linnet::debug::exit_on_dump = 1;
+
+GetOptions(
+            \%OPT,   
+	   "file=s",
+	   "cdump",
+	   "undirected",
+	   "configfile=s", 
+	   "help",
+	   "man",
+	   "debug+",     
+	   "cdump"
+          );
+
+# read and parse configuration file
+pod2usage() if $OPT{help};
+pod2usage( -verbose => 2 ) if $OPT{man};
+%CONF = linnet::conf::loadconfiguration( $OPT{configfile} );
+populateconfiguration();    # copy command line options to config hash
+validateconfiguration();
+linnet::conf::dump() if $CONF{cdump};
+
+my $t0 = [gettimeofday];
+
+################################################################
+# read/parse DOT file
+
+my $reader = Graph::Reader::Dot->new();
+my $graph  = $reader->read_graph( get_fh() );
+if($CONF{undirected}) {
+  my $graph_undirected = $graph->undirected_copy;
+  $graph = $graph_undirected;
+}
+
+my $gt = $graph->transpose();
+
+my $out = \*STDOUT;
+
+my $writer = Graph::Writer::Dot->new();
+$writer->write_graph($gt,$out);
+
+sub get_fh {
+  my $fh;
+  if ( my $file = $CONF{file} ) {
+    $fh = linnet::util::open_file( $CONF{file} );
+  }
+  else {
+    $fh = \*STDIN;
+  }
+  return $fh;
+}
+
+sub populateconfiguration {
+  foreach my $key ( keys %OPT ) {
+    $CONF{$key} = $OPT{$key};
+  }
+  repopulateconfiguration( \%CONF );
+}
+
+sub validateconfiguration {
+  $CONF{files}{dir} ||= $OPT{dir};
+  $CONF{files}{dir} ||= ".";
+  
+}
+
+sub repopulateconfiguration {
+  my $root = shift;
+  return unless ref($root);
+  for my $key ( keys %$root ) {
+    my $value = $root->{$key};
+    if ( ref($value) eq "HASH" ) {
+      repopulateconfiguration($value);
+    }
+    elsif ( ref($value) eq "ARRAY" ) {
+      for my $item (@$value) {
+        repopulateconfiguration($item);
+      }
+    }
+    else {
+      while ( $value =~ /__([^_].+?)__/g ) {
+        my $source = "__" . $1 . "__";
+        my $target = eval $1;
+        $value =~ s/\Q$source\E/$target/g;
+      }
+      $root->{$key} = $value;
+    }
+  }
+}
+

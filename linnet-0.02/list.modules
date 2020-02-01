@@ -1,0 +1,3 @@
+#!/bin/bash
+
+\egrep -h "^(eval.*)?use" bin/* */*/bin/* | sed 's/^.*use //' | sed 's/"//' | egrep -v "^(linnet|strict|vars|warnings)" | grep -v "^lib " | sed 's/;$//' | sed 's/ qw.*//' | sort -u 

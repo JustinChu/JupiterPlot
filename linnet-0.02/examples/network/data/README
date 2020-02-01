@@ -1,0 +1,11 @@
+The files here are the output of bin/parsedot, which converts a graph
+.dot file into files that ../../bin/linnet can understand.
+
+segments.txt - size and color of individual segments; segments are
+assigned to axes in configuration file for linnet (etc/linnet.N.conf,
+for this example set)
+
+links.txt - links between nodes on segments; positions correspond to
+nodes mapped onto segments
+
+

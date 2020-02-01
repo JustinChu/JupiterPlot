@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# do we have neato?
+n=`which neato 2> /dev/null`
+
+if [ $n ] 
+then
+echo "Using neato from $n"
+#cat input/ecoli-linux/ecoli.dot | bin/formatdot | neato -Tpng > img/neato-ecoli.png 2> /dev/null
+#cat input/ecoli-linux/linux.dot | bin/formatdot | neato -Tpng > img/neato-linux.png 2> /dev/null
+else 
+echo "You don't seem to have neato. No traditional layouts will be produced."
+fi
+
+echo "Using graph file $g"
+
+################################################################
+
+for i in `seq 1 7` ; do
+
+for g in ecoli linux; do
+
+echo "configuration $i - parsing $g.dot"
+cat dot/$g.dot | bin/parsedot -conf etc/parsedot.$g.$i.conf -dir data
+echo "configuration $i - drawing linear layout for $g"
+../../bin/linnet -conf etc/linnet.$g.$i.conf -file img/hiveplot.$g.$i.png
+
+done
+
+done

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# change k to remap the uniformly sampled x=[0,1] values to x**k.
+k=1
+
+# 11 elements per stack are chosen to fully use the 11-color spectral Brewer palette.
+
+# 5 axes, both sides of each axis have different values
+echo "stacked plot 1 - 5 axes, 10 stacks (dual axes: 2 stacks per axis), 11 elements per stack"
+bin/makestackeddata -k $k -axes 10 -n 11 -min 0.01 > data/stackedbar.txt
+cat data/stackedbar.txt | bin/stackedbar -dual -sumnorm 400 -cumul -dir data
+../../bin/linnet -conf etc/linnet.5axes.conf -file img/stacked.5axes.dual.png 
+
+# 5 axes, both sides of each axis have same values
+echo "stacked plot 2 - 5 axes, 5 stacks (single axes: 1 stack per axis), 11 elements per stack"
+bin/makestackeddata -k $k -axes 5 -n 11 -min 0.01 > data/stackedbar.txt
+cat data/stackedbar.txt | bin/stackedbar -sumnorm 400 -cumul -dir data
+../../bin/linnet -conf etc/linnet.5axes.conf -file img/stacked.5axes.single.png
+
+# 3 axes, maximum in each stack normalized to 40
+echo "stacked plot 3 - 3 axes, 6 stacks (dual axes), 11 elements per stack, stack height normalized by max value"
+bin/makestackeddata -k $k -axes 6 -n 11 -min 0.01 > data/stackedbar.txt
+cat data/stackedbar.txt | bin/stackedbar -dual -norm 40 -cumul -dir data
+../../bin/linnet -conf etc/linnet.3axes.conf -file img/stacked.3axes.dual.maxnorm.png
+
+# 3 axes, total of each stack normalized to 400
+echo "stacked plot 4 - 3 axes, 6 stacks (dual axes), 11 elements per stack, stack height normalized by sum"
+cat data/stackedbar.txt | bin/stackedbar -dual -sumnorm 400 -cumul -dir data
+../../bin/linnet -conf etc/linnet.3axes.conf -file img/stacked.3axes.dual.sumnorm.png
+
+# When -cumul is not used, the values are not parsed as cumulative 
+# i.e. each bin is considered to start at the bottom of the axis
+
+echo "non-stacked plot 5 - 3 axes, 6 stacks (dual axes), 100 elements per stack (not cumulative!)"
+bin/makestackeddata -k $k -axes 6 -n 100 -min 0.01 > data/stackedbar.txt
+cat data/stackedbar.txt | bin/stackedbar -dual -norm 400 -dir data
+../../bin/linnet -conf etc/linnet.3axes.conf -file img/notstacked.6axes.dual.maxnorm.png
+
+echo "non-stacked plot 6 - 3 axes, 3 stacks (single axes), 100 elements per stack (not cumulative!)"
+bin/makestackeddata -k $k -axes 3 -n 100 -min 0.01 > data/stackedbar.txt
+cat data/stackedbar.txt | bin/stackedbar -norm 400 -dir data
+../../bin/linnet -conf etc/linnet.3axes.conf -file img/notstacked.3axes.singlemaxnorm.png
+

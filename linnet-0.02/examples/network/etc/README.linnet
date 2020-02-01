@@ -1,0 +1,32 @@
+Once a graph .dot file has been parsed by bin/parsedot, the resulting files can be used by linnet.
+
+The linnet.N.conf configurations here correspond to parsedot.N.conf, and produce images img/linnet.N.*
+
+The fundamental parts of linnet's configuration are
+
+1. Image size and format (<image> ... </image>)
+
+
+2. Segment definition (<segments> ... </segments>)
+
+File, size and spacing of individual segments. These segments ar assigned to axes in <axes> block.
+
+
+3. Pixel scale (<scale> pixsize = PIXSIZE </scale>)
+
+The conversion between the values in segments.txt and links.txt and pixel values. One pixel in the image will have a size of PIXSIZE.
+
+For example, if a segment has a length of 100 in segments.txt, and PIXSIZE=4 then the segment will be 100/4 = 25 pixels in length.
+
+
+4. Axis definition (<axes axis_name> ... </axes>)
+
+The angle, scale, reverse flag and normalization for each axis is defined. Segments are assigned to each axis.
+
+
+5. Links (<links> <link>...</link> <link>...</link> ... </links)
+
+The file, geometry and color for each link set is defined.
+
+
+

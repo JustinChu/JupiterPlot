@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Create random graphs of two sizes (100 and 10000 nodes) and various
+# edge densities.
+
+# gaussian or uniform
+sampling=gaussian 
+# if gaussian, width of distribution, as fraction of average
+sd=0.25
+
+flags1="-sampling $sampling -sd $sd -directed"
+flags2="-sampling $sampling -sd $sd -directed -fullyconnected"
+
+bin=../../network/bin/makedot
+# four sizes
+sizesmall=100
+sizemedium=500
+sizelarge=1000
+sizehuge=2500
+# three edge density levels
+dsparse=0.5
+dmedium=1.5
+ddense=5.0
+
+echo "Small graph"
+echo "sparse"
+$bin -nodes $sizesmall -edges $( echo "$sizesmall*$dsparse" | bc ) $flags1 > graph.small.sparse.dot
+echo "medium"
+$bin -nodes $sizesmall -edges $( echo "$sizesmall*$dmedium" | bc ) $flags2 > graph.small.medium.dot
+echo "dense"
+$bin -nodes $sizesmall -edges $( echo "$sizesmall*$ddense"  | bc ) $flags2 > graph.small.dense.dot
+
+echo "Medium graph"
+echo "sparse"
+$bin -nodes $sizemedium -edges $( echo "$sizemedium*$dsparse" | bc ) $flags1 > graph.medium.sparse.dot
+echo "medium"
+$bin -nodes $sizemedium -edges $( echo "$sizemedium*$dmedium" | bc ) $flags2 > graph.medium.medium.dot
+echo "dense"
+$bin -nodes $sizemedium -edges $( echo "$sizemedium*$ddense"  | bc ) $flags2 > graph.medium.dense.dot
+
+echo "Large graph"
+echo "sparse"
+$bin -nodes $sizelarge -edges $( echo "$sizelarge*$dsparse" | bc ) $flags1 > graph.large.sparse.dot
+echo "medium"
+$bin -nodes $sizelarge -edges $( echo "$sizelarge*$dmedium" | bc ) $flags2 > graph.large.medium.dot
+echo "dense"
+$bin -nodes $sizelarge -edges $( echo "$sizelarge*$ddense"  | bc ) $flags2 > graph.large.dense.dot
+
+echo "Huge graph"
+echo "sparse"
+$bin -nodes $sizehuge -edges $( echo "$sizehuge*$dsparse" | bc ) $flags1 > graph.huge.sparse.dot
+echo "medium"
+$bin -nodes $sizehuge -edges $( echo "$sizehuge*$dmedium" | bc ) $flags2 > graph.huge.medium.dot
+echo "dense"
+$bin -nodes $sizehuge -edges $( echo "$sizehuge*$ddense"  | bc ) $flags2 > graph.huge.dense.dot
+
+echo "dot files created"

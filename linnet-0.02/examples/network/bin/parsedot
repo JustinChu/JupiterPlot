@@ -1,0 +1,725 @@
+#!/bin/env perl
+
+=pod
+
+=head1 NAME
+
+parsedot - parse a dot file and generate input segment and link files
+
+=head1 SYNOPSIS
+
+  cat graph.dot | bin/parsedot -dir data/ [-undirected] [-debug]
+
+=head1 DESCRIPTION
+
+This script generates input data files for C<linnet> that represent a network structure.
+
+=head1 INPUT
+
+The input is a F<.dot> file. 
+
+=head2 OUTPUT
+
+The output are files understood by F<bin/linnet>, which is the script that generates the network visualizations. These files are created in the directory specified by C<-dir> and are typically
+
+=over
+
+=item * segments.txt
+
+The size of each segment. A segment is a contiguous region on which nodes are placed. Each axis in the visualization can contain one or more segments.
+
+=item * links.txt
+
+The start and dend coordinates of the links between nodes on segments.
+
+=back
+
+=head1 OPTIONS
+
+=over
+
+=item * -undirected
+
+When the DOT file is parsed, undirected graphs are treated as directed graphs. In other words, 
+
+  a -- b
+
+is treated as
+
+  a -> b
+
+To force the graph to be undirected, use C<-undirected>.
+
+=item * -debug
+
+This flag produced debug information. Additional instances of the flag provide more details.
+
+=back
+
+=head1 LINEAR LAYOUT FOR NETWORK VISUALIZATION
+
+This script is part of the linear layout for network visualization package. For details, see L<http://mkweb.bcgsc.ca/linnet>.
+
+=head1 HISTORY
+
+=over
+
+=item * 9 Sep 2010 
+
+First version.
+
+=back 
+
+=head1 BUGS
+
+=head1 AUTHOR
+
+=head1 CONTACT
+
+Martin Krzywinski
+Genome Sciences Centre
+Vancouver BC Canada
+www.bcgsc.ca
+martink@bcgsc.ca
+
+=cut
+
+use strict;
+use warnings FATAL => "all";
+
+use Carp;
+use Config::General;
+use Cwd qw(getcwd abs_path);
+use Math::VecStat qw(min max sum);
+use File::Basename;
+use FindBin;
+use Getopt::Long;
+use Pod::Usage;
+use Time::HiRes qw(gettimeofday tv_interval);
+use lib "$FindBin::RealBin/../../../lib";
+use lib "$FindBin::RealBin";
+use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/lib";
+
+our ( %OPT, %CONF, $conf );
+our $VERSION = 0.01;
+
+# common and custom module imports below
+use List::MoreUtils qw(uniq);
+use Graph::Reader::Dot;
+use Graph::Writer::Dot;
+use Graph;
+
+use linnet::segment;
+use linnet::axis;
+use linnet::conf;
+use linnet::util;
+use linnet::io;
+use linnet::debug;
+
+$linnet::debug::fnstamp_debug_level = 5;
+$linnet::debug::exit_on_dump = 0;
+
+GetOptions(
+    \%OPT,   
+    "file=s",
+    "undirected",
+    "cdump",
+    "dir=s",
+    "configfile=s", "help",
+    "man",   
+    "debug=i",
+    "cdump"
+    );
+
+# read and parse configuration file
+pod2usage() if $OPT{help};
+pod2usage( -verbose => 2 ) if $OPT{man};
+%CONF = linnet::conf::loadconfiguration( $OPT{configfile} );
+populateconfiguration();    # copy command line options to config hash
+validateconfiguration();
+linnet::conf::dump() if $CONF{cdump};
+
+my $t0 = [gettimeofday];
+
+################################################################
+# read/parse DOT file
+
+my $reader = Graph::Reader::Dot->new();
+my $graph  = $reader->read_graph( get_fh() );
+if($CONF{undirected}) {
+#my $graph_undirected = $graph->undirected_copy;
+#$graph = $graph_undirected;
+}
+linnet::debug::printdebug(1,"read",$graph->is_directed ? "directed" : "undirected","graph",int($graph->vertices),"nodes",int($graph->edges),"edges");
+
+################################################################
+# Parse axis data structure from .conf 
+my %axes = parse_axes();
+#linnet::debug::printdumper(\%axes);
+
+################################################################
+# Compile connectivity and attribute statistics for each node
+my %nodes;
+for my $node (sort $graph->vertices) {
+  my $node_stats = get_node_statistics($node);
+  $nodes{$node}{name}  = $node;
+  $nodes{$node}{stats} = $node_stats;
+  for my $stat (sort keys %{$nodes{$node}{stats}}) {
+    linnet::debug::printdebug(1,"nodestat",$node,$stat,hash_to_string($nodes{$node}{stats}{$stat}));
+  }
+}
+#linnet::debug::printdumper(\%nodes);
+
+################################################################
+# Traverse the graph and assign each node to an axis
+for my $node (sort $graph->vertices) {
+  linnet::debug::printdebug(1,"node",$node);
+  # populate $nodes{$node}{axis}
+  # a hash keyed by axis name with values being
+  # a list of scored rules, each 
+  # axisname=> [ {parsed=> , orig=> , score=> }, ... ]
+  assign_axis($node);
+  for my $axis_name (keys %{$nodes{$node}{axis}}) {
+    push @{$axes{$axis_name}{nodes}}, $nodes{$node};
+  }
+}
+
+#linnet::debug::printdumper(\%axes);
+#linnet::debug::printdumper(\%nodes);
+
+################################################################
+# for each axis, assign coordinates for each node
+for my $axis_name ( sort keys %axes) {
+  assign_node_positions($axis_name);
+}
+
+################################################################
+# each axis now has a list of nodes - generate segment
+# files and link coordinates
+
+# create segments
+my $segment_file = "$CONF{files}{dir}/$CONF{files}{segments}";
+my $segment_dir  = dirname($segment_file);
+my $segment_fh   = IO::File->new(">$segment_file");
+linnet::debug::printdie("file output directory [$segment_dir] does not exist. You should probably create it, or change the output directory with either the -dir flag or 'dir' parameter in the <files> block of the configuration file.") if ! -d $segment_dir;
+linnet::debug::printdie("could not write to segment file [$segment_file]. Does the directory exist?") if !$segment_fh;
+linnet::debug::printdebug( 1, "writing segments to", $segment_file );
+for my $axis_name ( sort keys %axes) {
+  my $axis = $axes{$axis_name};
+  my $length = 0;
+  for my $node ( @{$axes{$axis_name}{nodes}} ) {
+    my $node_position = $node->{axis}{$axis_name}{position};
+    $length = $node_position if $node_position > $length;
+  }
+  linnet::debug::printdebug( 1, "axis", $axis_name, "size", $length);
+  my $color = $axis->{color};
+  printf $segment_fh ( "%s %s %s %s %s\n", $axis_name,0,$length,$axis_name,$color);
+}
+$segment_fh->close();
+
+# create links
+my $link_file = "$CONF{files}{dir}/$CONF{files}{links}";
+my $link_fh   = IO::File->new(">$link_file");
+linnet::debug::printdie("could not write to link file [$link_file]") if !$link_fh;
+linnet::debug::printdebug( 1, "writing links to", $link_file );
+for my $edge ($graph->edges) {
+  my ($node1,$node2) = @$edge;
+  my $attributes = $graph->get_edge_attributes(@$edge) || {};
+  my $link_param = {color=>undef,show=>1,thickness=>undef,z=>undef};
+  my @axis1 = sort keys %{$nodes{$node1}{axis}};
+  my @axis2 = sort keys %{$nodes{$node2}{axis}};
+  my ($axis1) = $axis1[0];
+  my ($axis2) = $axis2[0];
+  if(! defined $axis1 || ! defined $axis2) {
+      linnet::debug::printinfo("axis1 not defined") if ! defined $axis1;
+      linnet::debug::printinfo("axis2 not defined") if ! defined $axis2;
+      linnet::debug::printdie("Problem with assignment of one or both axes for edge $node1,$node2");
+  }
+  if($CONF{undirected} && $axis1 eq $axis2) {
+      # swap the nodes so that the second node is always further on the axis
+      if($nodes{$node1}{axis}{$axis1}{position} > $nodes{$node2}{axis}{$axis2}{position}) {
+	  ($node1,$node2) = ($node2,$node1);
+      }
+  }
+  linnet::debug::printdie("axis for node [$node1] was not defined.") if ! defined $axis1;
+  linnet::debug::printdie("axis for node [$node2] was not defined.") if ! defined $axis2;
+  linnet::debug::printdebug(1,"axispick",$node1,$axis1,"<--",@axis1);
+  linnet::debug::printdebug(1,"axispick",$node2,$axis2,"<--",@axis2);
+  if($axis1 eq $axis2) {
+    if($axes{$axis1}{self_connection_hide}) {
+      $link_param->{show} = 0;
+    } elsif ($axes{$axis1}{self_connection}) {
+      $axis2 = $axes{$axis1}{self_connection};
+      # the node must also be on this axis
+      linnet::debug::printdie("node is not on self connection axis [$axis2] from axis [$axis1]") if ! $nodes{$node1}{axis}{$axis2};
+      linnet::debug::printdebug(1,"axisselfconnection",$node2,$axis2);
+    } else {
+      linnet::debug::printdie("nodes [$node1 $axis1] [$node2 $axis2] on the same axis [$axis1] but [$axis1] does not have self_connection_hide or self_connection parameter. If you wish to suppress links that start and end on this axis, set self_connection_hide=yes. If you've cloned the axis (e.g. axis1left,axis1right) then you probably want to specify self_connection to be the other of the clone pair (e.g. for axis1left, set self_connection=axis1right).");
+    }
+    
+  }
+  my $axis1_remap;
+  my $axis2_remap;
+  $axis1_remap = $axes{$axis2}{remap_connection}{$axis1};
+  $axis2_remap = $axes{$axis1}{remap_connection}{$axis2};
+  if(defined $axis1_remap && defined $axis2_remap) {
+      if($axis1_remap eq $axis2_remap) {
+	  linnet::debug::printdie("remapping axis for nodes [$node1 $node2] from [$axis1 $axis2] to [$axis1_remap $axis2_remap] results in remapping to same axis");
+      }
+  }
+  if(defined $axis1_remap) {
+      linnet::debug::printdebug(1,"axisremap",$node1,$axis1,"remap",$axis1_remap);
+      if($axis1_remap eq $axis2) {
+	  linnet::debug::printdie("remapping axis for node [$node1] from [$axis1] to [$axis1_remap] results in remapping to the same axis as node [$node2] on [$axis2]");
+      }
+      $axis1 = defined $axis1_remap ? $axis1_remap : $axis1;
+  }
+  $axis2_remap = $axes{$axis1}{remap_connection}{$axis2};
+  if(defined $axis2_remap && $axis2_remap eq $axis1) {
+      linnet::debug::printdie("remapping axis for nodes [$node1 $node2] from [$axis1 $axis2] to [$axis1 $axis2_remap] results in remapping to same axis");
+  }
+  if(defined $axis2_remap) {
+    linnet::debug::printdebug(1,"axisremap",$node2,$axis2,"remap",$axis2_remap);
+    if($axis2_remap eq $axis1) {
+      linnet::debug::printdie("remapping axis for node [$node2] from [$axis2] to [$axis2_remap] results in remapping to the same axis as node [$node1] on [$axis1]");
+    }
+    $axis2 = defined $axis2_remap ? $axis2_remap : $axis2;
+  }
+
+  my @link_rule_blocks = sort {($b->{importance}||0) <=> ($a->{importance}||0)} linnet::util::tolist($CONF{links}{link});
+  #linnet::debug::printdumper(\@link_rule_blocks);
+
+  for my $link_rule_block (@link_rule_blocks) {
+      next if exists $link_rule_block->{use} && ! $link_rule_block->{use};
+    my $pass = 1;
+    if(defined $link_rule_block->{rule_node1}) {
+      my @scored_rules1 = match_rules( [ linnet::util::tolist( $link_rule_block->{rule_node1} ) ],
+				       $nodes{$node1}{stats} );
+      #linnet::debug::printdumper(\@scored_rules1);
+      my $score_sum = sum(map { $_->{score} } @scored_rules1);
+      $pass &&= $score_sum;
+    }
+    if(defined $link_rule_block->{rule_node2}) {
+      my @scored_rules2 = match_rules( [ linnet::util::tolist( $link_rule_block->{rule_node2} ) ],
+				       $nodes{$node2}{stats} );
+      #linnet::debug::printdumper(\@scored_rules2);
+      my $score_sum = sum(map { $_->{score} } @scored_rules2);
+      $pass &&= $score_sum;
+    }
+    if(defined $link_rule_block->{rule_node}) {
+      my @scored_rules1 = match_rules( [ linnet::util::tolist( $link_rule_block->{rule_node} ) ],
+				       $nodes{$node1}{stats} );
+      my @scored_rules2 = match_rules( [ linnet::util::tolist( $link_rule_block->{rule_node} ) ],
+				       $nodes{$node2}{stats} );
+      my $score_sum1 = sum(map { $_->{score} } @scored_rules1);
+      my $score_sum2 = sum(map { $_->{score} } @scored_rules2);
+      $pass &&= $score_sum1 + $score_sum2;
+    }
+    if(defined $link_rule_block->{rule_edge}) {
+	linnet::debug::printdebug(1,"linkrule","matching edge",hash_to_string($attributes));
+	my @scored_rules_edge = match_rules( [ linnet::util::tolist( $link_rule_block->{rule_edge} ) ],
+					     {axis1=>$axis1,axis2=>$axis2,attribute=>$attributes});
+	#linnet::debug::printdumper(\@scored_rules_edge);
+	my $score_sum = sum(map { $_->{score} } @scored_rules_edge);
+	$pass &&= $score_sum;
+    }
+    if($pass) {
+	for my $param (qw(thickness z color show)) {
+	    if(defined $link_rule_block->{$param}) {
+		$link_param->{$param} = $link_rule_block->{$param};
+		linnet::debug::printdebug(1,"linkrule",$axis1,$axis2,$node1,$node2,$pass,"param",$param,$link_param->{$param});
+	    }
+	}
+	if($link_rule_block->{flow} && $link_rule_block->{flow} eq "continue") {
+	    linnet::debug::printdebug(2,"linkrule",$axis1,$axis2,$node1,$node2,$pass,"continue");
+	} else {
+	    last;
+	}
+    }
+    linnet::debug::printdebug(1,"linkrule",$axis1,$axis2,$node1,$node2,$pass);
+  }
+  my @options;
+  for my $option (qw(color thickness z)) {
+    push @options, sprintf("$option=%s",$link_param->{$option}) if defined $link_param->{$option};
+  }
+  if($link_param->{show}) {
+    printf $link_fh ("%s %f %f %s %f %f %s # %s %s\n",
+		     $axis1,
+		     $nodes{$node1}{axis}{$axis1}{position},
+		     $nodes{$node1}{axis}{$axis1}{position},
+		     $axis2,
+		     $nodes{$node2}{axis}{$axis2}{position},
+		     $nodes{$node2}{axis}{$axis2}{position},
+		     join(",",@options),
+		     $node1,$node2,
+		    );
+  }
+}
+
+$link_fh->close();
+
+linnet::debug::printinfo("parsedot done - wall time",tv_interval($t0));
+
+exit;
+
+sub hash_to_string {
+    my $h = shift;
+    if(ref $h eq "HASH") {
+	my @str;
+	for my $key (keys %$h) {
+	    push @str, sprintf("%s=%s",$key,$h->{$key});
+	}
+	return join(",",@str);
+    } else {
+	return $h;
+    }
+}
+
+sub assign_node_positions {
+  my $axis_name = shift;
+  my $axis = $axes{$axis_name};
+  my $pos = 0;
+  my @nodes = @{$axes{$axis_name}{nodes}};
+  
+  # if the node position is to be taken from a file, read the file in
+  my %node_pos_from_file;
+  if($axis->{node_position} =~ /^file:(.+)/) {
+      my $file = $1;
+      open(F,$file) || linnet::debug::printdie("You asked for node position for axis [$axis_name] to be taken from a file (file:$file), but this file could not be found or read in.");
+      linnet::debug::printdebug(1,"axispos",$axis_name,"parsing from file",$file);
+      while(<F>) {
+	  chomp;
+	  my ($node,$position) = split;
+	  linnet::debug::printdebug(1,"axispos",$axis_name,$node,"got position",$position);
+	  $node_pos_from_file{$node} = $position;
+      }
+      close(F);
+  }
+  
+  for my $node (@nodes) {
+      if(exists $node_pos_from_file{$node->{name}}) {
+	  $node->{axis}{$axis_name}{position_key} = $node_pos_from_file{$node->{name}};
+	  $node->{axis}{$axis_name}{position}     = $node_pos_from_file{$node->{name}};
+      } else {
+	  my $position_fn = [$axis->{node_position}];
+	  linnet::debug::printdebug(1,"axispos",$axis_name,$node->{name},@$position_fn);
+	  parse_rules($position_fn,$node->{stats});
+	  linnet::debug::printdebug(2,"axispos function",$axis_name,$node->{name},@$position_fn);
+	  my ($score) = eval_rules(@$position_fn);
+	  linnet::debug::printdebug(1,"axispos",$axis_name,$node->{name},"score",$score);
+	  # initially the key is the same as the position
+	  $node->{axis}{$axis_name}{position_key} = $score;
+	  $node->{axis}{$axis_name}{position}     = $score;
+	  #linnet::debug::printdumper($node) if $node->{name} eq "o4";
+      }
+  }
+  # sort the nodes by the key either numerically or asciibetic
+  my $sort_idx;
+  if($axis->{node_position_sort} eq "num") {
+      #linnet::debug::printdumper($nodes[0]);
+      for my $node ( sort { ($a->{axis}{$axis_name}{position_key} <=> $b->{axis}{$axis_name}{position_key}) || ($b->{stats}{node_all} <=> $a->{stats}{node_all}) || ($a->{stats}{node_neighbours_all_strict} <=> $b->{stats}{node_neighbours_all_strict}) || ($a->{name} cmp $b->{name})} @nodes ) {
+	  $node->{axis}{$axis_name}{idx} = $sort_idx++;
+      }
+  } elsif ($axis->{node_position_sort} eq "ascii") {
+      for my $node ( sort { ($a->{axis}{$axis_name}{position_key} cmp $b->{axis}{$axis_name}{position_key}) || ($a->{stats}{node_all} <=> $b->{stats}{node_all}) || ($a->{stats}{node_neighbours_all_strict} <=> $b->{stats}{node_neighbours_all_strict}) || ($a->{name} cmp $b->{name})} @nodes ) {
+	  $node->{axis}{$axis_name}{idx} = $sort_idx++;
+      }
+  } else {
+      linnet::debug::printdie("do not understand axis sort type [$axis->{node_position_sort}]");
+  }
+  
+  # linnet::debug::printdumper(\@nodes) if @nodes;
+  # if indexing is applied to the position, change the 'position' key
+  # to the index value based on 'position_key'
+  if($axis->{node_index_position}) {
+      @nodes = sort {($a->{axis}{$axis_name}{idx} <=> $b->{axis}{$axis_name}{idx})} @nodes;
+      for my $node (@nodes) {
+	  $node->{axis}{$axis_name}{position} = $node->{axis}{$axis_name}{idx};;
+      }
+  }
+  for my $node (sort {$a->{axis}{$axis_name}{position} <=> $b->{axis}{$axis_name}{position}} @nodes) {
+      linnet::debug::printdebug( 1, "node_on_axis", $axis_name, $node->{name}, 
+				 "position_key", $node->{axis}{$axis_name}{position_key},
+				 "position", $node->{axis}{$axis_name}{position},
+				 "degree", $node->{stats}{node_all},
+				 "neighbour_degree", $node->{stats}{node_neighbours_all});
+  }
+}
+
+sub get_fh {
+  my $fh;
+  if ( my $file = $CONF{file} ) {
+    $fh = linnet::util::open_file( $CONF{file} );
+  }
+  else {
+    $fh = \*STDIN;
+  }
+  return $fh;
+}
+
+# read axis configuration and generate data structures 
+# for each axis
+sub parse_axes {
+  my %a;
+  for my $axis (@{$CONF{axes}{axis}}) {
+    my $name = $axis->{name};
+    $a{$name} = {%$axis};
+    # rules stored as a list
+    $a{$name}{rules}  = [ linnet::util::tolist($axis->{rule}) ];
+    # prepare for storing nodes
+    $a{$name}{nodes}  = [];
+    # change multi_assign_ok to a hash, with axis names as keys
+    if($a{$name}{multi_assign_ok}) {
+      my @names = split(/\s*,\s*/,$a{$name}{multi_assign_ok});
+      $a{$name}{multi_assign_ok} = {};
+      map { $a{$name}{multi_assign_ok}{$_}++ } @names;
+    }
+    # change remap_connection to a hash, with axis names as keys
+    # and remapped axes as values
+    if($a{$name}{remap_connection}) {
+      my @pairs = split(/\s*,\s*/,$a{$name}{remap_connection});
+      $a{$name}{remap_connection} = {};
+      for my $pair ( @pairs ) {
+	my ($axis1,$axis2) = split(/\s*=>\s*/,$pair);
+	$a{$name}{remap_connection}{$axis1} = $axis2;
+      }
+    }
+  }
+  #linnet::debug::printdumper(\%a);
+  return %a;
+}
+
+# given a node, return a hash of statistics about connectivity
+# and attributes
+sub get_node_statistics {
+  my $node = shift;
+  my @node_out   = $graph->successors($node);
+  my @node_in    = $graph->predecessors($node);
+  my @node_neighbours = $graph->neighbours($node);
+  my @node_neighbours_out = map { $graph->successors($_) } @node_neighbours;
+  my @node_neighbours_in  = map { $graph->predecessors($_) } @node_neighbours;
+  my @node_neighbours_out_strict = grep($_ ne $node, @node_neighbours_out);
+  my @node_neighbours_in_strict  = grep($_ ne $node, @node_neighbours_in);
+
+  my $node_stats = {node_name => $node,
+		    attribute => $graph->get_vertex_attributes($node),
+		    node_out  => int(@node_out),
+		    node_in   => int(@node_in),
+		    node_neighbours_in         => int(@node_neighbours_in),
+		    node_neighbours_out        => int(@node_neighbours_out),
+		    node_neighbours_in_strict  => int(@node_neighbours_in_strict),
+		    node_neighbours_out_strict => int(@node_neighbours_out_strict)};
+  $node_stats->{node_all} = sum ( @{$node_stats}{qw(node_out node_in)} );
+  $node_stats->{node_neighbours_all} = sum ( @{$node_stats}{qw(node_neighbours_out node_neighbours_in)} );
+  $node_stats->{node_neighbours_all_strict} = sum ( @{$node_stats}{qw(node_neighbours_out_strict node_neighbours_in_strict)} );
+  # some synonyms
+  $node_stats->{node_inout} = $node_stats->{node_all};
+  $node_stats->{node_neighbours_inout} = $node_stats->{node_neighbours_all};
+  $node_stats->{node_neighbours_inout_strict} = $node_stats->{node_neighbours_all_strict};
+
+  for my $stat (sort keys %$node_stats) {
+    linnet::debug::printdebug(2,"node",$node,$stat,$node_stats->{$stat});
+  }
+  for my $attrib (sort keys %{$node_stats->{attribute}}) {
+    linnet::debug::printdebug(2,"node",$node,"attribute",$attrib,$node_stats->{attribute}{$attrib});
+  }
+  return $node_stats;
+}
+
+# given a node, assign it to an axis by matching
+# node statistics against axis rules
+#
+# if more than one axis matches with equal score, the
+# script dies
+#
+# returns hash of
+#
+# axis_name => score,
+# axis_name => score,
+# ...
+sub assign_axis {
+  my $node = shift;
+  # score the rules for each axis 
+  # populates $nodes{$node}{scores}
+  my $num_nonzero_return_sums = score_axes($node);
+  #linnet::debug::printdumper($nodes{$node});
+  # there are no non-zero return values - this node
+  # does not match any axis
+  if(! $num_nonzero_return_sums) {
+    linnet::debug::printdebug(1,"axismatch",$node,"no_match");
+    return undef;
+  }
+  my $assignments = rank_axes($node);
+  #linnet::debug::printdumper($assignments) if $node eq "o4";
+  my @scores = map { $_->{score}} values %$assignments;
+  my @uniq_scores = uniq @scores;
+  if(@uniq_scores != 1) {
+    linnet::debug::printdie("more than one highest score seen",@uniq_scores);
+  }
+  $nodes{$node}{stats}{score} = $uniq_scores[0];
+  #linnet::debug::printdumper($assignments);
+  $nodes{$node}{axis} = $assignments;
+  #linnet::debug::printdumper($nodes{$node}) if $node eq "o4";
+}
+
+# determine axes with the higest score and return the assignments
+# which are a list of {score=> , axis=>}
+sub rank_axes {
+  my $node = shift;
+  linnet::debug::printdie("cannot score axes for node [$node] because node has no axis scores") if ! $nodes{$node}{scores};
+  # create a list of axes and their total scores
+  my $node_data = $nodes{$node};
+  my @scores;
+  for my $axis (keys %{$node_data->{scores}}) {
+    push @scores, {axis=>$axis,
+		   score=>sum ( map { $_->{score}} @{$node_data->{scores}{$axis}})};
+  }
+  # double check that non-zero scores exist
+  linnet::debug::printdie("saw no non-zero scores") if ! grep($_, map { $_->{score}} @scores);
+  # sort the scores descending
+  @scores = sort {$b->{score} <=> $a->{score}} @scores;
+  #linnet::debug::printdumper(\@scores);
+  my $highest_score = $scores[0]{score};
+  my $candidate_scores = {
+    map { $_->{axis} => { score => $_->{score}} } grep($_->{score} == $highest_score, @scores) };
+  #linnet::debug::printdumper($candidate_scores);
+  # if there is more than one candidate score (i.e. more than one axis)
+  # verify that multi_assign_ok is set
+  if(keys %$candidate_scores == 1) {
+    linnet::debug::printdebug(1,"axismatch",$node,keys %$candidate_scores);
+    # no extra checks
+  } else {
+    my @candidate_axes   = keys %$candidate_scores;
+    for my $axis_name (@candidate_axes) {
+      my $axis = $axes{$axis_name};      
+      if(! $axis->{multi_assign_ok}) {
+	linnet::debug::printdie("node [$node] was assigned to multiple axes [",join(",",@candidate_axes),"] but axis [$axis_name] does not have multi_assign_ok set.");
+      }
+      my $num_ok = grep($axis->{multi_assign_ok}{$_}, @candidate_axes);
+      if($num_ok == @candidate_axes) {
+	linnet::debug::printdebug(1,"axismatch",$node,$axis_name);
+	# good - this axis lists all other axes in multi-assign_ok
+      } else {
+	linnet::debug::printdie("node [$node] was assigned to multiple axes",@candidate_axes,"but axis [$axis_name] does not have all these axes in multi_assign_ok.");
+      }
+    }
+  }
+  # hash of { axis_name=>score, axis_name=>score, ... }
+  return $candidate_scores;
+}
+
+sub score_axes {
+  my $node = shift;
+  my $num_nonzero_return_sums;
+  for my $axis (values %axes) {
+    my $axis_name    = $axis->{name};
+    my $rules        = $axis->{rules};
+    my @scored_rules = match_rules($rules,$nodes{$node}{stats});
+    $nodes{$node}{scores}{$axis_name} = \@scored_rules;
+    my $sum_return_values = sum ( map { $_->{score} } @scored_rules);
+    linnet::debug::printdebug(2,"axis pass",$node,$axis_name,$sum_return_values);
+    $num_nonzero_return_sums ++ if $sum_return_values > 0;
+  }
+  return $num_nonzero_return_sums;
+}
+
+# given an list of rules and node data, return the 
+# scores for each rule
+# 
+# if a rule is a boolean condition (e.g. node_in == 2) then it returns 0 or 1
+sub match_rules {
+  my ($rules,$node_stats) = @_;
+  #linnet::debug::printdumper($node_stats);
+  # make a copy of the rules - we're going to be substituting in values
+  my @rules_copy = @$rules;
+  # parse the rules by substituting node statistics into the rule
+  parse_rules(\@rules_copy,$node_stats);
+  # evaluate rules
+  my @return_values = eval_rules(@rules_copy);
+  my @scored_rules;
+  for my $i (0..@$rules-1) {
+      push @scored_rules, {orig=>$rules->[$i],
+			   parsed=>$rules_copy[$i],
+			   score=>$return_values[$i]};
+  }
+  return @scored_rules;
+}
+
+# given a list of rule strings and node statistics, parse the
+# rule strings and substitute node values for key words
+sub parse_rules {
+  my ($rules,$node_stats) = @_;
+  #linnet::debug::printdumper($node_stats);
+  for my $rule (@$rules) {
+      linnet::debug::printdebug(3,"rule",$rule);
+    for my $statistic (sort {length($b) <=> length($a)} keys %$node_stats) {
+      linnet::debug::printdebug(3,"rule statistic",$statistic);
+      my $value = $node_stats->{$statistic};
+      linnet::debug::printdumper($node_stats) if ! defined $value;
+      if(ref($value) eq "HASH") {
+	for my $substatistic (sort {length($b) <=> length($a)} keys %$value) {
+	  my $subvalue = $value->{$substatistic};
+	  $rule =~ s/${statistic}_${substatistic}/$subvalue/;
+	}
+      } else {
+	$rule =~ s/$statistic/$value/ig;
+      }
+    }
+    linnet::debug::printdebug(3,"rule",$rule);
+  }
+}
+
+# given a list of parsed rule strings, evaluate the strings 
+# with eval() and return a list of return values
+sub eval_rules {
+  my @rules = @_;
+  my @return_values;
+  for my $rule (@rules) {
+    my $return_value = eval $rule;
+    if($@) {
+      linnet::debug::printdie("Problem parsing rule $rule.");
+    }
+    linnet::debug::printdebug(2,"pass",$rule,$return_value ? "PASS" : "FAIL");
+    push @return_values, $return_value || 0;
+  }
+  return @return_values;
+}
+
+sub populateconfiguration {
+  foreach my $key ( keys %OPT ) {
+    $CONF{$key} = $OPT{$key};
+  }
+  repopulateconfiguration( \%CONF );
+}
+
+sub validateconfiguration {
+  $CONF{files}{dir} = $OPT{dir} if $OPT{dir};
+  $CONF{files}{dir} ||= ".";
+  
+}
+
+sub repopulateconfiguration {
+  my $root = shift;
+  return unless ref($root);
+  for my $key ( keys %$root ) {
+    my $value = $root->{$key};
+    if ( ref($value) eq "HASH" ) {
+      repopulateconfiguration($value);
+    }
+    elsif ( ref($value) eq "ARRAY" ) {
+      for my $item (@$value) {
+        repopulateconfiguration($item);
+      }
+    }
+    else {
+      while ( $value =~ /__([^_].+?)__/g ) {
+        my $source = "__" . $1 . "__";
+        my $target = eval $1;
+        $value =~ s/\Q$source\E/$target/g;
+      }
+      $root->{$key} = $value;
+    }
+  }
+}
+

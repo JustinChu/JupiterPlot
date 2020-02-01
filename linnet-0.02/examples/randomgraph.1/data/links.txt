@@ -1,0 +1,601 @@
+axisout 124.000000 124.000000 axisall 393.000000 393.000000 color=red_a5,thickness=1,z=10 # node128 node595
+axisout 112.000000 112.000000 axisall 386.000000 386.000000 color=red_a5,thickness=1,z=10 # node72 node348
+axisall 494.000000 494.000000 axisin 229.000000 229.000000 color=red_a5,thickness=1,z=10 # node551 node883
+axisall 193.000000 193.000000 axisin 27.000000 27.000000  # node418 node899
+axisall 462.000000 462.000000 axisin 239.000000 239.000000  # node485 node287
+axisall 489.000000 489.000000 axisin 199.000000 199.000000 color=red_a5,thickness=1,z=10 # node512 node979
+axisout 91.000000 91.000000 axisall 331.000000 331.000000 color=red_a5,thickness=1,z=10 # node30 node347
+axisall 449.000000 449.000000 axisin 173.000000 173.000000 color=red_a5,thickness=1,z=10 # node382 node890
+axisall 500.000000 500.000000 axisin 205.000000 205.000000 color=red_a5,thickness=1,z=10 # node502 node59
+axisout 246.000000 246.000000 axisall 80.000000 80.000000  # node685 node304
+axisout 130.000000 130.000000 axisall 396.000000 396.000000 color=red_a5,thickness=1,z=10 # node212 node349
+axisout 183.000000 183.000000 axisall 482.000000 482.000000 color=red_a5,thickness=1,z=10 # node862 node480
+axisall 130.000000 130.000000 axisin 14.000000 14.000000  # node332 node102
+axisout 52.000000 52.000000 axisall 232.000000 232.000000  # node77 node368
+axisout 188.000000 188.000000 axisall 481.000000 481.000000 color=red_a5,thickness=1,z=10 # node983 node446
+axisout 216.000000 216.000000 axisall 323.000000 323.000000 color=red_a5,thickness=1,z=10 # node826 node476
+axisall 265.000000 265.000000 axisin 70.000000 70.000000  # node434 node918
+axisout 248.000000 248.000000 axisall 470.000000 470.000000 color=red_a5,thickness=1,z=10 # node668 node496
+axisout 100.000000 100.000000 axisall 335.000000 335.000000 color=red_a5,thickness=1,z=10 # node967 node580
+axisall 456.000000 456.000000 axisin 181.000000 181.000000 color=red_a5,thickness=1,z=10 # node584 node993
+axisout 133.000000 133.000000 axisall 408.000000 408.000000 color=red_a5,thickness=1,z=10 # node759 node559
+axisout 18.000000 18.000000 axisall 132.000000 132.000000  # node15 node657
+axisall 135.000000 135.000000 axisin 20.000000 20.000000  # node515 node835
+axisall 382.000000 382.000000 axisin 240.000000 240.000000 color=red_a5,thickness=1,z=10 # node413 node689
+axisall 415.000000 415.000000 axisin 136.000000 136.000000 color=red_a5,thickness=1,z=10 # node491 node97
+axisall 402.000000 402.000000 axisin 123.000000 123.000000 color=red_a5,thickness=1,z=10 # node466 node161
+axisall 204.000000 204.000000 axisin 28.000000 28.000000  # node586 node9
+axisout 166.000000 166.000000 axisall 452.000000 452.000000 color=red_a5,thickness=1,z=10 # node99 node482
+axisall 480.000000 480.000000 axisin 244.000000 244.000000 color=green_a5,thickness=1,z=15 # node562 node621
+axisall 65.000000 65.000000 axisin 9.000000 9.000000  # node314 node44
+axisout 245.000000 245.000000 axisall 420.000000 420.000000  # node290 node648
+axisout 14.000000 14.000000 axisall 61.000000 61.000000  # node944 node249
+axisall 330.000000 330.000000 axisin 82.000000 82.000000  # node401 node194
+axisout 225.000000 225.000000 axisin 219.000000 219.000000 color=blue_a5,thickness=1,z=20 # node317 node120
+axisall 488.000000 488.000000 axisin 190.000000 190.000000 color=red_a5,thickness=1,z=10 # node498 node181
+axisall 265.000000 265.000000 axisin 49.000000 49.000000  # node434 node1000
+axisout 93.000000 93.000000 axisall 328.000000 328.000000 color=red_a5,thickness=1,z=10 # node62 node457
+axisout 247.000000 247.000000 axisall 421.000000 421.000000 color=red_a5,thickness=1,z=10 # node416 node439
+axisall 318.000000 318.000000 axisin 81.000000 81.000000 color=red_a5,thickness=1,z=10 # node412 node190
+axisall 251.000000 251.000000 axisin 36.000000 36.000000  # node662 node108
+axisout 38.000000 38.000000 axisall 192.000000 192.000000 color=red_a5,thickness=1,z=10 # node88 node339
+axisout 83.000000 83.000000 axisall 285.000000 285.000000 color=red_a5,thickness=1,z=10 # node954 node514
+axisall 414.000000 414.000000 axisin 238.000000 238.000000 color=red_a5,thickness=1,z=10 # node408 node222
+axisout 21.000000 21.000000 axisall 129.000000 129.000000  # node40 node618
+axisout 31.000000 31.000000 axisall 180.000000 180.000000  # node13 node658
+axisall 461.000000 461.000000 axisin 171.000000 171.000000 color=red_a5,thickness=1,z=10 # node399 node785
+axisout 113.000000 113.000000 axisall 384.000000 384.000000 color=red_a5,thickness=1,z=10 # node763 node504
+axisall 385.000000 385.000000 axisin 106.000000 106.000000 color=red_a5,thickness=1,z=10 # node570 node735
+axisall 73.000000 73.000000 axisin 11.000000 11.000000  # node703 node876
+axisall 328.000000 328.000000 axisin 83.000000 83.000000 color=red_a5,thickness=1,z=10 # node457 node2
+axisout 200.000000 200.000000 axisall 503.000000 503.000000 color=red_a5,thickness=1,z=10 # node137 node530
+axisall 364.000000 364.000000 axisin 96.000000 96.000000 color=red_a5,thickness=1,z=10 # node402 node117
+axisall 338.000000 338.000000 axisin 76.000000 76.000000  # node659 node145
+axisout 163.000000 163.000000 axisall 449.000000 449.000000 color=red_a5,thickness=1,z=10 # node907 node382
+axisall 325.000000 325.000000 axisin 80.000000 80.000000 color=red_a5,thickness=1,z=10 # node603 node178
+axisout 53.000000 53.000000 axisall 218.000000 218.000000 color=red_a5,thickness=1,z=10 # node774 node444
+axisall 372.000000 372.000000 axisin 242.000000 242.000000 color=green_a5,thickness=1,z=15 # node565 node281
+axisout 19.000000 19.000000 axisall 132.000000 132.000000  # node206 node657
+axisout 70.000000 70.000000 axisall 308.000000 308.000000 color=red_a5,thickness=1,z=10 # node23 node387
+axisall 64.000000 64.000000 axisin 13.000000 13.000000  # node256 node928
+axisout 22.000000 22.000000 axisall 136.000000 136.000000  # node52 node655
+axisall 338.000000 338.000000 axisin 233.000000 233.000000  # node659 node739
+axisout 161.000000 161.000000 axisall 465.000000 465.000000 color=red_a5,thickness=1,z=10 # node875 node524
+axisout 121.000000 121.000000 axisall 363.000000 363.000000 color=red_a5,thickness=1,z=10 # node976 node650
+axisout 191.000000 191.000000 axisall 492.000000 492.000000 color=red_a5,thickness=1,z=10 # node797 node540
+axisall 276.000000 276.000000 axisin 65.000000 65.000000 color=red_a5,thickness=1,z=10 # node404 node845
+axisout 240.000000 240.000000 axisall 455.000000 455.000000 color=red_a5,thickness=1,z=10 # node266 node541
+axisout 222.000000 222.000000 axisall 371.000000 371.000000 color=red_a5,thickness=1,z=10 # node776 node490
+axisout 59.000000 59.000000 axisall 218.000000 218.000000 color=red_a5,thickness=1,z=10 # node920 node444
+axisout 244.000000 244.000000 axisall 270.000000 270.000000 color=red_a5,thickness=1,z=10 # node663 node425
+axisall 502.000000 502.000000 axisin 208.000000 208.000000 color=red_a5,thickness=1,z=10 # node474 node21
+axisout 199.000000 199.000000 axisall 495.000000 495.000000 color=red_a5,thickness=1,z=10 # node889 node473
+axisall 333.000000 333.000000 axisin 79.000000 79.000000  # node489 node152
+axisall 380.000000 380.000000 axisin 238.000000 238.000000 color=red_a5,thickness=1,z=10 # node405 node222
+axisout 75.000000 75.000000 axisall 270.000000 270.000000 color=red_a5,thickness=1,z=10 # node79 node425
+axisall 503.000000 503.000000 axisin 212.000000 212.000000 color=red_a5,thickness=1,z=10 # node530 node991
+axisout 51.000000 51.000000 axisall 229.000000 229.000000  # node295 node678
+axisout 81.000000 81.000000 axisall 279.000000 279.000000 color=red_a5,thickness=1,z=10 # node933 node673
+axisall 481.000000 481.000000 axisin 239.000000 239.000000 color=red_a5,thickness=1,z=10 # node446 node287
+axisout 193.000000 193.000000 axisall 497.000000 497.000000 color=red_a5,thickness=1,z=10 # node139 node484
+axisout 226.000000 226.000000 axisall 347.000000 347.000000 color=red_a5,thickness=1,z=10 # node852 node464
+axisall 185.000000 185.000000 axisin 218.000000 218.000000 color=blue_a5,thickness=1,z=20 # node319 node138
+axisout 159.000000 159.000000 axisall 468.000000 468.000000 color=red_a5,thickness=1,z=10 # node861 node520
+axisall 285.000000 285.000000 axisin 54.000000 54.000000 color=red_a5,thickness=1,z=10 # node514 node18
+axisall 366.000000 366.000000 axisin 95.000000 95.000000  # node497 node111
+axisall 267.000000 267.000000 axisin 232.000000 232.000000 color=red_a5,thickness=1,z=10 # node443 node711
+axisout 239.000000 239.000000 axisall 327.000000 327.000000 color=red_a5,thickness=1,z=10 # node772 node440
+axisall 190.000000 190.000000 axisin 26.000000 26.000000  # node601 node857
+axisout 102.000000 102.000000 axisall 388.000000 388.000000 color=red_a5,thickness=1,z=10 # node113 node576
+axisout 228.000000 228.000000 axisall 392.000000 392.000000 color=red_a5,thickness=1,z=10 # node192 node681
+axisout 220.000000 220.000000 axisall 188.000000 188.000000 color=blue_a5,thickness=1,z=20 # node188 node656
+axisout 165.000000 165.000000 axisall 459.000000 459.000000 color=red_a5,thickness=1,z=10 # node962 node465
+axisout 176.000000 176.000000 axisall 485.000000 485.000000 color=red_a5,thickness=1,z=10 # node171 node488
+axisall 401.000000 401.000000 axisin 125.000000 125.000000 color=red_a5,thickness=1,z=10 # node611 node34
+axisout 24.000000 24.000000 axisall 130.000000 130.000000  # node8 node332
+axisout 49.000000 49.000000 axisall 233.000000 233.000000 color=red_a5,thickness=1,z=10 # node27 node755
+axisout 154.000000 154.000000 axisall 452.000000 452.000000 color=red_a5,thickness=1,z=10 # node228 node482
+axisall 186.000000 186.000000 axisin 34.000000 34.000000  # node324 node978
+axisall 433.000000 433.000000 axisin 244.000000 244.000000 color=green_a5,thickness=1,z=15 # node475 node621
+axisall 466.000000 466.000000 axisin 160.000000 160.000000 color=red_a5,thickness=1,z=10 # node537 node109
+axisall 179.000000 179.000000 axisin 22.000000 22.000000  # node642 node233
+axisall 199.000000 199.000000 axisin 242.000000 242.000000 color=green_a5,thickness=1,z=15 # node310 node281
+axisall 495.000000 495.000000 axisin 231.000000 231.000000 color=red_a5,thickness=1,z=10 # node473 node226
+axisout 241.000000 241.000000 axisall 72.000000 72.000000  # node328 node331
+axisout 66.000000 66.000000 axisall 272.000000 272.000000  # node143 node517
+axisout 108.000000 108.000000 axisall 364.000000 364.000000 color=red_a5,thickness=1,z=10 # node208 node402
+axisout 127.000000 127.000000 axisall 399.000000 399.000000 color=red_a5,thickness=1,z=10 # node168 node511
+axisout 247.000000 247.000000 axisin 23.000000 23.000000  # node416 node49
+axisout 209.000000 209.000000 axisall 358.000000 358.000000 color=red_a5,thickness=1,z=10 # node276 node361
+axisout 235.000000 235.000000 axisall 105.000000 105.000000  # node296 node664
+axisall 480.000000 480.000000 axisin 198.000000 198.000000 color=red_a5,thickness=1,z=10 # node562 node855
+axisall 457.000000 457.000000 axisin 180.000000 180.000000 color=red_a5,thickness=1,z=10 # node528 node970
+axisall 61.000000 61.000000 axisin 236.000000 236.000000  # node249 node728
+axisout 215.000000 215.000000 axisall 450.000000 450.000000 color=red_a5,thickness=1,z=10 # node292 node527
+axisout 237.000000 237.000000 axisall 458.000000 458.000000 color=red_a5,thickness=1,z=10 # node690 node461
+axisall 459.000000 459.000000 axisin 172.000000 172.000000 color=red_a5,thickness=1,z=10 # node465 node878
+axisout 29.000000 29.000000 axisall 145.000000 145.000000  # node985 node652
+axisall 372.000000 372.000000 axisin 118.000000 118.000000  # node565 node947
+axisout 205.000000 205.000000 axisall 129.000000 129.000000 color=blue_a5,thickness=1,z=20 # node789 node618
+axisout 103.000000 103.000000 axisall 365.000000 365.000000 color=red_a5,thickness=1,z=10 # node129 node450
+axisall 504.000000 504.000000 axisin 228.000000 228.000000 color=red_a5,thickness=1,z=10 # node545 node810
+axisall 460.000000 460.000000 axisin 224.000000 224.000000 color=blue_a5,thickness=1,z=20 # node470 node850
+axisall 78.000000 78.000000 axisin 5.000000 5.000000  # node790 node131
+axisout 153.000000 153.000000 axisall 463.000000 463.000000 color=red_a5,thickness=1,z=10 # node156 node578
+axisout 156.000000 156.000000 axisall 452.000000 452.000000 color=red_a5,thickness=1,z=10 # node54 node482
+axisout 192.000000 192.000000 axisall 492.000000 492.000000 color=red_a5,thickness=1,z=10 # node942 node540
+axisout 204.000000 204.000000 axisall 505.000000 505.000000 color=red_a5,thickness=1,z=10 # node258 node579
+axisall 349.000000 349.000000 axisin 92.000000 92.000000  # node525 node952
+axisout 97.000000 97.000000 axisall 337.000000 337.000000 color=red_a5,thickness=1,z=10 # node86 node593
+axisall 392.000000 392.000000 axisin 228.000000 228.000000 color=red_a5,thickness=1,z=10 # node681 node810
+axisout 210.000000 210.000000 axisall 143.000000 143.000000 color=blue_a5,thickness=1,z=20 # node170 node592
+axisall 322.000000 322.000000 axisin 87.000000 87.000000  # node555 node782
+axisall 358.000000 358.000000 axisin 111.000000 111.000000 color=red_a5,thickness=1,z=10 # node361 node829
+axisout 224.000000 224.000000 axisall 391.000000 391.000000 color=red_a5,thickness=1,z=10 # node277 node322
+axisout 189.000000 189.000000 axisall 493.000000 493.000000 color=red_a5,thickness=1,z=10 # node103 node533
+axisall 368.000000 368.000000 axisin 105.000000 105.000000 color=red_a5,thickness=1,z=10 # node357 node56
+axisout 10.000000 10.000000 axisall 70.000000 70.000000  # node58 node278
+axisall 270.000000 270.000000 axisin 232.000000 232.000000 color=red_a5,thickness=1,z=10 # node425 node711
+axisout 44.000000 44.000000 axisall 230.000000 230.000000 color=red_a5,thickness=1,z=10 # node164 node366
+axisall 317.000000 317.000000 axisin 216.000000 216.000000 color=red_a5,thickness=1,z=10 # node396 node796
+axisout 137.000000 137.000000 axisall 410.000000 410.000000 color=red_a5,thickness=1,z=10 # node90 node549
+axisall 469.000000 469.000000 axisin 221.000000 221.000000 color=red_a5,thickness=1,z=10 # node469 node176
+axisall 480.000000 480.000000 axisin 200.000000 200.000000 color=red_a5,thickness=1,z=10 # node562 node989
+axisall 427.000000 427.000000 axisin 144.000000 144.000000 color=red_a5,thickness=1,z=10 # node542 node36
+axisout 223.000000 223.000000 axisall 488.000000 488.000000 color=red_a5,thickness=1,z=10 # node262 node498
+axisout 238.000000 238.000000 axisall 405.000000 405.000000 color=red_a5,thickness=1,z=10 # node666 node560
+axisout 117.000000 117.000000 axisall 379.000000 379.000000  # node866 node581
+axisall 406.000000 406.000000 axisin 133.000000 133.000000 color=red_a5,thickness=1,z=10 # node448 node905
+axisall 445.000000 445.000000 axisin 156.000000 156.000000  # node483 node931
+axisout 237.000000 237.000000 axisall 92.000000 92.000000  # node690 node773
+axisout 248.000000 248.000000 axisall 83.000000 83.000000  # node668 node243
+axisall 280.000000 280.000000 axisin 67.000000 67.000000 color=red_a5,thickness=1,z=10 # node373 node887
+axisall 471.000000 471.000000 axisin 236.000000 236.000000 color=red_a5,thickness=1,z=10 # node500 node728
+axisout 60.000000 60.000000 axisin 244.000000 244.000000 color=green_a5,thickness=1,z=15 # node940 node621
+axisall 317.000000 317.000000 axisin 90.000000 90.000000 color=red_a5,thickness=1,z=10 # node396 node914
+axisout 54.000000 54.000000 axisall 241.000000 241.000000  # node812 node327
+axisout 145.000000 145.000000 axisall 438.000000 438.000000 color=red_a5,thickness=1,z=10 # node203 node630
+axisall 307.000000 307.000000 axisin 215.000000 215.000000 color=red_a5,thickness=1,z=10 # node371 node820
+axisout 162.000000 162.000000 axisall 457.000000 457.000000 color=red_a5,thickness=1,z=10 # node895 node528
+axisall 453.000000 453.000000 axisin 222.000000 222.000000 color=red_a5,thickness=1,z=10 # node397 node215
+axisall 324.000000 324.000000 axisin 237.000000 237.000000 color=red_a5,thickness=1,z=10 # node546 node241
+axisall 503.000000 503.000000 axisin 211.000000 211.000000 color=red_a5,thickness=1,z=10 # node530 node859
+axisout 88.000000 88.000000 axisall 325.000000 325.000000 color=red_a5,thickness=1,z=10 # node141 node603
+axisall 487.000000 487.000000 axisin 191.000000 191.000000 color=red_a5,thickness=1,z=10 # node539 node182
+axisout 139.000000 139.000000 axisall 400.000000 400.000000  # node955 node604
+axisout 36.000000 36.000000 axisall 193.000000 193.000000  # node802 node418
+axisout 150.000000 150.000000 axisall 431.000000 431.000000 color=red_a5,thickness=1,z=10 # node986 node583
+axisout 62.000000 62.000000 axisall 240.000000 240.000000  # node972 node359
+axisall 275.000000 275.000000 axisin 63.000000 63.000000  # node351 node831
+axisall 442.000000 442.000000 axisin 139.000000 139.000000 color=red_a5,thickness=1,z=10 # node374 node155
+axisall 495.000000 495.000000 axisin 207.000000 207.000000 color=red_a5,thickness=1,z=10 # node473 node848
+axisout 195.000000 195.000000 axisall 499.000000 499.000000 color=red_a5,thickness=1,z=10 # node6 node442
+axisall 409.000000 409.000000 axisin 241.000000 241.000000 color=green_a5,thickness=1,z=15 # node487 node622
+axisout 221.000000 221.000000 axisall 377.000000 377.000000 color=blue_a5,thickness=1,z=20 # node207 node563
+axisout 74.000000 74.000000 axisall 267.000000 267.000000 color=red_a5,thickness=1,z=10 # node781 node443
+axisall 503.000000 503.000000 axisin 210.000000 210.000000 color=red_a5,thickness=1,z=10 # node530 node75
+axisall 431.000000 431.000000 axisin 237.000000 237.000000 color=red_a5,thickness=1,z=10 # node583 node241
+axisall 277.000000 277.000000 axisin 68.000000 68.000000 color=red_a5,thickness=1,z=10 # node389 node891
+axisall 504.000000 504.000000 axisin 234.000000 234.000000 color=red_a5,thickness=1,z=10 # node545 node227
+axisout 5.000000 5.000000 axisall 122.000000 122.000000  # node116 node744
+axisall 304.000000 304.000000 axisin 72.000000 72.000000  # node379 node923
+axisout 242.000000 242.000000 axisall 325.000000 325.000000 color=red_a5,thickness=1,z=10 # node651 node603
+axisall 409.000000 409.000000 axisin 130.000000 130.000000 color=red_a5,thickness=1,z=10 # node487 node842
+axisout 236.000000 236.000000 axisall 181.000000 181.000000 color=red_a5,thickness=1,z=10 # node677 node682
+axisall 322.000000 322.000000 axisin 91.000000 91.000000  # node555 node937
+axisout 80.000000 80.000000 axisall 284.000000 284.000000 color=red_a5,thickness=1,z=10 # node92 node574
+axisall 272.000000 272.000000 axisin 222.000000 222.000000 color=blue_a5,thickness=1,z=20 # node517 node215
+axisall 406.000000 406.000000 axisin 128.000000 128.000000 color=red_a5,thickness=1,z=10 # node448 node818
+axisout 207.000000 207.000000 axisall 319.000000 319.000000 color=blue_a5,thickness=1,z=20 # node230 node626
+axisall 374.000000 374.000000 axisin 107.000000 107.000000  # node459 node769
+axisall 265.000000 265.000000 axisin 241.000000 241.000000 color=green_a5,thickness=1,z=15 # node434 node622
+axisall 142.000000 142.000000 axisin 17.000000 17.000000  # node318 node69
+axisout 237.000000 237.000000 axisall 192.000000 192.000000 color=red_a5,thickness=1,z=10 # node690 node339
+axisall 459.000000 459.000000 axisin 223.000000 223.000000 color=red_a5,thickness=1,z=10 # node465 node762
+axisout 213.000000 213.000000 axisin 232.000000 232.000000 color=blue_a5,thickness=1,z=20 # node223 node711
+axisout 169.000000 169.000000 axisall 478.000000 478.000000 color=red_a5,thickness=1,z=10 # node26 node472
+axisall 137.000000 137.000000 axisin 233.000000 233.000000  # node683 node739
+axisall 455.000000 455.000000 axisin 177.000000 177.000000 color=red_a5,thickness=1,z=10 # node541 node929
+axisout 32.000000 32.000000 axisall 189.000000 189.000000  # node240 node701
+axisall 360.000000 360.000000 axisin 99.000000 99.000000 color=red_a5,thickness=1,z=10 # node572 node123
+axisout 78.000000 78.000000 axisall 266.000000 266.000000 color=red_a5,thickness=1,z=10 # node879 node478
+axisout 43.000000 43.000000 axisall 244.000000 244.000000  # node159 node385
+axisall 275.000000 275.000000 axisin 59.000000 59.000000  # node351 node47
+axisall 328.000000 328.000000 axisin 94.000000 94.000000 color=red_a5,thickness=1,z=10 # node457 node998
+axisall 274.000000 274.000000 axisin 58.000000 58.000000 color=red_a5,thickness=1,z=10 # node619 node37
+axisall 486.000000 486.000000 axisin 193.000000 193.000000 color=red_a5,thickness=1,z=10 # node447 node749
+axisall 495.000000 495.000000 axisin 226.000000 226.000000 color=red_a5,thickness=1,z=10 # node473 node764
+axisall 222.000000 222.000000 axisin 37.000000 37.000000 color=red_a5,thickness=1,z=10 # node629 node133
+axisout 136.000000 136.000000 axisall 394.000000 394.000000 color=red_a5,thickness=1,z=10 # node893 node381
+axisall 471.000000 471.000000 axisin 182.000000 182.000000 color=red_a5,thickness=1,z=10 # node500 node126
+axisout 180.000000 180.000000 axisall 490.000000 490.000000 color=red_a5,thickness=1,z=10 # node45 node486
+axisout 248.000000 248.000000 axisall 440.000000 440.000000  # node668 node429
+axisout 86.000000 86.000000 axisall 294.000000 294.000000  # node999 node585
+axisout 151.000000 151.000000 axisall 428.000000 428.000000 color=red_a5,thickness=1,z=10 # node988 node523
+axisout 238.000000 238.000000 axisall 423.000000 423.000000 color=red_a5,thickness=1,z=10 # node666 node398
+axisout 13.000000 13.000000 axisall 71.000000 71.000000  # node909 node320
+axisall 418.000000 418.000000 axisin 129.000000 129.000000 color=red_a5,thickness=1,z=10 # node557 node824
+axisout 57.000000 57.000000 axisall 226.000000 226.000000  # node904 node337
+axisout 8.000000 8.000000 axisall 75.000000 75.000000  # node166 node251
+axisout 245.000000 245.000000 axisall 267.000000 267.000000 color=red_a5,thickness=1,z=10 # node290 node443
+axisall 493.000000 493.000000 axisin 231.000000 231.000000 color=red_a5,thickness=1,z=10 # node533 node226
+axisall 497.000000 497.000000 axisin 206.000000 206.000000 color=red_a5,thickness=1,z=10 # node484 node730
+axisout 239.000000 239.000000 axisall 476.000000 476.000000 color=red_a5,thickness=1,z=10 # node772 node503
+axisout 248.000000 248.000000 axisin 40.000000 40.000000  # node668 node3
+axisout 76.000000 76.000000 axisall 271.000000 271.000000 color=red_a5,thickness=1,z=10 # node846 node467
+axisall 462.000000 462.000000 axisin 163.000000 163.000000  # node485 node187
+axisout 231.000000 231.000000 axisall 358.000000 358.000000 color=red_a5,thickness=1,z=10 # node148 node361
+axisall 180.000000 180.000000 axisin 33.000000 33.000000  # node658 node974
+axisall 371.000000 371.000000 axisin 237.000000 237.000000 color=red_a5,thickness=1,z=10 # node490 node241
+axisall 265.000000 265.000000 axisin 69.000000 69.000000  # node434 node916
+axisall 213.000000 213.000000 axisin 243.000000 243.000000 color=green_a5,thickness=1,z=15 # node696 node298
+axisout 141.000000 141.000000 axisall 407.000000 407.000000 color=red_a5,thickness=1,z=10 # node975 node508
+axisout 216.000000 216.000000 axisall 303.000000 303.000000 color=red_a5,thickness=1,z=10 # node826 node637
+axisout 129.000000 129.000000 axisall 393.000000 393.000000 color=red_a5,thickness=1,z=10 # node210 node595
+axisall 369.000000 369.000000 axisin 97.000000 97.000000 color=red_a5,thickness=1,z=10 # node454 node118
+axisout 245.000000 245.000000 axisall 438.000000 438.000000 color=red_a5,thickness=1,z=10 # node290 node630
+axisall 430.000000 430.000000 axisin 149.000000 149.000000 color=red_a5,thickness=1,z=10 # node558 node81
+axisout 234.000000 234.000000 axisall 278.000000 278.000000 color=red_a5,thickness=1,z=10 # node778 node458
+axisall 440.000000 440.000000 axisin 151.000000 151.000000  # node429 node822
+axisout 120.000000 120.000000 axisall 367.000000 367.000000 color=red_a5,thickness=1,z=10 # node964 node599
+axisall 413.000000 413.000000 axisin 243.000000 243.000000 color=green_a5,thickness=1,z=15 # node391 node298
+axisall 504.000000 504.000000 axisin 227.000000 227.000000 color=red_a5,thickness=1,z=10 # node545 node232
+axisall 437.000000 437.000000 axisin 155.000000 155.000000  # node543 node93
+axisall 266.000000 266.000000 axisin 75.000000 75.000000 color=red_a5,thickness=1,z=10 # node478 node981
+axisall 394.000000 394.000000 axisin 121.000000 121.000000 color=red_a5,thickness=1,z=10 # node381 node11
+axisout 247.000000 247.000000 axisall 63.000000 63.000000  # node416 node671
+axisout 248.000000 248.000000 axisall 464.000000 464.000000 color=red_a5,thickness=1,z=10 # node668 node577
+axisout 202.000000 202.000000 axisall 501.000000 501.000000 color=red_a5,thickness=1,z=10 # node959 node499
+axisout 41.000000 41.000000 axisall 178.000000 178.000000  # node996 node352
+axisall 471.000000 471.000000 axisin 187.000000 187.000000 color=red_a5,thickness=1,z=10 # node500 node838
+axisout 233.000000 233.000000 axisall 194.000000 194.000000 color=red_a5,thickness=1,z=10 # node291 node395
+axisout 104.000000 104.000000 axisall 360.000000 360.000000 color=red_a5,thickness=1,z=10 # node150 node572
+axisout 20.000000 20.000000 axisall 143.000000 143.000000  # node211 node592
+axisout 9.000000 9.000000 axisin 234.000000 234.000000  # node174 node227
+axisall 221.000000 221.000000 axisin 41.000000 41.000000  # node687 node67
+axisout 233.000000 233.000000 axisin 6.000000 6.000000  # node291 node20
+axisall 395.000000 395.000000 axisin 226.000000 226.000000 color=red_a5,thickness=1,z=10 # node590 node764
+axisout 147.000000 147.000000 axisall 427.000000 427.000000 color=red_a5,thickness=1,z=10 # node794 node542
+axisall 447.000000 447.000000 axisin 152.000000 152.000000  # node522 node884
+axisout 89.000000 89.000000 axisall 317.000000 317.000000 color=red_a5,thickness=1,z=10 # node157 node396
+axisall 272.000000 272.000000 axisin 60.000000 60.000000  # node517 node60
+axisall 321.000000 321.000000 axisin 218.000000 218.000000 color=red_a5,thickness=1,z=10 # node582 node138
+axisall 255.000000 255.000000 axisin 244.000000 244.000000 color=green_a5,thickness=1,z=15 # node369 node621
+axisout 243.000000 243.000000 axisall 377.000000 377.000000  # node714 node563
+axisall 412.000000 412.000000 axisin 132.000000 132.000000 color=red_a5,thickness=1,z=10 # node534 node865
+axisout 87.000000 87.000000 axisall 349.000000 349.000000  # node14 node525
+axisall 493.000000 493.000000 axisin 201.000000 201.000000 color=red_a5,thickness=1,z=10 # node533 node800
+axisout 17.000000 17.000000 axisall 152.000000 152.000000  # node106 node754
+axisout 222.000000 222.000000 axisall 341.000000 341.000000 color=red_a5,thickness=1,z=10 # node776 node620
+axisall 367.000000 367.000000 axisin 116.000000 116.000000 color=red_a5,thickness=1,z=10 # node599 node926
+axisall 374.000000 374.000000 axisin 112.000000 112.000000  # node459 node841
+axisall 313.000000 313.000000 axisin 52.000000 52.000000 color=red_a5,thickness=1,z=10 # node625 node112
+axisout 92.000000 92.000000 axisall 332.000000 332.000000 color=red_a5,thickness=1,z=10 # node39 node392
+axisout 190.000000 190.000000 axisall 494.000000 494.000000 color=red_a5,thickness=1,z=10 # node197 node551
+axisall 375.000000 375.000000 axisin 117.000000 117.000000 color=red_a5,thickness=1,z=10 # node606 node946
+axisall 486.000000 486.000000 axisin 192.000000 192.000000 color=red_a5,thickness=1,z=10 # node447 node33
+axisall 462.000000 462.000000 axisin 161.000000 161.000000  # node485 node119
+axisout 221.000000 221.000000 axisall 340.000000 340.000000 color=red_a5,thickness=1,z=10 # node207 node355
+axisall 351.000000 351.000000 axisin 93.000000 93.000000 color=red_a5,thickness=1,z=10 # node605 node960
+axisout 228.000000 228.000000 axisall 400.000000 400.000000 color=blue_a5,thickness=1,z=20 # node192 node604
+axisall 223.000000 223.000000 axisin 44.000000 44.000000  # node644 node85
+axisout 25.000000 25.000000 axisall 130.000000 130.000000  # node806 node332
+axisall 395.000000 395.000000 axisin 124.000000 124.000000 color=red_a5,thickness=1,z=10 # node590 node195
+axisout 56.000000 56.000000 axisall 225.000000 225.000000  # node847 node415
+axisout 33.000000 33.000000 axisall 177.000000 177.000000  # node32 node614
+axisout 148.000000 148.000000 axisall 432.000000 432.000000 color=red_a5,thickness=1,z=10 # node935 node627
+axisall 460.000000 460.000000 axisin 220.000000 220.000000 color=blue_a5,thickness=1,z=20 # node470 node686
+axisout 82.000000 82.000000 axisall 285.000000 285.000000 color=red_a5,thickness=1,z=10 # node949 node514
+axisout 61.000000 61.000000 axisall 220.000000 220.000000  # node969 node609
+axisall 89.000000 89.000000 axisin 234.000000 234.000000  # node519 node227
+axisout 7.000000 7.000000 axisall 84.000000 84.000000  # node16 node323
+axisall 236.000000 236.000000 axisin 214.000000 214.000000 color=blue_a5,thickness=1,z=20 # node362 node915
+axisout 196.000000 196.000000 axisall 499.000000 499.000000 color=red_a5,thickness=1,z=10 # node63 node442
+axisout 134.000000 134.000000 axisall 421.000000 421.000000 color=red_a5,thickness=1,z=10 # node834 node439
+axisout 175.000000 175.000000 axisall 484.000000 484.000000 color=red_a5,thickness=1,z=10 # node140 node513
+axisall 191.000000 191.000000 axisin 30.000000 30.000000 color=red_a5,thickness=1,z=10 # node736 node927
+axisout 135.000000 135.000000 axisall 421.000000 421.000000 color=red_a5,thickness=1,z=10 # node860 node439
+axisall 320.000000 320.000000 axisin 88.000000 88.000000 color=red_a5,thickness=1,z=10 # node433 node877
+axisout 244.000000 244.000000 axisall 274.000000 274.000000 color=red_a5,thickness=1,z=10 # node663 node619
+axisout 35.000000 35.000000 axisall 182.000000 182.000000 color=red_a5,thickness=1,z=10 # node784 node335
+axisout 164.000000 164.000000 axisall 451.000000 451.000000 color=red_a5,thickness=1,z=10 # node934 node460
+axisout 45.000000 45.000000 axisall 248.000000 248.000000 color=red_a5,thickness=1,z=10 # node169 node529
+axisout 42.000000 42.000000 axisall 236.000000 236.000000  # node136 node362
+axisout 126.000000 126.000000 axisall 392.000000 392.000000 color=red_a5,thickness=1,z=10 # node146 node681
+axisall 360.000000 360.000000 axisin 104.000000 104.000000 color=red_a5,thickness=1,z=10 # node572 node50
+axisall 14.000000 14.000000 axisin 1.000000 1.000000 color=blue_a5,thickness=1,z=20 # node740 node179
+axisout 30.000000 30.000000 axisall 181.000000 181.000000 color=red_a5,thickness=1,z=10 # node125 node682
+axisout 101.000000 101.000000 axisall 320.000000 320.000000 color=red_a5,thickness=1,z=10 # node994 node433
+axisall 495.000000 495.000000 axisin 204.000000 204.000000 color=red_a5,thickness=1,z=10 # node473 node1
+axisall 425.000000 425.000000 axisin 143.000000 143.000000 color=red_a5,thickness=1,z=10 # node521 node24
+axisall 362.000000 362.000000 axisin 235.000000 235.000000 color=red_a5,thickness=1,z=10 # node567 node654
+axisout 15.000000 15.000000 axisall 67.000000 67.000000  # node951 node253
+axisall 350.000000 350.000000 axisin 243.000000 243.000000 color=green_a5,thickness=1,z=15 # node550 node298
+axisout 174.000000 174.000000 axisall 473.000000 473.000000 color=red_a5,thickness=1,z=10 # node977 node456
+axisall 478.000000 478.000000 axisin 189.000000 189.000000 color=red_a5,thickness=1,z=10 # node472 node941
+axisall 183.000000 183.000000 axisin 220.000000 220.000000 color=blue_a5,thickness=1,z=20 # node364 node686
+axisall 469.000000 469.000000 axisin 164.000000 164.000000 color=red_a5,thickness=1,z=10 # node469 node22
+axisout 242.000000 242.000000 axisall 2.000000 2.000000 color=blue_a5,thickness=1,z=20 # node651 node721
+axisout 11.000000 11.000000 axisall 62.000000 62.000000  # node724 node306
+axisout 232.000000 232.000000 axisall 491.000000 491.000000 color=red_a5,thickness=1,z=10 # node245 node420
+axisout 219.000000 219.000000 axisall 429.000000 429.000000 color=red_a5,thickness=1,z=10 # node753 node505
+axisall 176.000000 176.000000 axisin 24.000000 24.000000  # node719 node836
+axisall 249.000000 249.000000 axisin 217.000000 217.000000 color=blue_a5,thickness=1,z=20 # node634 node147
+axisout 167.000000 167.000000 axisall 474.000000 474.000000 color=red_a5,thickness=1,z=10 # node114 node518
+axisall 183.000000 183.000000 axisin 29.000000 29.000000  # node364 node902
+axisout 241.000000 241.000000 axisall 396.000000 396.000000 color=red_a5,thickness=1,z=10 # node328 node349
+axisout 6.000000 6.000000 axisall 74.000000 74.000000  # node153 node720
+axisout 227.000000 227.000000 axisin 215.000000 215.000000 color=blue_a5,thickness=1,z=20 # node863 node820
+axisout 235.000000 235.000000 axisall 184.000000 184.000000  # node296 node669
+axisout 114.000000 114.000000 axisall 365.000000 365.000000 color=red_a5,thickness=1,z=10 # node78 node450
+axisall 471.000000 471.000000 axisin 185.000000 185.000000 color=red_a5,thickness=1,z=10 # node500 node65
+axisall 487.000000 487.000000 axisin 194.000000 194.000000 color=red_a5,thickness=1,z=10 # node539 node766
+axisout 184.000000 184.000000 axisall 489.000000 489.000000 color=red_a5,thickness=1,z=10 # node882 node512
+axisall 470.000000 470.000000 axisin 188.000000 188.000000 color=red_a5,thickness=1,z=10 # node496 node898
+axisall 454.000000 454.000000 axisin 167.000000 167.000000 color=red_a5,thickness=1,z=10 # node394 node46
+axisout 71.000000 71.000000 axisall 311.000000 311.000000  # node238 node506
+axisall 179.000000 179.000000 axisin 21.000000 21.000000  # node642 node101
+axisout 212.000000 212.000000 axisin 214.000000 214.000000 color=blue_a5,thickness=1,z=20 # node727 node915
+axisall 424.000000 424.000000 axisin 235.000000 235.000000 color=red_a5,thickness=1,z=10 # node564 node654
+axisout 229.000000 229.000000 axisall 410.000000 410.000000 color=red_a5,thickness=1,z=10 # node301 node549
+axisout 203.000000 203.000000 axisall 502.000000 502.000000 color=red_a5,thickness=1,z=10 # node966 node474
+axisall 299.000000 299.000000 axisin 62.000000 62.000000  # node452 node825
+axisall 437.000000 437.000000 axisin 138.000000 138.000000  # node543 node121
+axisall 393.000000 393.000000 axisin 239.000000 239.000000 color=red_a5,thickness=1,z=10 # node595 node287
+axisall 397.000000 397.000000 axisin 126.000000 126.000000 color=red_a5,thickness=1,z=10 # node492 node801
+axisall 480.000000 480.000000 axisin 230.000000 230.000000 color=red_a5,thickness=1,z=10 # node562 node867
+axisall 185.000000 185.000000 axisin 243.000000 243.000000 color=green_a5,thickness=1,z=15 # node319 node298
+axisall 486.000000 486.000000 axisin 196.000000 196.000000 color=red_a5,thickness=1,z=10 # node447 node814
+axisall 359.000000 359.000000 axisin 103.000000 103.000000  # node688 node43
+axisout 226.000000 226.000000 axisall 428.000000 428.000000 color=red_a5,thickness=1,z=10 # node852 node523
+axisout 217.000000 217.000000 axisall 131.000000 131.000000 color=blue_a5,thickness=1,z=20 # node236 node647
+axisall 449.000000 449.000000 axisin 178.000000 178.000000 color=red_a5,thickness=1,z=10 # node382 node95
+axisall 346.000000 346.000000 axisin 84.000000 84.000000  # node573 node214
+axisout 240.000000 240.000000 axisall 127.000000 127.000000  # node266 node608
+axisall 476.000000 476.000000 axisin 186.000000 186.000000 color=red_a5,thickness=1,z=10 # node503 node792
+axisout 177.000000 177.000000 axisall 480.000000 480.000000 color=red_a5,thickness=1,z=10 # node172 node562
+axisout 229.000000 229.000000 axisall 412.000000 412.000000 color=red_a5,thickness=1,z=10 # node301 node534
+axisout 242.000000 242.000000 axisall 324.000000 324.000000 color=red_a5,thickness=1,z=10 # node651 node546
+axisall 404.000000 404.000000 axisin 134.000000 134.000000 color=red_a5,thickness=1,z=10 # node468 node917
+axisout 47.000000 47.000000 axisall 224.000000 224.000000 color=red_a5,thickness=1,z=10 # node201 node628
+axisout 239.000000 239.000000 axisall 217.000000 217.000000  # node772 node455
+axisall 376.000000 376.000000 axisin 242.000000 242.000000 color=green_a5,thickness=1,z=15 # node400 node281
+axisall 373.000000 373.000000 axisin 100.000000 100.000000  # node602 node28
+axisall 423.000000 423.000000 axisin 140.000000 140.000000 color=red_a5,thickness=1,z=10 # node398 node162
+axisall 273.000000 273.000000 axisin 51.000000 51.000000  # node388 node110
+axisout 247.000000 247.000000 axisall 345.000000 345.000000 color=red_a5,thickness=1,z=10 # node416 node569
+axisout 160.000000 160.000000 axisall 458.000000 458.000000 color=red_a5,thickness=1,z=10 # node869 node461
+axisall 269.000000 269.000000 axisin 61.000000 61.000000  # node406 node770
+axisout 206.000000 206.000000 axisall 66.000000 66.000000 color=blue_a5,thickness=1,z=20 # node293 node587
+axisout 209.000000 209.000000 axisall 101.000000 101.000000 color=blue_a5,thickness=1,z=20 # node276 node342
+axisall 434.000000 434.000000 axisin 159.000000 159.000000 color=red_a5,thickness=1,z=10 # node607 node984
+axisall 492.000000 492.000000 axisin 202.000000 202.000000 color=red_a5,thickness=1,z=10 # node540 node804
+axisall 273.000000 273.000000 axisin 55.000000 55.000000  # node388 node198
+axisout 230.000000 230.000000 axisall 422.000000 422.000000 color=red_a5,thickness=1,z=10 # node752 node510
+axisout 111.000000 111.000000 axisall 383.000000 383.000000 color=red_a5,thickness=1,z=10 # node61 node471
+axisall 426.000000 426.000000 axisin 153.000000 153.000000 color=red_a5,thickness=1,z=10 # node616 node912
+axisout 58.000000 58.000000 axisall 216.000000 216.000000 color=red_a5,thickness=1,z=10 # node908 node591
+axisout 197.000000 197.000000 axisall 495.000000 495.000000 color=red_a5,thickness=1,z=10 # node83 node473
+axisout 242.000000 242.000000 axisall 472.000000 472.000000 color=red_a5,thickness=1,z=10 # node651 node548
+axisall 466.000000 466.000000 axisin 174.000000 174.000000 color=red_a5,thickness=1,z=10 # node537 node896
+axisout 95.000000 95.000000 axisall 321.000000 321.000000 color=red_a5,thickness=1,z=10 # node70 node582
+axisout 220.000000 220.000000 axisall 453.000000 453.000000 color=red_a5,thickness=1,z=10 # node188 node397
+axisout 208.000000 208.000000 axisin 241.000000 241.000000 color=green_a5,thickness=1,z=15 # node225 node622
+axisall 231.000000 231.000000 axisin 43.000000 43.000000  # node660 node80
+axisall 476.000000 476.000000 axisin 183.000000 183.000000 color=red_a5,thickness=1,z=10 # node503 node127
+axisout 213.000000 213.000000 axisall 422.000000 422.000000 color=red_a5,thickness=1,z=10 # node223 node510
+axisall 180.000000 180.000000 axisin 35.000000 35.000000  # node658 node997
+axisout 1.000000 1.000000 axisall 7.000000 7.000000 color=blue_a5,thickness=1,z=20 # node280 node809
+axisout 178.000000 178.000000 axisall 481.000000 481.000000 color=red_a5,thickness=1,z=10 # node177 node446
+axisout 16.000000 16.000000 axisall 98.000000 98.000000  # node957 node312
+axisout 149.000000 149.000000 axisall 442.000000 442.000000 color=red_a5,thickness=1,z=10 # node948 node374
+axisout 243.000000 243.000000 axisall 322.000000 322.000000  # node714 node555
+axisall 457.000000 457.000000 axisin 166.000000 166.000000 color=red_a5,thickness=1,z=10 # node528 node257
+axisout 27.000000 27.000000 axisall 127.000000 127.000000  # node921 node608
+axisout 99.000000 99.000000 axisall 330.000000 330.000000  # node888 node401
+axisout 64.000000 64.000000 axisall 288.000000 288.000000 color=red_a5,thickness=1,z=10 # node100 node615
+axisall 501.000000 501.000000 axisin 209.000000 209.000000 color=red_a5,thickness=1,z=10 # node499 node73
+axisout 118.000000 118.000000 axisall 380.000000 380.000000 color=red_a5,thickness=1,z=10 # node870 node405
+axisall 449.000000 449.000000 axisin 229.000000 229.000000 color=red_a5,thickness=1,z=10 # node382 node883
+axisall 282.000000 282.000000 axisin 71.000000 71.000000 color=red_a5,thickness=1,z=10 # node377 node919
+axisout 219.000000 219.000000 axisall 205.000000 205.000000 color=blue_a5,thickness=1,z=20 # node753 node653
+axisout 230.000000 230.000000 axisall 358.000000 358.000000 color=red_a5,thickness=1,z=10 # node752 node361
+axisall 268.000000 268.000000 axisin 64.000000 64.000000  # node353 node844
+axisall 311.000000 311.000000 axisin 57.000000 57.000000  # node506 node264
+axisout 63.000000 63.000000 axisall 226.000000 226.000000  # node992 node337
+axisout 28.000000 28.000000 axisall 141.000000 141.000000  # node932 node704
+axisout 72.000000 72.000000 axisall 286.000000 286.000000 color=red_a5,thickness=1,z=10 # node51 node536
+axisall 374.000000 374.000000 axisin 108.000000 108.000000  # node459 node798
+axisout 50.000000 50.000000 axisall 224.000000 224.000000 color=red_a5,thickness=1,z=10 # node294 node628
+axisall 199.000000 199.000000 axisin 31.000000 31.000000  # node310 node968
+axisall 232.000000 232.000000 axisin 47.000000 47.000000  # node368 node980
+axisout 109.000000 109.000000 axisall 382.000000 382.000000 color=red_a5,thickness=1,z=10 # node29 node413
+axisout 146.000000 146.000000 axisall 426.000000 426.000000 color=red_a5,thickness=1,z=10 # node41 node616
+axisall 362.000000 362.000000 axisin 102.000000 102.000000 color=red_a5,thickness=1,z=10 # node567 node311
+axisout 107.000000 107.000000 axisall 369.000000 369.000000 color=red_a5,thickness=1,z=10 # node193 node454
+axisout 247.000000 247.000000 axisall 395.000000 395.000000 color=red_a5,thickness=1,z=10 # node416 node590
+axisall 269.000000 269.000000 axisin 74.000000 74.000000  # node406 node961
+axisout 116.000000 116.000000 axisall 370.000000 370.000000 color=red_a5,thickness=1,z=10 # node819 node441
+axisall 331.000000 331.000000 axisin 78.000000 78.000000 color=red_a5,thickness=1,z=10 # node347 node151
+axisout 0.000000 0.000000 axisall 5.000000 5.000000 color=blue_a5,thickness=1,z=20 # node246 node248
+axisall 128.000000 128.000000 axisin 16.000000 16.000000  # node670 node268
+axisout 248.000000 248.000000 axisall 494.000000 494.000000 color=red_a5,thickness=1,z=10 # node668 node551
+axisall 458.000000 458.000000 axisin 238.000000 238.000000 color=red_a5,thickness=1,z=10 # node461 node222
+axisall 447.000000 447.000000 axisin 137.000000 137.000000  # node522 node10
+axisall 202.000000 202.000000 axisin 241.000000 241.000000 color=green_a5,thickness=1,z=15 # node710 node622
+axisout 234.000000 234.000000 axisin 7.000000 7.000000  # node778 node35
+axisall 224.000000 224.000000 axisin 213.000000 213.000000 color=red_a5,thickness=1,z=10 # node628 node746
+axisall 451.000000 451.000000 axisin 176.000000 176.000000 color=red_a5,thickness=1,z=10 # node460 node91
+axisall 62.000000 62.000000 axisin 235.000000 235.000000  # node306 node654
+axisall 68.000000 68.000000 axisin 244.000000 244.000000 color=green_a5,thickness=1,z=15 # node263 node621
+axisall 178.000000 178.000000 axisin 25.000000 25.000000  # node352 node851
+axisall 446.000000 446.000000 axisin 157.000000 157.000000 color=red_a5,thickness=1,z=10 # node427 node938
+axisout 128.000000 128.000000 axisall 419.000000 419.000000 color=red_a5,thickness=1,z=10 # node17 node409
+axisall 357.000000 357.000000 axisin 86.000000 86.000000 color=red_a5,thickness=1,z=10 # node617 node731
+axisall 242.000000 242.000000 axisin 45.000000 45.000000  # node360 node922
+axisall 475.000000 475.000000 axisin 219.000000 219.000000 color=red_a5,thickness=1,z=10 # node532 node120
+axisout 225.000000 225.000000 axisall 496.000000 496.000000 color=red_a5,thickness=1,z=10 # node317 node426
+axisout 232.000000 232.000000 axisall 483.000000 483.000000 color=red_a5,thickness=1,z=10 # node245 node438
+axisall 247.000000 247.000000 axisin 48.000000 48.000000  # node509 node995
+axisall 406.000000 406.000000 axisin 224.000000 224.000000 color=red_a5,thickness=1,z=10 # node448 node850
+axisout 123.000000 123.000000 axisall 396.000000 396.000000 color=red_a5,thickness=1,z=10 # node12 node349
+axisout 240.000000 240.000000 axisall 356.000000 356.000000 color=red_a5,thickness=1,z=10 # node266 node493
+axisout 179.000000 179.000000 axisall 481.000000 481.000000 color=red_a5,thickness=1,z=10 # node209 node446
+axisall 90.000000 90.000000 axisin 10.000000 10.000000  # node779 node843
+axisout 186.000000 186.000000 axisall 487.000000 487.000000 color=red_a5,thickness=1,z=10 # node900 node539
+axisout 206.000000 206.000000 axisall 176.000000 176.000000 color=blue_a5,thickness=1,z=20 # node293 node719
+axisout 215.000000 215.000000 axisall 82.000000 82.000000 color=blue_a5,thickness=1,z=20 # node292 node218
+axisall 470.000000 470.000000 axisin 184.000000 184.000000 color=red_a5,thickness=1,z=10 # node496 node200
+axisall 392.000000 392.000000 axisin 122.000000 122.000000 color=red_a5,thickness=1,z=10 # node681 node115
+axisout 34.000000 34.000000 axisall 177.000000 177.000000  # node74 node614
+axisout 73.000000 73.000000 axisall 297.000000 297.000000 color=red_a5,thickness=1,z=10 # node68 node333
+axisall 133.000000 133.000000 axisin 15.000000 15.000000  # node717 node242
+axisall 2.000000 2.000000 axisin 216.000000 216.000000 color=blue_a5,thickness=1,z=20 # node721 node796
+axisout 37.000000 37.000000 axisall 186.000000 186.000000  # node813 node324
+axisout 233.000000 233.000000 axisall 4.000000 4.000000 color=blue_a5,thickness=1,z=20 # node291 node795
+axisout 241.000000 241.000000 axisall 279.000000 279.000000 color=red_a5,thickness=1,z=10 # node328 node673
+axisall 264.000000 264.000000 axisin 221.000000 221.000000 color=red_a5,thickness=1,z=10 # node380 node176
+axisall 220.000000 220.000000 axisin 46.000000 46.000000  # node609 node945
+axisout 246.000000 246.000000 axisall 416.000000 416.000000 color=red_a5,thickness=1,z=10 # node685 node370
+axisall 387.000000 387.000000 axisin 242.000000 242.000000 color=green_a5,thickness=1,z=15 # node594 node281
+axisall 305.000000 305.000000 axisin 73.000000 73.000000 color=red_a5,thickness=1,z=10 # node631 node958
+axisout 211.000000 211.000000 axisall 450.000000 450.000000 color=red_a5,thickness=1,z=10 # node274 node527
+axisout 84.000000 84.000000 axisall 266.000000 266.000000 color=red_a5,thickness=1,z=10 # node971 node478
+axisout 48.000000 48.000000 axisall 258.000000 258.000000 color=red_a5,thickness=1,z=10 # node25 node674
+axisout 142.000000 142.000000 axisall 427.000000 427.000000 color=red_a5,thickness=1,z=10 # node105 node542
+axisall 449.000000 449.000000 axisin 162.000000 162.000000 color=red_a5,thickness=1,z=10 # node382 node132
+axisout 208.000000 208.000000 axisall 343.000000 343.000000 color=blue_a5,thickness=1,z=20 # node225 node356
+axisout 67.000000 67.000000 axisall 281.000000 281.000000  # node160 node423
+axisall 432.000000 432.000000 axisin 225.000000 225.000000 color=red_a5,thickness=1,z=10 # node627 node748
+axisall 343.000000 343.000000 axisin 244.000000 244.000000 color=green_a5,thickness=1,z=15 # node356 node621
+axisall 352.000000 352.000000 axisin 236.000000 236.000000  # node556 node728
+axisall 333.000000 333.000000 axisin 233.000000 233.000000  # node489 node739
+axisout 181.000000 181.000000 axisall 482.000000 482.000000 color=red_a5,thickness=1,z=10 # node48 node480
+axisout 110.000000 110.000000 axisall 364.000000 364.000000 color=red_a5,thickness=1,z=10 # node38 node402
+axisout 214.000000 214.000000 axisin 2.000000 2.000000 color=blue_a5,thickness=1,z=20 # node872 node196
+axisout 205.000000 205.000000 axisall 87.000000 87.000000 color=blue_a5,thickness=1,z=20 # node789 node680
+axisout 55.000000 55.000000 axisall 244.000000 244.000000  # node832 node385
+axisout 231.000000 231.000000 axisall 492.000000 492.000000 color=red_a5,thickness=1,z=10 # node148 node540
+axisout 244.000000 244.000000 axisall 392.000000 392.000000 color=red_a5,thickness=1,z=10 # node663 node681
+axisout 194.000000 194.000000 axisall 498.000000 498.000000 color=red_a5,thickness=1,z=10 # node163 node507
+axisout 224.000000 224.000000 axisall 359.000000 359.000000 color=blue_a5,thickness=1,z=20 # node277 node688
+axisout 79.000000 79.000000 axisall 298.000000 298.000000 color=red_a5,thickness=1,z=10 # node881 node623
+axisall 485.000000 485.000000 axisin 195.000000 195.000000 color=red_a5,thickness=1,z=10 # node488 node787
+axisout 122.000000 122.000000 axisall 361.000000 361.000000 color=red_a5,thickness=1,z=10 # node987 node575
+axisout 65.000000 65.000000 axisall 284.000000 284.000000 color=red_a5,thickness=1,z=10 # node104 node574
+axisout 207.000000 207.000000 axisin 3.000000 3.000000 color=blue_a5,thickness=1,z=20 # node230 node202
+axisout 214.000000 214.000000 axisall 475.000000 475.000000 color=red_a5,thickness=1,z=10 # node872 node532
+axisout 245.000000 245.000000 axisall 448.000000 448.000000 color=red_a5,thickness=1,z=10 # node290 node535
+axisall 469.000000 469.000000 axisin 175.000000 175.000000 color=red_a5,thickness=1,z=10 # node469 node903
+axisout 158.000000 158.000000 axisall 454.000000 454.000000 color=red_a5,thickness=1,z=10 # node828 node394
+axisall 488.000000 488.000000 axisin 225.000000 225.000000 color=red_a5,thickness=1,z=10 # node498 node748
+axisout 168.000000 168.000000 axisall 476.000000 476.000000 color=red_a5,thickness=1,z=10 # node175 node503
+axisall 358.000000 358.000000 axisin 110.000000 110.000000 color=red_a5,thickness=1,z=10 # node361 node821
+axisout 218.000000 218.000000 axisall 274.000000 274.000000 color=red_a5,thickness=1,z=10 # node751 node619
+axisout 12.000000 12.000000 axisall 63.000000 63.000000  # node906 node671
+axisout 243.000000 243.000000 axisall 454.000000 454.000000 color=red_a5,thickness=1,z=10 # node714 node394
+axisall 493.000000 493.000000 axisin 203.000000 203.000000 color=red_a5,thickness=1,z=10 # node533 node98
+axisout 227.000000 227.000000 axisall 502.000000 502.000000 color=red_a5,thickness=1,z=10 # node863 node474
+axisall 72.000000 72.000000 axisin 8.000000 8.000000  # node331 node42
+axisall 466.000000 466.000000 axisin 169.000000 169.000000 color=red_a5,thickness=1,z=10 # node537 node53
+axisall 451.000000 451.000000 axisin 240.000000 240.000000 color=red_a5,thickness=1,z=10 # node460 node689
+axisout 218.000000 218.000000 axisall 371.000000 371.000000 color=red_a5,thickness=1,z=10 # node751 node490
+axisall 239.000000 239.000000 axisin 42.000000 42.000000  # node679 node775
+axisall 482.000000 482.000000 axisin 230.000000 230.000000 color=red_a5,thickness=1,z=10 # node480 node867
+axisout 119.000000 119.000000 axisall 379.000000 379.000000  # node911 node581
+axisout 94.000000 94.000000 axisall 318.000000 318.000000 color=red_a5,thickness=1,z=10 # node694 node412
+axisall 440.000000 440.000000 axisin 148.000000 148.000000  # node429 node771
+axisout 46.000000 46.000000 axisall 222.000000 222.000000 color=red_a5,thickness=1,z=10 # node189 node629
+axisall 321.000000 321.000000 axisin 89.000000 89.000000 color=red_a5,thickness=1,z=10 # node582 node894
+axisall 480.000000 480.000000 axisin 197.000000 197.000000 color=red_a5,thickness=1,z=10 # node562 node84
+axisall 268.000000 268.000000 axisin 66.000000 66.000000  # node353 node871
+axisall 99.000000 99.000000 axisin 12.000000 12.000000  # node247 node897
+axisout 4.000000 4.000000 axisin 213.000000 213.000000 color=blue_a5,thickness=1,z=20 # node963 node746
+axisout 240.000000 240.000000 axisin 18.000000 18.000000  # node266 node756
+axisout 234.000000 234.000000 axisall 88.000000 88.000000  # node778 node326
+axisout 125.000000 125.000000 axisall 399.000000 399.000000 color=red_a5,thickness=1,z=10 # node144 node511
+axisall 424.000000 424.000000 axisin 146.000000 146.000000 color=red_a5,thickness=1,z=10 # node564 node7
+axisout 68.000000 68.000000 axisall 271.000000 271.000000 color=red_a5,thickness=1,z=10 # node184 node467
+axisout 210.000000 210.000000 axisall 365.000000 365.000000 color=red_a5,thickness=1,z=10 # node170 node450
+axisall 329.000000 329.000000 axisin 85.000000 85.000000 color=red_a5,thickness=1,z=10 # node451 node706
+axisout 198.000000 198.000000 axisall 498.000000 498.000000 color=red_a5,thickness=1,z=10 # node837 node507
+axisall 400.000000 400.000000 axisin 135.000000 135.000000  # node604 node943
+axisout 187.000000 187.000000 axisall 485.000000 485.000000 color=red_a5,thickness=1,z=10 # node956 node488
+axisout 106.000000 106.000000 axisall 376.000000 376.000000 color=red_a5,thickness=1,z=10 # node19 node400
+axisall 432.000000 432.000000 axisin 154.000000 154.000000 color=red_a5,thickness=1,z=10 # node627 node913
+axisout 115.000000 115.000000 axisall 381.000000 381.000000 color=red_a5,thickness=1,z=10 # node786 node561
+axisall 442.000000 442.000000 axisin 145.000000 145.000000 color=red_a5,thickness=1,z=10 # node374 node610
+axisout 90.000000 90.000000 axisall 331.000000 331.000000 color=red_a5,thickness=1,z=10 # node191 node347
+axisout 140.000000 140.000000 axisall 395.000000 395.000000 color=red_a5,thickness=1,z=10 # node96 node590
+axisall 417.000000 417.000000 axisin 227.000000 227.000000 color=blue_a5,thickness=1,z=20 # node531 node232
+axisall 323.000000 323.000000 axisin 77.000000 77.000000 color=red_a5,thickness=1,z=10 # node476 node149
+axisout 85.000000 85.000000 axisall 269.000000 269.000000  # node982 node406
+axisout 212.000000 212.000000 axisall 447.000000 447.000000 color=blue_a5,thickness=1,z=20 # node727 node522
+axisout 26.000000 26.000000 axisall 153.000000 153.000000  # node858 node757
+axisall 276.000000 276.000000 axisin 50.000000 50.000000 color=red_a5,thickness=1,z=10 # node404 node107
+axisout 105.000000 105.000000 axisall 361.000000 361.000000 color=red_a5,thickness=1,z=10 # node158 node575
+axisall 377.000000 377.000000 axisin 119.000000 119.000000  # node563 node965
+axisout 23.000000 23.000000 axisall 127.000000 127.000000  # node66 node608
+axisout 3.000000 3.000000 axisall 8.000000 8.000000 color=blue_a5,thickness=1,z=20 # node936 node213
+axisall 271.000000 271.000000 axisin 56.000000 56.000000 color=red_a5,thickness=1,z=10 # node467 node204
+axisout 223.000000 223.000000 axisall 139.000000 139.000000 color=blue_a5,thickness=1,z=20 # node262 node252
+axisall 425.000000 425.000000 axisin 150.000000 150.000000 color=red_a5,thickness=1,z=10 # node521 node82
+axisout 98.000000 98.000000 axisall 342.000000 342.000000 color=red_a5,thickness=1,z=10 # node87 node390
+axisout 182.000000 182.000000 axisall 483.000000 483.000000 color=red_a5,thickness=1,z=10 # node793 node438
+axisall 497.000000 497.000000 axisin 240.000000 240.000000 color=red_a5,thickness=1,z=10 # node484 node689
+axisall 400.000000 400.000000 axisin 127.000000 127.000000  # node604 node815
+axisout 138.000000 138.000000 axisall 396.000000 396.000000 color=red_a5,thickness=1,z=10 # node925 node349
+axisout 39.000000 39.000000 axisin 243.000000 243.000000 color=green_a5,thickness=1,z=15 # node886 node298
+axisall 378.000000 378.000000 axisin 115.000000 115.000000  # node428 node885
+axisout 172.000000 172.000000 axisall 472.000000 472.000000 color=red_a5,thickness=1,z=10 # node761 node548
+axisout 77.000000 77.000000 axisall 266.000000 266.000000 color=red_a5,thickness=1,z=10 # node864 node478
+axisall 6.000000 6.000000 axisin 4.000000 4.000000 color=blue_a5,thickness=1,z=20 # node750 node269
+axisall 154.000000 154.000000 axisin 19.000000 19.000000  # node767 node830
+axisall 436.000000 436.000000 axisin 141.000000 141.000000 color=red_a5,thickness=1,z=10 # node449 node173
+axisall 441.000000 441.000000 axisin 142.000000 142.000000 color=red_a5,thickness=1,z=10 # node477 node224
+axisout 217.000000 217.000000 axisall 450.000000 450.000000 color=red_a5,thickness=1,z=10 # node236 node527
+axisout 238.000000 238.000000 axisall 177.000000 177.000000  # node666 node614
+axisout 246.000000 246.000000 axisall 504.000000 504.000000 color=red_a5,thickness=1,z=10 # node685 node545
+axisall 359.000000 359.000000 axisin 98.000000 98.000000  # node688 node122
+axisall 464.000000 464.000000 axisin 179.000000 179.000000 color=red_a5,thickness=1,z=10 # node577 node953
+axisall 359.000000 359.000000 axisin 120.000000 120.000000  # node688 node990
+axisall 464.000000 464.000000 axisin 165.000000 165.000000 color=red_a5,thickness=1,z=10 # node577 node239
+axisall 378.000000 378.000000 axisin 114.000000 114.000000  # node428 node874
+axisout 155.000000 155.000000 axisall 455.000000 455.000000 color=red_a5,thickness=1,z=10 # node254 node541
+axisall 287.000000 287.000000 axisin 223.000000 223.000000 color=blue_a5,thickness=1,z=20 # node640 node762
+axisout 236.000000 236.000000 axisall 10.000000 10.000000 color=blue_a5,thickness=1,z=20 # node677 node217
+axisall 403.000000 403.000000 axisin 131.000000 131.000000 color=red_a5,thickness=1,z=10 # node393 node853
+axisall 452.000000 452.000000 axisin 170.000000 170.000000 color=red_a5,thickness=1,z=10 # node482 node64
+axisall 249.000000 249.000000 axisin 39.000000 39.000000  # node634 node180
+axisout 243.000000 243.000000 axisall 195.000000 195.000000  # node714 node624
+axisout 236.000000 236.000000 axisall 464.000000 464.000000 color=red_a5,thickness=1,z=10 # node677 node577
+axisout 173.000000 173.000000 axisall 473.000000 473.000000 color=red_a5,thickness=1,z=10 # node880 node456
+axisout 40.000000 40.000000 axisall 182.000000 182.000000 color=red_a5,thickness=1,z=10 # node939 node335
+axisout 246.000000 246.000000 axisall 473.000000 473.000000 color=red_a5,thickness=1,z=10 # node685 node456
+axisout 235.000000 235.000000 axisall 411.000000 411.000000 color=red_a5,thickness=1,z=10 # node296 node436
+axisall 298.000000 298.000000 axisin 53.000000 53.000000 color=red_a5,thickness=1,z=10 # node623 node134
+axisout 152.000000 152.000000 axisall 458.000000 458.000000 color=red_a5,thickness=1,z=10 # node124 node461
+axisout 131.000000 131.000000 axisall 398.000000 398.000000 color=red_a5,thickness=1,z=10 # node259 node421
+axisall 446.000000 446.000000 axisin 158.000000 158.000000 color=red_a5,thickness=1,z=10 # node427 node950
+axisout 171.000000 171.000000 axisall 470.000000 470.000000 color=red_a5,thickness=1,z=10 # node57 node496
+axisout 132.000000 132.000000 axisall 395.000000 395.000000 color=red_a5,thickness=1,z=10 # node55 node590
+axisall 443.000000 443.000000 axisin 147.000000 147.000000 color=red_a5,thickness=1,z=10 # node588 node71
+axisout 201.000000 201.000000 axisall 502.000000 502.000000 color=red_a5,thickness=1,z=10 # node840 node474
+axisout 244.000000 244.000000 axisall 489.000000 489.000000 color=red_a5,thickness=1,z=10 # node663 node512
+axisout 144.000000 144.000000 axisall 437.000000 437.000000  # node167 node543
+axisout 241.000000 241.000000 axisall 416.000000 416.000000 color=red_a5,thickness=1,z=10 # node328 node370
+axisout 185.000000 185.000000 axisall 484.000000 484.000000 color=red_a5,thickness=1,z=10 # node89 node513
+axisall 387.000000 387.000000 axisin 101.000000 101.000000 color=red_a5,thickness=1,z=10 # node594 node31
+axisall 227.000000 227.000000 axisin 38.000000 38.000000  # node501 node142
+axisout 2.000000 2.000000 axisall 0.000000 0.000000 color=blue_a5,thickness=1,z=20 # node910 node780
+axisout 96.000000 96.000000 axisall 324.000000 324.000000 color=red_a5,thickness=1,z=10 # node76 node546
+axisout 211.000000 211.000000 axisin 0.000000 0.000000 color=blue_a5,thickness=1,z=20 # node274 node135
+axisall 390.000000 390.000000 axisin 113.000000 113.000000 color=red_a5,thickness=1,z=10 # node410 node849
+axisall 198.000000 198.000000 axisin 32.000000 32.000000  # node350 node973
+axisout 170.000000 170.000000 axisall 477.000000 477.000000 color=red_a5,thickness=1,z=10 # node4 node432
+axisout 69.000000 69.000000 axisall 302.000000 302.000000 color=red_a5,thickness=1,z=10 # node186 node417
+axisall 179.000000 179.000000 axisin 217.000000 217.000000 color=blue_a5,thickness=1,z=20 # node642 node147
+axisout 157.000000 157.000000 axisall 451.000000 451.000000 color=red_a5,thickness=1,z=10 # node803 node460
+axisall 465.000000 465.000000 axisin 168.000000 168.000000 color=red_a5,thickness=1,z=10 # node524 node5
+axisout 143.000000 143.000000 axisall 434.000000 434.000000 color=red_a5,thickness=1,z=10 # node165 node607
+axisall 381.000000 381.000000 axisin 109.000000 109.000000 color=red_a5,thickness=1,z=10 # node561 node808

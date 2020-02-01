@@ -1,0 +1,15 @@
+For usage, use -h
+
+For man page, use -man
+
+  e.g. parsedot -h
+       parsedot -man
+
+dot2in - convert .dot to indexed node 
+
+formatdot - apply formatting labels to .dot for rendering with neato
+
+makedot - create a .dot file for a random network
+
+parsedot - parse a .dot file into files understood by linnet
+

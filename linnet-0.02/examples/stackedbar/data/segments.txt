@@ -1,0 +1,3 @@
+axis0 0 400 0 paired-5-qual-5
+axis1 0 400 1 paired-5-qual-1
+axis2 0 400 2 paired-5-qual-2

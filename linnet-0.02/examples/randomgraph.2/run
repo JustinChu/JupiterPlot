@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Change g to one of the
+# dot files in dot/
+
+g=graph.medium.medium.dot
+
+# do we have neato?
+n=`which neato 2> /dev/null`
+
+if [ $n ] 
+then
+echo "Creating hairball of network using neato from $n"
+cat dot/$g | ../network/bin/formatdot | neato -Tpng > img/hairball.png 2> /dev/null
+else 
+echo "You don't seem to have neato. No traditional layouts will be produced."
+fi
+
+echo "Parsing graph file $g and creating hive plots"
+
+################################################################
+# Create 9 different layouts of the graph. Each layout
+# uses a different configuration file to parse the graph file
+#
+# etc/parsedot.N.conf
+#
+# and different configuration for the output image
+#
+# etc/linnet.N.conf
+
+for i in `seq 1 9` ; do
+echo "Configuration $i - parsing .dot"
+cat dot/$g | ../network/bin/parsedot -conf etc/parsedot.$i.conf -dir data
+echo "Configuration $i - drawing hiveplot"
+../../bin/linnet -conf etc/linnet.$i.conf -file img/hiveplot.$i.png
+done
+
+echo "Compositing images into a panel."
+
+./makepanel
+
+echo "All images in img/"
+

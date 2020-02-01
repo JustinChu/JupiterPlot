@@ -1,0 +1,127 @@
+The configuration files are used by ../network/bin/parsedot and
+../../bin/linnet.
+
+The input file is a random directed graph. The dot file is defined by the 'g' variable in ../run
+
+Each of the 9 hive plots shows a different approach to drawing a
+3-axis hive plot. The hive plots are found in ../img
+
+In all cases, nodes are mapped onto axes using their connection status. The graph is directed, and therefore all nodes fit into one of the three categories:
+  
+  source nodes (out degree only)
+  sink nodes (in degree only)
+  source/sink nodes (both in and out degree)
+
+Axis size and node placement on the axis varies. Each configuration file is slightly different than the previous.
+
+1 - node position on axis by rank-ordered connectivity
+2 - like 1, but axis length normalized (scale_norm parameter set in each <axis> block)
+3 - like 2, but connections colored by connectivity using rule set RULE1 (see below) 
+4 - like 2, but connections colored by rule set #2 (see below)
+5 - each axis split into three segments based on connectivity (1-2, 3-5, 6+)
+6 - like 5, but also uses rule set #2
+7 - in/out node axis cloned with connections between nodes in the category shown between these axes
+8 - like 7, but also uses rule set #3
+9 - like 7, but also uses rule set #4
+
+Plots 7-9 show links with polarity (direction of link is marked by a thicker end).
+
+Some of the hive plots use link rules that format the way links are drawn (color, thickness, visibility, etc). Rules are constructed by specifying functions that act as conditions, which, if met, trigger the rule's parameters to be applied to the link. Each link is tested and the first rule that matches is used.
+
+Functions in(), out(), connectivity() indicate number of in, out and in+out edges for a node. The rules are described below in pseudo-code. The actual rule syntax can be found in the parsedot.N.conf file <links> block. 
+
+Recall that color names that end in _aN indicate that transparency has been applied to the color.
+
+The 'z' value of a link controls the order in which it is drawn. Links with a higher 'z' value are drawn on top of links with a lower 'z' value. Think of 'z' as a layer index. The order of links drawn within the same layer is arbitrary (but reproducible).
+
+Node condition rules, defined by rule_node, are evaluated in both directions, symmetrically, in an OR fashion. For example, for the edge A-B the rule
+
+  node_in > 3
+
+is actually evaluated as
+
+  node_in(A) > 3 OR node_in(B) > 3
+
+Thus, as long as one of the nodes in the edge matches the condition, the rule will pass.
+
+To limit the rule to a specific node, rule_node1 and rule_node2 are used. These are applied to both nodes, in turn, in an OR fashion, as above, except that you can now test the two nodes independently. For example, for the edge A-B the rules
+
+  rule_node1 = node_out == 0
+  rule_node2 = node_in  == 2
+
+is evaluated as
+
+  [ node_out(A) == 0 AND node_in(B) == 2 ] OR [ node_out(B) == 0 AND node_in(A) == 2 ]
+
+The difference between rule_node and rule_node1/rule_node2 is illustrated in hive plot 4 in this example (Link rules RULE2 below).
+
+RULE1 Link rule set
+
+# format an edge if only one of its nodes is sink with > 3 edges
+edge green if 
+  out(a)=0 AND in(a) > 3
+   or
+  out(b)=0 AND in(b) > 3
+
+
+# format an edge if one of the nodes is a sink with > 3 edges
+edge red if
+  in(a) > 3
+  or
+  in(b) > 3
+
+
+# format an edge if one of its nodes has exactly two edges
+edge blue if
+  connectivity(a) = 2
+  or
+  connectivity(b) = 2
+
+
+RULE2 Link rule set 
+
+edge red if
+  connectivity(a) = 2
+  AND
+  connectivity(b) = 2
+
+edge blue if
+  connectivity(a) = 2
+  or
+  connectivity(b) = 2
+
+edge hidden otherwise
+
+
+
+
+RULE3 Link rule set
+
+edge red if
+  out(a) > 6
+  AND
+  in(a) <= 6
+
+edge black if
+  in(a) > 6
+  AND
+  out(a) <= 6
+
+edge blue if
+  out(b) > 6
+  AND
+  in(b) <= 6
+
+edge purple if
+  in(b) > 6
+  AND
+  out(b) <= 6
+
+edge hidden otherwise
+
+
+RULE4 Link rule set 
+
+Like rule set #3, but last rule is
+
+edge black otherwise
