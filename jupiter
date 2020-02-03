@@ -23,7 +23,7 @@ t=4
 # meta rules
 #------------------------------------------------------------
 
-.PRECIOUS: %-agp.sam %.agp %.bed %.final %.fai
+.PRECIOUS: %-agp.sam %.agp %.bed %.links.final %.fai %.karyotype
 .DELETE_ON_ERROR:
 .PHONY: check-params generateplot
 
