@@ -69,7 +69,7 @@ while ($line) {
 		  . $tempArray[1] . " "
 		  . $tempArray[2] . " "
 		  . $prefix . "_"
-		  . $tempArray[3] . " "
+		  . $tempArray[3] . "_$prefix "
 		  . $tempArray[4] . " "
 		  . $tempArray[5] . " "
 		  . $tempArray[6];
