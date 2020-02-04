@@ -1,0 +1,51 @@
+#!/usr/bin/make -Rrf
+ifdef profile
+SHELL=/usr/bin/time -f '=> jupiter: %e %C' /bin/bash -o pipefail
+else
+SHELL=/bin/bash -o pipefail
+endif
+
+ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
+#------------------------------------------------------------
+# params
+#------------------------------------------------------------
+
+#------------------------------------------------------------
+# meta rules
+#------------------------------------------------------------
+
+.PRECIOUS:
+.DELETE_ON_ERROR:
+.PHONY: check-params generateplot
+
+default: generateplot
+
+generateplot: check-params $(name).png
+
+check-name-param:
+ifndef name
+	$(error missing required param 'name' (output file prefix))
+endif
+
+check-params: check-name-param
+ifndef prefix1
+	$(error missing required param 'prefix1' (Prefix to jupiterplot run))
+endif
+ifndef prefix2
+	$(error missing required param 'prefix2' (Prefix to jupiterplot run))
+endif
+
+#------------------------------------------------------------
+# pipeline rules
+#------------------------------------------------------------
+
+$(name).links: $(prefix1).links.final $(prefix2).links.final
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(prefix1) $< > $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(prefix2) $(prefix2).links.final >> $@
+	
+%.conf %.segments : $(prefix1).seqOrder.txt $(prefix2).seqOrder.txt $(prefix1).karyotype $(prefix2).karyotype
+	perl $(ROOT_DIR)/bin/karyotypeHive.pl -r $(ROOT_DIR)/config/rawConfHive.conf -p $* $(prefix1) $(prefix2)
+
+%.png: %.conf %.segments %.links 
+	$(ROOT_DIR)/linnet-0.02/bin/linnet -conf $<
