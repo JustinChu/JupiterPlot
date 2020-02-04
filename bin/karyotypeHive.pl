@@ -71,7 +71,7 @@ sub main {
 			}
 			else{
 				$chrName = $circoRunPrefix . "_" . $chrName . "_";
-			
+			}
 			unless ( exists( $segmentStrs{ $tempArr[2] } ) ) {
 				my $str = $chrName . " "
 				  . $tempArr[4] . " "
