@@ -46,7 +46,7 @@ sub main {
 			#ref5	gi|453232919|ref|NC_003284.9|	scaf15	68	-
 			my @tempArr = split( /\t/, $line );
 			unless ( exists( $ref{ $tempArr[0] } ) ) {
-				push( @{ $ordering{"ref"} }, $tempArr[0] );
+				push( @{ $ordering{"ref"} }, $tempArr[0]. "_" );
 				$ref{ $tempArr[0] } = 1;
 			}
 			push(
