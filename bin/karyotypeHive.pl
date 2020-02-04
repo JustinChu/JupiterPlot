@@ -51,7 +51,7 @@ sub main {
 			}
 			push(
 				@{ $ordering{$circoRunPrefix} },
-				$circoRunPrefix . "_" . $tempArr[2] . "_$circoRunPrefix"
+				$circoRunPrefix . "_" . $tempArr[2] . "_"
 			);
 			$line = $fh->getline();
 		}
@@ -70,8 +70,8 @@ sub main {
 				$genomeSize += $tempArr[5];
 			}
 			else{
-				$chrName = $circoRunPrefix . "_" . $chrName . "_" . $circoRunPrefix;
-			}
+				$chrName = $circoRunPrefix . "_" . $chrName . "_";
+			
 			unless ( exists( $segmentStrs{ $tempArr[2] } ) ) {
 				my $str = $chrName . " "
 				  . $tempArr[4] . " "
