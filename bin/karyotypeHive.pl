@@ -22,6 +22,8 @@ my $result  = GetOptions(
 my %ordering;
 my %segmentStrs;
 my %ref;
+my $genomeSize = 0;
+my $imgSize = 1500;
 
 main();
 
@@ -64,7 +66,10 @@ sub main {
 			#ref0 0 13783801 gi|453232067|ref|NC003281.10| chr0
 			my @tempArr = split( /\s/, $line );
 			my $chrName = $tempArr[2];
-			unless ( exists( $ref{ $chrName } ) ) {
+			if ( exists( $ref{ $chrName } ) ) {
+				$genomeSize += $tempArr[5];
+			}
+			else{
 				$chrName = $circoRunPrefix . "_" . $chrName . "_" . $circoRunPrefix;
 			}
 			unless ( exists( $segmentStrs{ $tempArr[2] } ) ) {
@@ -81,6 +86,11 @@ sub main {
 		$fhSeg->close();
 
 	}
+	
+	my $scaleFactor = int(($genomeSize/$imgSize)*2);
+	
+	system("sed -i -e 's/scale_factor/$scaleFactor/g' $prefix.conf");
+	
 	my $orderStr = join( ",", reverse @{$ordering{"ref"}} );
 	
 	system("sed -i -e 's/axis_ref_order/$orderStr/g' $prefix.conf");
