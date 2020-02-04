@@ -23,7 +23,7 @@ Circos can be installed with [linuxbrew](https://docs.brew.sh/Homebrew-on-Linux)
 brew install circos
 ```
 
-Perl Modules Needed (If downloading and installating Circos without a package manager):
+Perl Modules Needed (If downloading and installing Circos without a package manager):
 * Config::General.pm
 * Math::VecStat
 * Set::IntSpan
