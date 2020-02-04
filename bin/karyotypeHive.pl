@@ -70,10 +70,10 @@ sub main {
 				$genomeSize += $tempArr[5];
 			}
 			else{
-				$chrName = $circoRunPrefix . "_" . $chrName . "_";
+				$chrName = $circoRunPrefix . "_" . $chrName;
 			}
 			unless ( exists( $segmentStrs{ $tempArr[2] } ) ) {
-				my $str = $chrName . " "
+				my $str = $chrName . "_ "
 				  . $tempArr[4] . " "
 				  . $tempArr[5] . " "
 				  . $tempArr[3] . " "
