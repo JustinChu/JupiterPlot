@@ -6,8 +6,9 @@ This is a pipeline for generating a 3-way hiveplot genome assembly consistency p
 
 Example plot on 2 C. elegans assemblies.
 
-### Installing Hiveplot (linnet)
-A copy of [hiveplot \(linnet\)](http://www.hiveplot.com/distro/hiveplot-0.02.tgz) implemented by Martin K is already copied into the repository for convenience.
+We use a modified version of [hiveplot \(linnet\)](http://www.hiveplot.com/distro/hiveplot-0.02.tgz) implemented by Martin K.
+
+### Installing Hiveplot
 
 Perl Modules Needed:
 * Statistics::Descriptive
