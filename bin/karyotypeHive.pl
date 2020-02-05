@@ -9,9 +9,11 @@ use IO::File;
 
 my $rawConf = "rawConfHive.conf";
 my $prefix  = "circos";
+my $imgSize = 1500;
 my $result  = GetOptions(
 	'r=s' => \$rawConf,
-	'p=s' => \$prefix
+	'p=s' => \$prefix,
+	's=s' => \$imgSize
 );
 
 #input: karyotype files, seqorder files, specifed by prefix
@@ -23,7 +25,6 @@ my %ordering;
 my %segmentStrs;
 my %ref;
 my $genomeSize = 0;
-my $imgSize = 1500;
 
 main();
 
@@ -31,7 +32,7 @@ sub main {
 	system( "cp " . $rawConf . " $prefix.conf -f" );
 	system("sed -i -e 's/segment_filename/$prefix.segments/g' $prefix.conf");
 	system("sed -i -e 's/links_filename/$prefix.links/g' $prefix.conf");
-	system("sed -i -e 's/output_prefix/$prefix.png/g' $prefix.conf");
+	system("sed -i -e 's/output_prefix/$prefix.svg/g' $prefix.conf");
 
 	my $segmentFH = new IO::File(">$prefix.segments");
 	#parse the filenames
@@ -67,7 +68,9 @@ sub main {
 			my @tempArr = split( /\s/, $line );
 			my $chrName = $tempArr[2];
 			if ( exists( $ref{ $chrName } ) ) {
-				$genomeSize += $tempArr[5];
+				unless(exists($segmentStrs{$chrName})){
+					$genomeSize += $tempArr[5];
+				}
 			}
 			else{
 				$chrName = $circoRunPrefix . "_" . $chrName;
@@ -87,7 +90,11 @@ sub main {
 
 	}
 	
-	my $scaleFactor = int(($genomeSize/$imgSize)*2);
+	system("sed -i -e 's/image_size/$imgSize/g' $prefix.conf");
+	print STDERR "Reference size:". $genomeSize . "\n";
+	my $scaleFactor = int(($genomeSize/$imgSize)); #TODO: This doesn't seem right
+	print STDERR "Scale factor:". $scaleFactor . "\n";
+	
 	
 	system("sed -i -e 's/scale_factor/$scaleFactor/g' $prefix.conf");
 	

@@ -2,10 +2,11 @@
 package linnet::draw;
 
 use strict;
-use GD;
+#use GD;
 use GD::Polyline;
 use Math::Trig;
 use Readonly;
+use GD::SVG;
 
 Readonly my $DEG2RAD => 0.0174532925;
 Readonly my $RAD2DEG => 57.29577951;
@@ -35,7 +36,7 @@ sub box {
   my $xc = linnet::conf::getitem( "image", "size" ) / 2;
   my $yc = linnet::conf::getitem( "image", "size" ) / 2;
 
-  my $poly = GD::Polygon->new();
+  my $poly = GD::SVG::Polygon->new();
   my $d    = $thickness / 2;
 
   my @x1 = linnet::util::xyd2xy( @$v, $d, @$u );
@@ -79,7 +80,7 @@ sub bezier_polygon {
   my @bezier1_points = linnet::util::bezier_points(@$u1,@p1,@$v1);
   my @bezier2_points = linnet::util::bezier_points(@$u2,@p2,@$v2);
 
-  my $poly           = GD::Polygon->new();
+  my $poly           = GD::SVG::Polygon->new();
 
   for my $pt ( @bezier1_points, @bezier2_points ) {
     $poly->addPt(@$pt);

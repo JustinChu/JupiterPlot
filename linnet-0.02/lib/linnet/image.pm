@@ -7,15 +7,15 @@ use linnet::debug;
 
 # create an true-color (24bit) image of a given size
 # - allocate colors
-# - fill image with background color
+# - fill image with background color #disabled for svg
 # returns image and color hash
 sub create {
   my $size = shift;
   linnet::debug::printdie("image size [$size] must be positive") unless linnet::util::is_positive($size);
-  my $im  = GD::Image->new( $size, $size, 1 );
+  my $im  = GD::SVG::Image->new( $size, $size, 1 );
   my $imc = linnet::color::allocate_colors($im);
   my $bg  = linnet::conf::getitem( "image", "background" );
-  $im->fill( 0, 0, $imc->{$bg} );
+  #$im->fill( 0, 0, $imc->{$bg} );
   return ( $im, $imc );
 }
 
@@ -32,13 +32,19 @@ sub get_center {
 # write the image to a file
 sub write {
   my $image   = shift;
-  my $outfile = linnet::conf::getitem( "image", "file" ) || "triangle.png";
+#   my $outfile = linnet::conf::getitem( "image", "file" ) || "triangle.png";
+  my $outfile = linnet::conf::getitem( "image", "file" ) || "triangle.svg";
   my $outdir  = linnet::conf::getitem( "image", "dir" ) || ".";
-  open( PNG, ">$outdir/$outfile" )
+#   open( PNG, ">$outdir/$outfile" )
+#     || linnet::debug::printdie("cannot write to output file [$outdir/$outfile]");
+#   binmode PNG;
+#   print PNG $image->png;
+#   close(PNG);
+  open( SVG, ">$outdir/$outfile" )
     || linnet::debug::printdie("cannot write to output file [$outdir/$outfile]");
-  binmode PNG;
-  print PNG $image->png;
-  close(PNG);
+  binmode SVG;
+  print SVG $image->svg;
+  close(SVG);
   linnet::debug::printdebug( 1, "wrote", $outfile );
 }
 

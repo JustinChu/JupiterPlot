@@ -11,6 +11,8 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 # params
 #------------------------------------------------------------
 
+s=1500 #pixel diameter width
+
 #------------------------------------------------------------
 # meta rules
 #------------------------------------------------------------
@@ -21,7 +23,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 default: generateplot
 
-generateplot: check-params $(name).png
+generateplot: check-params $(name).svg
 
 check-name-param:
 ifndef name
@@ -45,7 +47,7 @@ $(name).links: $(prefix1).links.final $(prefix2).links.final
 	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(prefix2) $(prefix2).links.final >> $@
 	
 %.conf %.segments : $(prefix1).seqOrder.txt $(prefix2).seqOrder.txt $(prefix1).karyotype $(prefix2).karyotype
-	perl $(ROOT_DIR)/bin/karyotypeHive.pl -r $(ROOT_DIR)/config/rawConfHive.conf -p $* $(prefix1) $(prefix2)
+	perl $(ROOT_DIR)/bin/karyotypeHive.pl -s $(s) -r $(ROOT_DIR)/config/rawConfHive.conf -p $* $(prefix1) $(prefix2)
 
-%.png: %.conf %.segments %.links 
+%.svg: %.conf %.segments %.links 
 	$(ROOT_DIR)/linnet-0.02/bin/linnet -conf $<
