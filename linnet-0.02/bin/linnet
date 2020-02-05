@@ -182,8 +182,8 @@ linnet::link::process();
 for my $aid ( linnet::axis::get_ids() ) {
   my $axis = linnet::axis::get_by_id($aid);
   linnet::debug::printdebug( 1, "drawing axis", $aid, "angle", $axis->{angle} );
-  linnet::draw::box( $im, $imc, $axis->{xy}[0], $axis->{xy}[1], "white",
-                     linnet::conf::getitem( "segments", "width" ) );
+#   linnet::draw::box( $im, $imc, $axis->{xy}[0], $axis->{xy}[1], "white",
+#                      linnet::conf::getitem( "segments", "width" ) );
   for my $axis_sid ( linnet::axis::get_segment_ids($axis) ) {
     linnet::debug::printdebug( 1, "drawing segment", $axis_sid );
     my $s = linnet::segment::get_by_id($axis_sid);
