@@ -63,14 +63,23 @@ sub compute_pixel_length {
   my $aid          = shift;
   my $axis         = $axes->{$aid};
   my $pixel_length = 0;
-  my $pix_spacing  = linnet::conf::getitem( "segments", "spacing" );
+  my $pix_spacing  = linnet::conf::getitem( "segments", "spacing", "default" );
+  my $cur_spacing = $pix_spacing; 
   for my $sid ( get_segment_ids($axis) ) {
     my $s = linnet::segment::get_by_id($sid);
     linnet::debug::printdebug( 2, "axis pixel length", $aid, "segment", $sid, $s->{_pixel_length} );
     $pixel_length += $s->{_pixel_length};
-    $pixel_length += $pix_spacing;
+    if(linnet::conf::getitem( "segments", "spacing", "pairwise", $sid)){
+      my $custom_spacing = linnet::conf::getitem( "segments", "spacing", "pairwise", $sid );
+      $pixel_length += $custom_spacing->{"spacing"};
+      $cur_spacing = $custom_spacing->{"spacing"};
+    }
+    else{
+      $pixel_length += $pix_spacing;
+      $cur_spacing = $pix_spacing;
+    }
   }
-  $pixel_length -= $pix_spacing;
+  $pixel_length -= $cur_spacing;
   $axis->{_pixel_length} = $pixel_length;
   linnet::debug::printdebug( 1, "axis pixel length", $aid, $axis->{_pixel_length} );
 }

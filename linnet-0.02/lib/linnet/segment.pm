@@ -67,8 +67,8 @@ sub compute_pixel_ends {
   else {
     $r0 = linnet::conf::getitem( "segments", "radius" );
 		$dir = 1;
-  }
-  my $pix_spacing = linnet::conf::getitem( "segments", "spacing" );
+  } 
+  my $pix_spacing = linnet::conf::getitem( "segments", "spacing", "default" );
   for my $axis_segment_id ( linnet::axis::get_segment_ids($axis) ) {
     linnet::debug::printdebug( 2, "segment", $axis_segment_id, $r0 );
     my $axis_segment = $segments->{$axis_segment_id};
@@ -83,7 +83,14 @@ sub compute_pixel_ends {
     }
     else {
       $r0 += $dir * $axis_segment->{_pixel_length};
-      $r0 += $dir * $pix_spacing;
+      if(linnet::conf::getitem( "segments", "spacing", "pairwise", $axis_segment_id)){
+      	my $custom_spacing = linnet::conf::getitem( "segments", "spacing", "pairwise", $axis_segment_id );
+      	#print STDERR $sid . " " . $axis_segment_id . " " . $custom_spacing->{"spacing"}  . "\n";
+      	$r0 += $dir * $custom_spacing->{"spacing"};
+      }
+      else{
+      	$r0 += $dir * $pix_spacing;
+      }
     }
   }
   linnet::debug::printdie("could not calculate pixel ends for segment [$sid]");
