@@ -10,13 +10,18 @@ use IO::File;
 my $rawConf        = "rawConfHive.conf";
 my $prefix         = "circos";
 my $imgSize        = 10000;
-my $radius         = 200;
-my $defaultSpacing = 100;
+my $radius         = 0.05;
+my $defaultSpacing = 0.01;
+my $width          = 0.01;
 my $result         = GetOptions(
 	'r=s' => \$rawConf,
 	'p=s' => \$prefix,
 	's=s' => \$imgSize
 );
+
+$radius         *= $imgSize;
+$defaultSpacing *= $imgSize;
+$width          *= $imgSize;
 
 #input: karyotype files, seqorder files, specifed by prefix
 #relies on stable prefixes to work correctly
@@ -76,23 +81,25 @@ sub main {
 			#chr - ref0 gi|453232067|ref|NC003281.10| 0 13783801 hue000
 			#ref0 0 13783801 gi|453232067|ref|NC003281.10| chr0
 			my @tempArr = split( /\s/, $line );
-			my $chrName = $tempArr[2];
-			if ( exists( $ref{$chrName} ) ) {
-				$refSum += $tempArr[5];
-			}
-			else {
-				$chrName = $circoRunPrefix . "_" . $chrName;
-				$curSum += $tempArr[5];
-			}
-			unless ( exists( $segmentStrs{ $tempArr[2] } ) ) {
-				my $str =
-					$chrName . "_ "
-				  . $tempArr[4] . " "
-				  . $tempArr[5] . " "
-				  . $tempArr[3] . " "
-				  . $tempArr[6] . "\n";
-				$segmentStrs{$chrName} = $str;
-				$segmentFH->print($str);
+			unless ( $tempArr[0] eq "band" ) {
+				my $chrName = $tempArr[2];
+				if ( exists( $ref{$chrName} ) ) {
+					$refSum += $tempArr[5];
+				}
+				else {
+					$chrName = $circoRunPrefix . "_" . $chrName;
+					$curSum += $tempArr[5];
+				}
+				unless ( exists( $segmentStrs{ $tempArr[2] } ) ) {
+					my $str =
+						$chrName . "_ "
+					  . $tempArr[4] . " "
+					  . $tempArr[5] . " "
+					  . $tempArr[3] . " "
+					  . $tempArr[6] . "\n";
+					$segmentStrs{$chrName} = $str;
+					$segmentFH->print($str);
+				}
 			}
 			$line = $fhSeg->getline();
 		}
@@ -115,7 +122,8 @@ sub main {
 	my $scaleFactor = int(
 		(
 			$maxSum / (
-				$imgSize/2 - $radius -
+				$imgSize / 2 -
+				  $radius -
 				  scalar( @{ $ordering{$maxSumPrefix} } ) * $defaultSpacing
 			)
 		)
@@ -126,7 +134,7 @@ sub main {
 	open( my $fd, ">>$prefix.conf" );
 
 	#spacing
-	print $fd "\nradius=$radius\n<spacing>\ndefault = "
+	print $fd "\nwidth=$width\nradius=$radius\n<spacing>\ndefault = "
 	  . $defaultSpacing . "\n";
 	foreach my $id ( keys %prefixSizes ) {
 		unless ( $maxSumPrefix eq $id ) {
