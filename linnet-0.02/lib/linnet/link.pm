@@ -162,6 +162,7 @@ sub draw {
   my $color = defined $link->{options}{color} ? $link->{options}{color} : $link_track->{color};
   my $thickness = defined $link->{options}{thickness} ? $link->{options}{thickness} : $link_track->{thickness};
   my $as_ribbon = $link_track->{ribbon};
+  my $ribbon_edge_color = linnet::conf::getitem( "links", "link", "color" );
 
   # ribbon is drawn only if the ends of the link are > 1 pixel in size
   my $d1 = linnet::util::get_xyxy_distance( @{ $link->{s1}{xy}[0] }, @{ $link->{s1}{xy}[1] } );
@@ -197,8 +198,8 @@ sub draw {
     my $b2 = [ $u2, $v2, \@p2 ];
 
     #linnet::debug::printdumper($b2);
-    #linnet::draw::bezier_curve( $im, $imc, $b1, $color, $link_track->{thickness} );
-    #linnet::draw::bezier_curve( $im, $imc, $b2, $color, $link_track->{thickness} );
+    linnet::draw::bezier_curve( $im, $imc, $b1, $ribbon_edge_color, $link_track->{thickness} );
+    linnet::draw::bezier_curve( $im, $imc, $b2, $ribbon_edge_color, $link_track->{thickness} );
     linnet::draw::bezier_polygon( $im, $imc, $b1, $b2, $color );
   }
   else {
