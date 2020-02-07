@@ -85,7 +85,6 @@ sub compute_pixel_ends {
       $r0 += $dir * $axis_segment->{_pixel_length};
       if(linnet::conf::getitem( "segments", "spacing", "pairwise", $axis_segment_id)){
       	my $custom_spacing = linnet::conf::getitem( "segments", "spacing", "pairwise", $axis_segment_id );
-      	#print STDERR $sid . " " . $axis_segment_id . " " . $custom_spacing->{"spacing"}  . "\n";
       	$r0 += $dir * $custom_spacing->{"spacing"};
       }
       else{
@@ -102,7 +101,6 @@ sub compute_pixel_length {
   my $sid  = shift;
   my $s    = $segments->{$sid};
   my $axis = linnet::axis::get_by_id( get_axis($s) );
-
   my $pixel_length = linnet::util::d2pix( $s->{_length} );
   linnet::debug::printdebug( 2, "segment pixel size",
                              $sid, "length", $s->{_length}, "pixel_length", $pixel_length );
