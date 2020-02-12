@@ -11,7 +11,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 # params
 #------------------------------------------------------------
 
-s=10000 #pixel diameter width
+s=3000 #pixel diameter width
 
 #------------------------------------------------------------
 # meta rules
