@@ -73,7 +73,8 @@ while ($line) {
 
 #determine zscale for values
 my $zCounter = 0;
-foreach my $length (reverse( sort( keys(%linkSizes) ) )) {
+foreach my $length ( reverse( sort { $a <=> $b } ( keys(%linkSizes) ) ) )
+{
 	$linkSizes{$length} = $zCounter++;
 }
 
