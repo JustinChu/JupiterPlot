@@ -9,9 +9,9 @@ use IO::File;
 
 my $rawConf        = "rawConfHive.conf";
 my $prefix         = "circos";
-my $imgSize        = 10000;
+my $imgSize        = 1500;
 my $radius         = 0.05;
-my $defaultSpacing = 0.01;
+my $defaultSpacing = 0.05;
 my $width          = 0.01;
 my $result         = GetOptions(
 	'r=s' => \$rawConf,
@@ -20,7 +20,6 @@ my $result         = GetOptions(
 );
 
 $radius         *= $imgSize;
-$defaultSpacing *= $imgSize;
 $width          *= $imgSize;
 
 #input: karyotype files, seqorder files, specifed by prefix
@@ -118,22 +117,25 @@ sub main {
 
 	print STDERR "Max Prefix: " . $maxSumPrefix . " at " . $maxSum . "\n";
 
+	#spacing
+	$defaultSpacing /= scalar( @{ $ordering{$maxSumPrefix} } );
+	$defaultSpacing *= $imgSize;
+
 	system("sed -i -e 's/image_size/$imgSize/g' $prefix.conf");
 	my $scaleFactor = int(
 		(
 			$maxSum / (
-				$imgSize / 2 -
+				($imgSize ) / 2 -
 				  $radius -
-				  scalar( @{ $ordering{$maxSumPrefix} } ) * $defaultSpacing
+				  scalar( @{ $ordering{$maxSumPrefix} } + 1 ) * $defaultSpacing
 			)
 		)
 	);
 	print STDERR "Scale factor:" . $scaleFactor . "\n";
 	system("sed -i -e 's/scale_factor/$scaleFactor/g' $prefix.conf");
 
-	open( my $fd, ">>$prefix.conf" );
-
-	#spacing
+	open( my $fd, ">>$prefix.conf" );	
+	
 	print $fd "\nwidth=$width\nradius=$radius\n<spacing>\ndefault = "
 	  . $defaultSpacing . "\n";
 	foreach my $id ( keys %prefixSizes ) {
@@ -150,6 +152,22 @@ sub main {
 				  . $spacingSize
 				  . "\n</pairwise>\n";
 			}
+			print STDERR "Prefix: "
+			  . $id
+			  . " Pixel size: "
+			  . $prefixSizes{$id} / $scaleFactor 
+			  . " Pixel size spacers: "
+			  . ( $spacingSize * scalar( @{ $ordering{$id} } ))
+			  . "\n";
+		}
+		else {
+			print STDERR "Prefix: "
+			  . $id
+			  . " Pixel size: "
+			  . $prefixSizes{$id} / $scaleFactor 
+			  . " Pixel size spacers: "
+			  . ( $defaultSpacing * scalar( @{ $ordering{$maxSumPrefix} } ) )
+			  . "\n";
 		}
 	}
 	print $fd $spacingStr;
