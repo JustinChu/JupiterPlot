@@ -2,7 +2,7 @@
 ======================
 This is a pipeline for generating a 3-way hiveplot genome assembly consistency plot given 2 runs of Jupiter plot using the same reference.
 
-<img src="./hivePlot.png">
+<img src="./Hive_CE.svg">
 
 Example plot on 2 C. elegans assemblies.
 
