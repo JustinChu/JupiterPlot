@@ -48,11 +48,21 @@ sub box {
   $poly->addPt(@x2);
   $poly->addPt(@x3);
   $poly->addPt(@x4);
+  
   # filledPolygon doesn't seem to support transparency???
   #$im->setAntiAliased($imc->{$color});
   #$im->filledPolygon( $poly, gdAntiAliased );
   $im->filledPolygon( $poly, $imc->{$color} );
-
+  if(linnet::conf::getitem( "axes", "thickness" )){	
+  	$im->setThickness(linnet::conf::getitem( "axes", "thickness" ));
+  	my $edge_color = $imc->{linnet::conf::getitem( "axes", "color" )};
+  	#print STDERR linnet::conf::getitem( "axes", "color" ) . "\t" . $imc->{$color}. "\n";
+    $im->line( @x1, @x2, $edge_color);
+    $im->line( @x2, @x3, $edge_color);
+    $im->line( @x3, @x4, $edge_color);
+    $im->line( @x4, @x1, $edge_color);
+	$im->setThickness(1);
+	}
 }
 
 # draw a bezier curve from $u to $v with control points @$p
