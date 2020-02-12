@@ -198,9 +198,9 @@ sub draw {
     my $b2 = [ $u2, $v2, \@p2 ];
 
     #linnet::debug::printdumper($b2);
+    linnet::draw::bezier_polygon( $im, $imc, $b1, $b2, $color );
     linnet::draw::bezier_curve( $im, $imc, $b1, $ribbon_edge_color, $link_track->{thickness} );
     linnet::draw::bezier_curve( $im, $imc, $b2, $ribbon_edge_color, $link_track->{thickness} );
-    linnet::draw::bezier_polygon( $im, $imc, $b1, $b2, $color );
   }
   else {
 
