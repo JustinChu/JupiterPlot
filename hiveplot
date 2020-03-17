@@ -12,6 +12,8 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 #------------------------------------------------------------
 
 s=3000 #pixel diameter width
+name1=before
+name2=after
 
 #------------------------------------------------------------
 # meta rules
@@ -42,12 +44,31 @@ endif
 # pipeline rules
 #------------------------------------------------------------
 
-$(name).links: $(prefix1).links.final $(prefix2).links.final
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p before $< > $@
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p after $(prefix2).links.final >> $@
+#link files
+$(name).$(name1).links.final: $(prefix1).links.final:
+	ln -s $< $@
+
+$(name).$(name2).links.final: $(prefix2).links.final:
+	ln -s $< $@
 	
-%.conf %.segments : $(prefix1).seqOrder.txt $(prefix2).seqOrder.txt $(prefix1).karyotype $(prefix2).karyotype
-	perl $(ROOT_DIR)/bin/karyotypeHive.pl -s $(s) -r $(ROOT_DIR)/config/rawConfHive.conf -p $* before after
+$(name).$(name1).seqOrder.txt: $(prefix1).seqOrder.txt:
+	ln -s $< $@
+
+$(name).$(name2).seqOrder.txt: $(prefix2).seqOrder.txt:
+	ln -s $< $@
+
+$(name).$(name1).karyotype: $(prefix1).karyotype:
+	ln -s $< $@
+	
+$(name).$(name2).karyotype: $(prefix2).karyotype:
+	ln -s $< $@
+
+%.links: %.$(name1).links.final %.$(name2).links.final
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p %.$(name1) $< > $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p %.$(name2) %.$(name2).links.final >> $@
+	
+%.conf %.segments : %.$(name1).seqOrder.txt %.$(name2).seqOrder.txt %.$(name1).karyotype %.$(name2).karyotype
+	perl $(ROOT_DIR)/bin/karyotypeHive.pl -s $(s) -r $(ROOT_DIR)/config/rawConfHive.conf -p $* %.$(name1) %.$(name2)
 
 %.svg: %.conf %.segments %.links 
 	$(ROOT_DIR)/linnet-0.02/bin/linnet -conf $<
