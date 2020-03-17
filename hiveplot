@@ -42,9 +42,6 @@ endif
 # pipeline rules
 #------------------------------------------------------------
 
-#link the files
-
-
 $(name).links: $(prefix1).links.final $(prefix2).links.final
 	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p before $< > $@
 	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p after $(prefix2).links.final >> $@
