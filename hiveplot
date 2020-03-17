@@ -45,22 +45,22 @@ endif
 #------------------------------------------------------------
 
 #link files
-$(name).$(name1).links.final: $(prefix1).links.final:
+%.$(name1).links.final: $(prefix1).links.final:
 	ln -s $< $@
 
-$(name).$(name2).links.final: $(prefix2).links.final:
+%.$(name2).links.final: $(prefix2).links.final:
 	ln -s $< $@
 	
-$(name).$(name1).seqOrder.txt: $(prefix1).seqOrder.txt:
+%.$(name1).seqOrder.txt: $(prefix1).seqOrder.txt:
 	ln -s $< $@
 
-$(name).$(name2).seqOrder.txt: $(prefix2).seqOrder.txt:
+%.$(name2).seqOrder.txt: $(prefix2).seqOrder.txt:
 	ln -s $< $@
 
-$(name).$(name1).karyotype: $(prefix1).karyotype:
+%.$(name1).karyotype: $(prefix1).karyotype:
 	ln -s $< $@
 	
-$(name).$(name2).karyotype: $(prefix2).karyotype:
+%.$(name2).karyotype: $(prefix2).karyotype:
 	ln -s $< $@
 
 %.links: %.$(name1).links.final %.$(name2).links.final
