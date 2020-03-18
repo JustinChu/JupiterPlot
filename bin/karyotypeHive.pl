@@ -192,8 +192,8 @@ sub main {
 			  . "_order/r $prefix$orderCount.order.temp' 1 '/axis_$orderCount"
 			  . "_order/d' w | ed $prefix.conf"
 		);
+		system( "rm $prefix$orderCount.order.temp" );
 		$orderCount++;
-		system( "rm " . $prefix . $orderCount . ".order.temp" );
 	}
 
 	$segmentFH->close();
