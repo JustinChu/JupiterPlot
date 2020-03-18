@@ -187,7 +187,7 @@ sub main {
 		  . join( ",", @{ $ordering{$circoRunPrefix} } ). "/g";
 		$tempFH->print($orderStr);
 		$tempFH->close();
-		system( "sed -i -e -f $prefix$orderCount.order.temp $prefix.conf" );
+		system( "sed -i -f $prefix$orderCount.order.temp $prefix.conf" );
 		system("rm $prefix$orderCount.order.temp");
 		$orderCount++;
 	}
