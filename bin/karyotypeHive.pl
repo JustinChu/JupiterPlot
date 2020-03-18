@@ -181,7 +181,7 @@ sub main {
 	foreach my $circoRunPrefix (@ARGV) {
 		my $tempFH = new IO::File(">$prefix$orderCount.order.temp");
 		$orderStr =
-			"'s/axis_"
+			"s/axis_"
 		  . $orderCount
 		  . "_order/"
 		  . join( ",", @{ $ordering{$circoRunPrefix} } ). "/g";
