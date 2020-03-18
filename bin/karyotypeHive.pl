@@ -19,8 +19,8 @@ my $result         = GetOptions(
 	's=s' => \$imgSize
 );
 
-$radius         *= $imgSize;
-$width          *= $imgSize;
+$radius *= $imgSize;
+$width  *= $imgSize;
 
 #input: karyotype files, seqorder files, specifed by prefix
 #relies on stable prefixes to work correctly
@@ -125,7 +125,7 @@ sub main {
 	my $scaleFactor = int(
 		(
 			$maxSum / (
-				($imgSize ) / 2 -
+				($imgSize) / 2 -
 				  $radius -
 				  scalar( @{ $ordering{$maxSumPrefix} } + 1 ) * $defaultSpacing
 			)
@@ -134,8 +134,8 @@ sub main {
 	print STDERR "Scale factor:" . $scaleFactor . "\n";
 	system("sed -i -e 's/scale_factor/$scaleFactor/g' $prefix.conf");
 
-	open( my $fd, ">>$prefix.conf" );	
-	
+	open( my $fd, ">>$prefix.conf" );
+
 	print $fd "\nwidth=$width\nradius=$radius\n<spacing>\ndefault = "
 	  . $defaultSpacing . "\n";
 	foreach my $id ( keys %prefixSizes ) {
@@ -155,16 +155,15 @@ sub main {
 			print STDERR "Prefix: "
 			  . $id
 			  . " Pixel size: "
-			  . $prefixSizes{$id} / $scaleFactor 
+			  . $prefixSizes{$id} / $scaleFactor
 			  . " Pixel size spacers: "
-			  . ( $spacingSize * scalar( @{ $ordering{$id} } ))
-			  . "\n";
+			  . ( $spacingSize * scalar( @{ $ordering{$id} } ) ) . "\n";
 		}
 		else {
 			print STDERR "Prefix: "
 			  . $id
 			  . " Pixel size: "
-			  . $prefixSizes{$id} / $scaleFactor 
+			  . $prefixSizes{$id} / $scaleFactor
 			  . " Pixel size spacers: "
 			  . ( $defaultSpacing * scalar( @{ $ordering{$maxSumPrefix} } ) )
 			  . "\n";
@@ -180,13 +179,21 @@ sub main {
 
 	my $orderCount = 1;
 	foreach my $circoRunPrefix (@ARGV) {
+		my $tempFH = new IO::File(">$prefix$orderCount.order.temp");
 		$orderStr = join( ",", @{ $ordering{$circoRunPrefix} } );
+		$tempFH->print($orderStr);
+		$tempFH->close();
 
-		#axis_1_order
-		system( "sed -i -e 's/axis_"
-			  . $orderCount
-			  . "_order/$orderStr/g' $prefix.conf" );
+		#		system( "sed -i -e 's/axis_"
+		#			  . $orderCount
+		#			  . "_order/$orderStr/g' $prefix.conf" );
+		system(
+				"printf '%s\n' '/axis_$orderCount"
+			  . "_order/r $prefix$orderCount.order.temp' 1 '/axis_$orderCount"
+			  . "_order/d' w | ed $prefix.conf"
+		);
 		$orderCount++;
+		system( "rm " . $prefix . $orderCount . ".order.temp" );
 	}
 
 	$segmentFH->close();
