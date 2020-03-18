@@ -180,19 +180,15 @@ sub main {
 	my $orderCount = 1;
 	foreach my $circoRunPrefix (@ARGV) {
 		my $tempFH = new IO::File(">$prefix$orderCount.order.temp");
-		$orderStr = join( ",", @{ $ordering{$circoRunPrefix} } );
+		$orderStr =
+			"'s/axis_"
+		  . $orderCount
+		  . "_order/"
+		  . join( ",", @{ $ordering{$circoRunPrefix} } ). "/g";
 		$tempFH->print($orderStr);
 		$tempFH->close();
-
-		#		system( "sed -i -e 's/axis_"
-		#			  . $orderCount
-		#			  . "_order/$orderStr/g' $prefix.conf" );
-		system(
-				"printf '%s\n' '/axis_$orderCount"
-			  . "_order/r $prefix$orderCount.order.temp' 1 '/axis_$orderCount"
-			  . "_order/d' w | ed $prefix.conf"
-		);
-		system( "rm $prefix$orderCount.order.temp" );
+		system( "sed -i -e -f $prefix$orderCount.order.temp $prefix.conf" );
+		system("rm $prefix$orderCount.order.temp");
 		$orderCount++;
 	}
 
