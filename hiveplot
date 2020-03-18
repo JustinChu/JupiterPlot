@@ -65,7 +65,7 @@ endif
 
 %.links: %.$(name1).links.final %.$(name2).links.final
 	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(name).$(name1) $< > $@
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(name).$(name2) %.$(name2).links.final >> $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(name).$(name2) $(name).$(name2).links.final >> $@
 	
 %.conf %.segments : %.$(name1).seqOrder.txt %.$(name2).seqOrder.txt %.$(name1).karyotype %.$(name2).karyotype
 	perl $(ROOT_DIR)/bin/karyotypeHive.pl -s $(s) -r $(ROOT_DIR)/config/rawConfHive.conf -p $* $(name).$(name1) $(name).$(name2)
