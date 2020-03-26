@@ -114,7 +114,7 @@ sub main {
 			#ref0 0 13783801 gi|453232067|ref|NC003281.10| chr0
 			my @tempArr = split( /\s/, $line );
 			unless ( $tempArr[0] eq "band" ) {
-				my $chrName = $pair . "_" . $tempArr[2] . "_";
+				my $chrName = "_" . $pair . "_" . $tempArr[2] . "_";
 				if ( exists( $angleStrs{$chrName} ) ) {
 					$refSum += $tempArr[5];
 				}
