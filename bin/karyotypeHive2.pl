@@ -88,9 +88,8 @@ sub main {
 			#ref5	gi|453232919|ref|NC_003284.9|	scaf15	68	-
 			my @tempArr = split( /\t/, $line );
 
-			my $refStr = "_" . $pair . "_" . $tempArr[0] . "_";
-			my $angleStr =
-			  "_" . $pair2 . "_" . $tempArr[2] . "_";
+			my $refStr   = "_" . $pair . "_" . $tempArr[0] . "_";
+			my $angleStr = "_" . $pair2 . "_" . $tempArr[2] . "_";
 
 			#populate ref1
 			unless ( exists( $angleStrs{$refStr} ) ) {
@@ -120,7 +119,8 @@ sub main {
 					$refSum += $tempArr[5];
 				}
 				else {
-					$chrName = $pair1 . "_" . $tempArr[2] . "_";
+					$chrName =
+					  "_" . $pair1 . "_" . $tempArr[2] . "_";
 					$curSum += $tempArr[5];
 				}
 				unless ( exists( $segmentStrs{$chrName} ) ) {
@@ -305,13 +305,6 @@ sub meanangle {
 sub meandegrees {
 	meanangle(
 		map { $_ * pi /180 } @_ ) * 180/pi; }
-
-		  #<axis ref>
-		  #angle          = 0
-		  #scale          = 1
-		  #reverse        = yes
-		  #segments       = axis_ref_order
-		  #</axis>
 		  sub printAxisStr {
 			my $fd         = shift;
 			my $prefix     = shift;
@@ -319,7 +312,7 @@ sub meandegrees {
 			my $reverse    = shift;
 			my $segmentStr = shift;
 			print $fd
-"<axis $prefix>\nangle = $angle\nscale = 1\nreverse = $reverse\nsegments = $segmentStr\n</axis>\n";
+"<axis _$prefix>\nangle = $angle\nscale = 1\nreverse = $reverse\nsegments = $segmentStr\n</axis>\n";
 
 		}
 
