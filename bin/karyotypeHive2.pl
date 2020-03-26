@@ -119,7 +119,7 @@ sub main {
 					$refSum += $tempArr[5];
 				}
 				else {
-					$chrName = $pair2 . "_" . $tempArr[2] . "_";
+					$chrName = $pair1 . "_" . $tempArr[2] . "_";
 					$curSum += $tempArr[5];
 				}
 				unless ( exists( $segmentStrs{$chrName} ) ) {
@@ -275,7 +275,7 @@ sub main {
 		}
 
 		#create order string for reference
-		my $orderStr = join( ",", reverse @{ $ordering{$pair2} } );
+		my $orderStr = join( ",", reverse @{ $ordering{$pair} } );
 
 		#compute new angle, assumes shortest angle when possible
 		printAxisStr( $fd, $pair, meandegrees( $pair1, $pair2 ),
