@@ -165,7 +165,7 @@ sub main {
 				}
 				unless ( exists( $segmentStrs{$chrName} ) ) {
 					my $str =
-						$chrName . "_ "
+						$chrName . " "
 					  . $tempArr[4] . " "
 					  . $tempArr[5] . " "
 					  . $tempArr[3] . " "
