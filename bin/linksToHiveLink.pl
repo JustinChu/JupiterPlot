@@ -11,12 +11,14 @@ use IO::File;
 #path to scaffold sizes to invert alignments
 #my $invert = "";
 my $prefix = "";
+my $refPrefix = "";
 
 my $linksLeft = "";
 my $result    = GetOptions(
 
 	#	'i=s' => \$invert,
-	"p=s" => \$prefix
+	"p=s" => \$prefix,
+	"r=s" => \$refPrefix
 );
 
 #my %scaffoldSizes;
@@ -55,7 +57,7 @@ while ($line) {
 #ref1 2732 697618 scaf4 15442510 14748173 nlinks=2,bsize1=693789,bsize2=693241,bidentity1=0.998420,bidentity2=0.998420,depth1=0,depth2=0,color=hue060_a5
 #ref1 697618 2732 Post_scaf4 15442510 14748173 color=chr1
 	$tempStr =
-		$tempArray[0] . "_ "
+		$refPrefix . "_" . $tempArray[0] . "_ "
 	  . $tempArray[1] . " "
 	  . $tempArray[2] . " "
 	  . $prefix . "_"
