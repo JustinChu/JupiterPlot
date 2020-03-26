@@ -248,32 +248,38 @@ sub main {
 	print $fd $spacingStr;
 	print $fd
 	  "</spacing>\n</segments>\n<axes>\nthickness = 2\ncolor = vdgrey\n";
-	  
-	  my %nonRefSet;
+
+	my %nonRefSet;
 
 	foreach my $pair (@ARGV) {
 		my @tempArray = split( /\./, $pair );    #angle1.angle2
 		my $pair1     = $tempArray[0];
 		my $pair2     = $tempArray[1];
-		
-		unless(exists $nonRefSet{$pair1} ){
+
+		unless ( exists $nonRefSet{$pair1} ) {
+			$nonRefSet{$pair1} = 1;
 			#create order string for segment
 			my $orderStr = join( ",", @{ $ordering{$pair1} } );
+
 			#print out axis
 			printAxisStr( $fd, $pair1, $pair1, "no", $orderStr );
 		}
-		
-		unless(exists $nonRefSet{$pair2} ){
+
+		unless ( exists $nonRefSet{$pair2} ) {
+			$nonRefSet{$pair2} = 1;
 			#create order string for segment
 			my $orderStr = join( ",", @{ $ordering{$pair2} } );
+
 			#print out axis
 			printAxisStr( $fd, $pair2, $pair2, "no", $orderStr );
 		}
-		
+
 		#create order string for reference
 		my $orderStr = join( ",", reverse @{ $ordering{$pair2} } );
+
 		#compute new angle, assumes shortest angle when possible
-		printAxisStr( $fd, $pair, meandegrees($pair1, $pair2), "yes", $orderStr );
+		printAxisStr( $fd, $pair, meandegrees( $pair1, $pair2 ),
+			"yes", $orderStr );
 	}
 
 	#print out axis information
@@ -285,32 +291,32 @@ sub main {
 
 #https://rosettacode.org/wiki/Averages/Mean_angle#Perl
 sub meanangle {
-  my($x, $y) = (0,0);
-  ($x,$y) = ($x + sin($_), $y + cos($_)) for @_;
-  my $atan = atan2($x,$y);
-  $atan += 2*pi while $atan < 0;    # Ghetto fmod
-  $atan -= 2*pi while $atan > 2*pi;
-  $atan;
+	my ( $x, $y ) = ( 0, 0 );
+	( $x, $y ) = ( $x + sin($_), $y + cos($_) ) for @_;
+	my $atan = atan2( $x, $y );
+	$atan += 2 * pi while $atan < 0;        # Ghetto fmod
+	$atan -= 2 * pi while $atan > 2 * pi;
+	$atan;
 }
 
 sub meandegrees {
-  meanangle( map { $_ * pi/180 } @_ ) * 180/pi;
-}
+	meanangle(
+		map { $_ * pi /180 } @_ ) * 180/pi; }
 
-#<axis ref>
-#angle          = 0
-#scale          = 1
-#reverse        = yes
-#segments       = axis_ref_order
-#</axis>
-sub printAxisStr {
-	my $fd         = shift;
-	my $prefix     = shift;
-	my $angle      = shift;
-	my $reverse    = shift;
-	my $segmentStr = shift;
-	print $fd
+		  #<axis ref>
+		  #angle          = 0
+		  #scale          = 1
+		  #reverse        = yes
+		  #segments       = axis_ref_order
+		  #</axis>
+		  sub printAxisStr {
+			my $fd         = shift;
+			my $prefix     = shift;
+			my $angle      = shift;
+			my $reverse    = shift;
+			my $segmentStr = shift;
+			print $fd
 "<axis $prefix>\nangle = $angle\nscale = 1\nreverse = $reverse\nsegments = $segmentStr\n</axis>\n";
 
-}
+		}
 
