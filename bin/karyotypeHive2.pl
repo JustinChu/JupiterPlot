@@ -74,6 +74,7 @@ sub main {
 			}
 			unless ( exists( $angleStrs{$angleStr} ) ) {
 				push( @{ $ordering{$pair1} }, $angleStr );
+				$angleStrs{$angleStr} = 1;
 			}
 			$line = $fh->getline();
 		}
@@ -98,6 +99,7 @@ sub main {
 			}
 			unless ( exists( $angleStrs{$angleStr} ) ) {
 				push( @{ $ordering{$pair2} }, $angleStr );
+				$angleStrs{$angleStr} = 1;
 			}
 			$line = $fh->getline();
 		}
