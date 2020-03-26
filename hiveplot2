@@ -1,0 +1,89 @@
+#!/usr/bin/make -Rrf
+ifdef profile
+SHELL=/usr/bin/time -f '=> jupiter: %e %C' /bin/bash -o pipefail
+else
+SHELL=/bin/bash -o pipefail
+endif
+
+ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
+#------------------------------------------------------------
+# params
+#------------------------------------------------------------
+
+s=3000 #pixel diameter width
+angle1=0
+angle2=120
+angle3=240
+
+#------------------------------------------------------------
+# meta rules
+#------------------------------------------------------------
+
+.PRECIOUS:
+.DELETE_ON_ERROR:
+.PHONY: check-params generateplot
+
+default: generateplot
+
+generateplot: check-params $(name).svg
+
+check-name-param:
+ifndef name
+	$(error missing required param 'name' (output file prefix))
+endif
+
+check-params: check-name-param
+ifndef prefix1
+	$(error missing required param 'prefix1' (Prefix to jupiterplot run))
+endif
+ifndef prefix2
+	$(error missing required param 'prefix2' (Prefix to jupiterplot run))
+endif
+ifndef prefix3
+	$(error missing required param 'prefix3' (Prefix to jupiterplot run))
+endif
+
+#------------------------------------------------------------
+# pipeline rules
+#------------------------------------------------------------
+
+#link files
+%.$(angle1).links.final: $(prefix1).links.final
+	ln -s $< $@
+
+%.$(angle2).links.final: $(prefix2).links.final
+	ln -s $< $@
+	
+%.$(angle3).links.final: $(prefix3).links.final
+	ln -s $< $@
+	
+%.$(angle1).seqOrder.txt: $(prefix1).seqOrder.txt
+	ln -s $< $@
+
+%.$(angle2).seqOrder.txt: $(prefix2).seqOrder.txt
+	ln -s $< $@
+	
+%.$(angle3).seqOrder.txt: $(prefix3).seqOrder.txt
+	ln -s $< $@
+
+%.$(angle1).karyotype: $(prefix1).karyotype
+	ln -s $< $@
+	
+%.$(angle2).karyotype: $(prefix2).karyotype
+	ln -s $< $@
+
+%.$(angle3).karyotype: $(prefix3).karyotype
+	ln -s $< $@
+
+%.links: %.$(angle1).links.final %.$(angle2).links.final %.$(angle3).links.final
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle1) -r $(angle1).$(angle2) $< > $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle2) -r $(angle1).$(angle2) $(name).$(angle2).links.final >> $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle1) -r $(angle3).$(angle1) $< >> $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle3) -r $(angle3).$(angle1) $(name).$(angle3).links.final >> $@
+	
+%.conf %.segments : %.$(angle1).seqOrder.txt %.$(angle2).seqOrder.txt %.$(angle3).seqOrder.txt %.$(angle1).karyotype %.$(angle2).karyotype %.$(angle3).karyotype
+	perl $(ROOT_DIR)/bin/karyotypeHive2.pl -s $(s) -r $(ROOT_DIR)/config/rawConfHive2.conf -p $* $(angle1).$(angle2) $(angle3).$(angle1)
+
+%.svg: %.conf %.segments %.links 
+	$(ROOT_DIR)/linnet-0.02/bin/linnet -conf $<
