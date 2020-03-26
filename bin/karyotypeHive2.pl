@@ -310,7 +310,7 @@ sub printAxisStr {
 	my $reverse    = shift;
 	my $segmentStr = shift;
 	print $fd
-"<axis $prefix>\nangle = $angle\nscale = 1\nreverse = $reverse\nsegements = $segmentStr\n</axis>\n";
+"<axis $prefix>\nangle = $angle\nscale = 1\nreverse = $reverse\nsegments = $segmentStr\n</axis>\n";
 
 }
 
