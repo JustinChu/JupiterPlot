@@ -64,8 +64,8 @@ sub main {
 			#ref5	gi|453232919|ref|NC_003284.9|	scaf15	68	-
 			my @tempArr = split( /\t/, $line );
 
-			my $refStr   = $pair . "_" . $tempArr[0] . "_";
-			my $angleStr = $pair1 . "_" . $tempArr[2] . "_";
+			my $refStr   = "_" . $pair . "_" . $tempArr[0] . "_";
+			my $angleStr = "_" . $pair1 . "_" . $tempArr[2] . "_";
 
 			#populate ref1
 			unless ( exists( $angleStrs{$refStr} ) ) {
