@@ -273,7 +273,7 @@ sub main {
 		#create order string for reference
 		my $orderStr = join( ",", reverse @{ $ordering{$pair2} } );
 		#compute new angle, assumes shortest angle when possible
-		printAxisStr( $fd, $pair, meandegrees($pair1, $pair2), "no", $orderStr );
+		printAxisStr( $fd, $pair, meandegrees($pair1, $pair2), "yes", $orderStr );
 	}
 
 	#print out axis information
