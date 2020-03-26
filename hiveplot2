@@ -77,13 +77,13 @@ endif
 	ln -s $< $@
 
 %.links: %.$(angle1).links.final %.$(angle2).links.final %.$(angle3).links.final
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle1) -r $(angle1).$(angle2) $< > $@
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle2) -r $(angle1).$(angle2) $(name).$(angle2).links.final >> $@
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle1) -r $(angle3).$(angle1) $< >> $@
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle3) -r $(angle3).$(angle1) $(name).$(angle3).links.final >> $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle1) -r $(angle1)_$(angle2) $< > $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle2) -r $(angle1)_$(angle2) $(name).$(angle2).links.final >> $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle1) -r $(angle3)_$(angle1) $< >> $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle3) -r $(angle3)_$(angle1) $(name).$(angle3).links.final >> $@
 	
 %.conf %.segments : %.$(angle1).seqOrder.txt %.$(angle2).seqOrder.txt %.$(angle3).seqOrder.txt %.$(angle1).karyotype %.$(angle2).karyotype %.$(angle3).karyotype
-	perl $(ROOT_DIR)/bin/karyotypeHive2.pl -s $(s) -r $(ROOT_DIR)/config/rawConfHive2.conf -p $* $(angle1).$(angle2) $(angle3).$(angle1)
+	perl $(ROOT_DIR)/bin/karyotypeHive2.pl -s $(s) -r $(ROOT_DIR)/config/rawConfHive2.conf -p $* $(angle1)_$(angle2) $(angle3)_$(angle1)
 
 %.svg: %.conf %.segments %.links 
 	$(ROOT_DIR)/linnet-0.02/bin/linnet -conf $<

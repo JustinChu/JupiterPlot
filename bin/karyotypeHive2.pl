@@ -51,7 +51,7 @@ sub main {
 
 	#parse the filenames
 	foreach my $pair (@ARGV) {
-		my @tempArray = split( /\./, $pair );    #angle1.angle2
+		my @tempArray = split( /\_/, $pair );    #angle1.angle2
 		my $pair1     = $tempArray[0];
 		my $pair2     = $tempArray[1];
 
@@ -119,7 +119,7 @@ sub main {
 					$refSum += $tempArr[5];
 				}
 				else {
-					$chrName = $pair2 . "_" . $tempArr[2] . "_";
+					$chrName = $pair1 . "_" . $tempArr[2] . "_";
 					$curSum += $tempArr[5];
 				}
 				unless ( exists( $segmentStrs{$chrName} ) ) {
@@ -252,7 +252,7 @@ sub main {
 	my %nonRefSet;
 
 	foreach my $pair (@ARGV) {
-		my @tempArray = split( /\./, $pair );    #angle1.angle2
+		my @tempArray = split( /\_/, $pair );    #angle1.angle2
 		my $pair1     = $tempArray[0];
 		my $pair2     = $tempArray[1];
 
@@ -275,7 +275,7 @@ sub main {
 		}
 
 		#create order string for reference
-		my $orderStr = join( ",", reverse @{ $ordering{$pair2} } );
+		my $orderStr = join( ",", reverse @{ $ordering{$pair} } );
 
 		#compute new angle, assumes shortest angle when possible
 		printAxisStr( $fd, $pair, meandegrees( $pair1, $pair2 ),
