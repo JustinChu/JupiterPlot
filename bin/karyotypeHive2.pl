@@ -51,7 +51,7 @@ sub main {
 
 	#parse the filenames
 	foreach my $pair (@ARGV) {
-		my @tempArray = split( /\./, $pair );    #angle1.angle2
+		my @tempArray = split( /\_/, $pair );    #angle1.angle2
 		my $pair1     = $tempArray[0];
 		my $pair2     = $tempArray[1];
 
@@ -252,7 +252,7 @@ sub main {
 	my %nonRefSet;
 
 	foreach my $pair (@ARGV) {
-		my @tempArray = split( /\./, $pair );    #angle1.angle2
+		my @tempArray = split( /\_/, $pair );    #angle1.angle2
 		my $pair1     = $tempArray[0];
 		my $pair2     = $tempArray[1];
 
