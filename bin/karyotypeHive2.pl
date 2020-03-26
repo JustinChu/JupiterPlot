@@ -149,6 +149,8 @@ sub main {
 			$maxSum       = $curSum;
 			$maxSumPrefix = $pair1;
 		}
+		$refSum = 0;
+		$curSum = 0;
 		$fhSeg = new IO::File( $prefix . "." . $pair2 . ".karyotype" )
 		  or die "Could not open file '$prefix.$pair2.karyotype' $!";
 		$line = $fhSeg->getline();
