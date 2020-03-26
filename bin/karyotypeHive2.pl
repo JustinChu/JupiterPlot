@@ -88,8 +88,9 @@ sub main {
 			#ref5	gi|453232919|ref|NC_003284.9|	scaf15	68	-
 			my @tempArr = split( /\t/, $line );
 
-			my $refStr   = $pair . "_" . $tempArr[0] . "_";
-			my $angleStr = $pair2 . "_" . $tempArr[2] . "_";
+			my $refStr = "_" . $pair . "_" . $tempArr[0] . "_";
+			my $angleStr =
+			  "_" . $pair2 . "_" . $tempArr[2] . "_";
 
 			#populate ref1
 			unless ( exists( $angleStrs{$refStr} ) ) {
@@ -155,12 +156,12 @@ sub main {
 			#ref0 0 13783801 gi|453232067|ref|NC003281.10| chr0
 			my @tempArr = split( /\s/, $line );
 			unless ( $tempArr[0] eq "band" ) {
-				my $chrName = $pair . "_" . $tempArr[2] . "_";
+				my $chrName = "_" . $pair . "_" . $tempArr[2] . "_";
 				if ( exists( $angleStrs{$chrName} ) ) {
 					$refSum += $tempArr[5];
 				}
 				else {
-					$chrName = $pair2 . "_" . $tempArr[2] . "_";
+					$chrName = "_" . $pair2 . "_" . $tempArr[2] . "_";
 					$curSum += $tempArr[5];
 				}
 				unless ( exists( $segmentStrs{$chrName} ) ) {
@@ -258,6 +259,7 @@ sub main {
 
 		unless ( exists $nonRefSet{$pair1} ) {
 			$nonRefSet{$pair1} = 1;
+
 			#create order string for segment
 			my $orderStr = join( ",", @{ $ordering{$pair1} } );
 
@@ -267,6 +269,7 @@ sub main {
 
 		unless ( exists $nonRefSet{$pair2} ) {
 			$nonRefSet{$pair2} = 1;
+
 			#create order string for segment
 			my $orderStr = join( ",", @{ $ordering{$pair2} } );
 

@@ -10,7 +10,7 @@ use IO::File;
 #invert link positions relative to scaffolds
 #path to scaffold sizes to invert alignments
 #my $invert = "";
-my $prefix = "";
+my $prefix    = "";
 my $refPrefix = "";
 
 my $linksLeft = "";
@@ -56,10 +56,9 @@ while ($line) {
 #re-arrange positions & store
 #ref1 2732 697618 scaf4 15442510 14748173 nlinks=2,bsize1=693789,bsize2=693241,bidentity1=0.998420,bidentity2=0.998420,depth1=0,depth2=0,color=hue060_a5
 #ref1 697618 2732 Post_scaf4 15442510 14748173 color=chr1
-	$tempStr =
-		$refPrefix . "_" . $tempArray[0] . "_ "
+	$tempStr = "_" . $refPrefix . "_" . $tempArray[0] . "_ "
 	  . $tempArray[1] . " "
-	  . $tempArray[2] . " "
+	  . $tempArray[2] . " _"
 	  . $prefix . "_"
 	  . $tempArray[3] . "_ "
 	  . $tempArray[4] . " "
@@ -75,8 +74,7 @@ while ($line) {
 
 #determine zscale for values
 my $zCounter = 0;
-foreach my $length ( reverse( sort { $a <=> $b } ( keys(%linkSizes) ) ) )
-{
+foreach my $length ( reverse( sort { $a <=> $b } ( keys(%linkSizes) ) ) ) {
 	$linkSizes{$length} = $zCounter++;
 }
 
