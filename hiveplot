@@ -1,6 +1,6 @@
 #!/usr/bin/make -Rrf
 ifdef profile
-SHELL=/usr/bin/time -f '=> jupiter: %e %C' /bin/bash -o pipefail
+SHELL=/usr/bin/time -f '=> hiveplot: %e %C' /bin/bash -o pipefail
 else
 SHELL=/bin/bash -o pipefail
 endif

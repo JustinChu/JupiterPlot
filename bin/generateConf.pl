@@ -79,24 +79,26 @@ sub outputKaryotype {
 	while ($line) {
 		chomp($line);
 		my @tempArray = split( " ", $line );
-		if ( $tempArray[0] eq "band" && exists( $refIDMap{ $tempArray[1] } ) ) {
-			$tempArray[1] = $refIDMap{ $tempArray[1] };
-			my $tempStr = join( " ", @tempArray ) . "\n";
-			$karyotype->write($tempStr);
-		}
-		else {
-			$refIDMap{ $tempArray[2] }    = "ref" . $numChr;
-			$chrColorMap{ $tempArray[2] } = $tempArray[6];
-			$tempArray[2]                 = "ref" . $numChr;
-			$chromosomes{ $tempArray[2] } = $tempArray[3];
+		if ( scalar(@tempArray) ) {
+			if ( $tempArray[0] eq "band" && exists( $refIDMap{ $tempArray[1] } ) ) {
+				$tempArray[1] = $refIDMap{ $tempArray[1] };
+				my $tempStr = join( " ", @tempArray ) . "\n";
+				$karyotype->write($tempStr);
+			}
+			else {
+				$refIDMap{ $tempArray[2] }    = "ref" . $numChr;
+				$chrColorMap{ $tempArray[2] } = $tempArray[6];
+				$tempArray[2]                 = "ref" . $numChr;
+				$chromosomes{ $tempArray[2] } = $tempArray[3];
 
-			#Generate circos friendly label
-			$tempArray[3] =~ s/[_]//g;
-			my $tempStr = join( " ", @tempArray ) . "\n";
-			push( @chrOrder, $tempArray[2] );
-			$karyotype->write($tempStr);
-			$numChr++;
-			$genomeSize += $tempArray[5];
+				#Generate circos friendly label
+				$tempArray[3] =~ s/[_]//g;
+				my $tempStr = join( " ", @tempArray ) . "\n";
+				push( @chrOrder, $tempArray[2] );
+				$karyotype->write($tempStr);
+				$numChr++;
+				$genomeSize += $tempArray[5];
+			}
 		}
 		$line = $rawKaryotypeFH->getline();
 	}
