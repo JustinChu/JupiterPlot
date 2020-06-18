@@ -12,8 +12,8 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 #------------------------------------------------------------
 
 s=3000 #pixel diameter width
-name1=before
-name2=after
+angle1=270
+angle2=90
 
 #------------------------------------------------------------
 # meta rules
@@ -45,30 +45,30 @@ endif
 #------------------------------------------------------------
 
 #link files
-%.$(name1).links.final: $(prefix1).links.final
+%.$(angle1).links.final: $(prefix1).links.final
 	ln -s $< $@
 
-%.$(name2).links.final: $(prefix2).links.final
+%.$(angle2).links.final: $(prefix2).links.final
 	ln -s $< $@
 	
-%.$(name1).seqOrder.txt: $(prefix1).seqOrder.txt
+%.$(angle1).seqOrder.txt: $(prefix1).seqOrder.txt
 	ln -s $< $@
 
-%.$(name2).seqOrder.txt: $(prefix2).seqOrder.txt
+%.$(angle2).seqOrder.txt: $(prefix2).seqOrder.txt
 	ln -s $< $@
 
-%.$(name1).karyotype: $(prefix1).karyotype
+%.$(angle1).karyotype: $(prefix1).karyotype
 	ln -s $< $@
 	
-%.$(name2).karyotype: $(prefix2).karyotype
+%.$(angle2).karyotype: $(prefix2).karyotype
 	ln -s $< $@
 
-%.links: %.$(name1).links.final %.$(name2).links.final
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(name).$(name1) $< > $@
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(name).$(name2) $(name).$(name2).links.final >> $@
+%.links: %.$(angle1).links.final %.$(angle2).links.final
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(name).$(angle1) $< > $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(name).$(angle2) $(name).$(angle2).links.final >> $@
 	
-%.conf %.segments : %.$(name1).seqOrder.txt %.$(name2).seqOrder.txt %.$(name1).karyotype %.$(name2).karyotype
-	perl $(ROOT_DIR)/bin/karyotypeHive.pl -s $(s) -r $(ROOT_DIR)/config/rawConfHive.conf -p $* $(name).$(name1) $(name).$(name2)
+%.conf %.segments : %.$(angle1).seqOrder.txt %.$(angle2).seqOrder.txt %.$(angle1).karyotype %.$(angle2).karyotype
+	perl $(ROOT_DIR)/bin/karyotypeHive.pl -s $(s) -r $(ROOT_DIR)/config/rawConfHive.conf -p $* $(name).$(angle1) $(name).$(angle2)
 
 %.svg: %.conf %.segments %.links 
 	$(ROOT_DIR)/linnet-0.02/bin/linnet -conf $<
