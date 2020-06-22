@@ -251,7 +251,7 @@ sub main {
 	}
 	print $fd $spacingStr;
 	print $fd
-	  "</spacing>\n</segments>\n<axes>\nthickness = 2\ncolor = vdgrey\n";
+	  "</spacing>\n</segments>\n<axes>\nthickness = 1\ncolor = vdgrey\n";
 
 	my %nonRefSet;
 
