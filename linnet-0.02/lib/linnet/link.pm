@@ -199,8 +199,8 @@ sub draw {
 
     #linnet::debug::printdumper($b2);
     linnet::draw::bezier_polygon( $im, $imc, $b1, $b2, $color );
-    linnet::draw::bezier_curve( $im, $imc, $b1, $ribbon_edge_color, $link_track->{thickness} );
-    linnet::draw::bezier_curve( $im, $imc, $b2, $ribbon_edge_color, $link_track->{thickness} );
+    #linnet::draw::bezier_curve( $im, $imc, $b1, $ribbon_edge_color, $link_track->{thickness} );
+    #linnet::draw::bezier_curve( $im, $imc, $b2, $ribbon_edge_color, $link_track->{thickness} );
   }
   else {
 
@@ -239,6 +239,59 @@ sub draw {
   return;
 
 
+}
+
+# given a link track and a link, draw the link
+sub drawOutline {
+  linnet::debug::printdebug();
+  my ( $im, $imc, $link_track, $link ) = @_;
+  compute_pixel_ends( $link_track, $link );
+
+  my $color = defined $link->{options}{color} ? $link->{options}{color} : $link_track->{color};
+  my $thickness = defined $link->{options}{thickness} ? $link->{options}{thickness} : $link_track->{thickness};
+  my $as_ribbon = $link_track->{ribbon};
+  my $ribbon_edge_color = linnet::conf::getitem( "links", "link", "color" );
+
+  # ribbon is drawn only if the ends of the link are > 1 pixel in size
+  my $d1 = linnet::util::get_xyxy_distance( @{ $link->{s1}{xy}[0] }, @{ $link->{s1}{xy}[1] } );
+  my $d2 = linnet::util::get_xyxy_distance( @{ $link->{s2}{xy}[0] }, @{ $link->{s2}{xy}[1] } );
+  $as_ribbon &&= $d1 > 1 || $d2 > 1;
+
+  if ($as_ribbon) {
+
+    my $u1 = $link->{s1}{xy}[0];
+    my $v1 = $link->{s2}{xy}[0];
+    my @p01 =
+      ( [ linnet::util::bezier_control( @$u1, @$v1, $link_track->{bezier_radius_power} ) ] );
+
+    my $u2 = $link->{s2}{xy}[1];
+    my $v2 = $link->{s1}{xy}[1];
+    my @p02 =
+      ( [ linnet::util::bezier_control( @$u2, @$v2, $link_track->{bezier_radius_power} ) ] );
+
+    my ( @p1, @p2 );
+    if ( $link_track->{crest} ) {
+      my @p1c = ( linnet::util::bezier_crest( @$u1, @$v1, $link_track->{crest} ) );
+      my @p2c = ( linnet::util::bezier_crest( @$u2, @$v2, $link_track->{crest} ) );
+      @p1 = ( $p1c[0], @p01, $p1c[1] );
+      @p2 = ( $p2c[0], @p02, $p2c[1] );
+    }
+    else {
+      @p1 = @p01;
+      @p2 = @p02;
+    }
+
+    # bezier curves for the two sides of the ribbon
+    my $b1 = [ $u1, $v1, \@p1 ];
+    my $b2 = [ $u2, $v2, \@p2 ];
+
+    #linnet::debug::printdumper($b2);
+    #linnet::draw::bezier_polygon( $im, $imc, $b1, $b2, $color );
+    linnet::draw::bezier_curve( $im, $imc, $b1, $ribbon_edge_color, $link_track->{thickness} );
+    linnet::draw::bezier_curve( $im, $imc, $b2, $ribbon_edge_color, $link_track->{thickness} );
+  }
+  
+  return;
 }
 
 1;

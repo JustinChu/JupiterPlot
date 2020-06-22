@@ -201,6 +201,15 @@ for my $link_track ( linnet::link::get_link_tracks() ) {
     linnet::link::draw($im,$imc,$link_track,$link);
   }
 }
+for my $link_track ( linnet::link::get_link_tracks() ) {
+  for my $link ( sort { ($a->{options}{z}||0) <=> ($b->{options}{z}||0)} linnet::link::get_links($link_track) ) {
+    # links between segments on the same axis are not shown
+    my $s1 = linnet::segment::get_by_id($link->{s1}{id});
+    my $s2 = linnet::segment::get_by_id($link->{s2}{id});
+    next if $s1->{_axis} eq $s2->{_axis};
+    linnet::link::drawOutLine($im,$imc,$link_track,$link);
+  }
+}
 linnet::image::write($im);
 
 exit;
