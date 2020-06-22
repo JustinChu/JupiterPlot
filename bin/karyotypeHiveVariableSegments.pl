@@ -285,7 +285,7 @@ sub main {
 
 		#compute new angle, assumes shortest angle when possible
 		#use largest angle when only 2 segments exist
-		if ( scalar(@pair) == 1 ) {
+		if ( scalar(@ARGV) == 1 ) {
 			printAxisStr(
 				$fd, $pair,
 				meanDegreesReverse( $pair1, $pair2 ),
