@@ -121,8 +121,7 @@ sub main {
 					$refSum += $tempArr[5];
 				}
 				else {
-					$chrName =
-					  "_" . $pair1 . "_" . $tempArr[2] . "_";
+					$chrName = "_" . $pair1 . "_" . $tempArr[2] . "_";
 					$curSum += $tempArr[5];
 				}
 				unless ( exists( $segmentStrs{$chrName} ) ) {
@@ -151,7 +150,7 @@ sub main {
 		}
 		$refSum = 0;
 		$curSum = 0;
-		$fhSeg = new IO::File( $prefix . "." . $pair2 . ".karyotype" )
+		$fhSeg  = new IO::File( $prefix . "." . $pair2 . ".karyotype" )
 		  or die "Could not open file '$prefix.$pair2.karyotype' $!";
 		$line = $fhSeg->getline();
 		while ($line) {
@@ -285,8 +284,18 @@ sub main {
 		my $orderStr = join( ",", reverse @{ $ordering{$pair} } );
 
 		#compute new angle, assumes shortest angle when possible
-		printAxisStr( $fd, $pair, meandegrees( $pair1, $pair2 ),
-			"yes", $orderStr );
+		#use largest angle when only 2 segments exist
+		if ( scalar(@pair) == 1 ) {
+			printAxisStr(
+				$fd, $pair,
+				meanDegreesReverse( $pair1, $pair2 ),
+				"yes", $orderStr
+			);
+		}
+		else {
+			printAxisStr( $fd, $pair, meandegrees( $pair1, $pair2 ),
+				"yes", $orderStr );
+		}
 	}
 
 	#print out axis information
@@ -294,6 +303,17 @@ sub main {
 	print $fd "</axes>\n";
 	close($fd);
 	$segmentFH->close();
+}
+
+sub printAxisStr {
+	my $fd         = shift;
+	my $prefix     = shift;
+	my $angle      = shift;
+	my $reverse    = shift;
+	my $segmentStr = shift;
+	print $fd
+"<axis _$prefix>\nangle = $angle\nscale = 1\nreverse = $reverse\nsegments = $segmentStr\n</axis>\n";
+
 }
 
 #https://rosettacode.org/wiki/Averages/Mean_angle#Perl
@@ -306,17 +326,15 @@ sub meanangle {
 	$atan;
 }
 
-sub meandegrees {
-	meanangle(
-		map { $_ * pi /180 } @_ ) * 180/pi; }
-		  sub printAxisStr {
-			my $fd         = shift;
-			my $prefix     = shift;
-			my $angle      = shift;
-			my $reverse    = shift;
-			my $segmentStr = shift;
-			print $fd
-"<axis _$prefix>\nangle = $angle\nscale = 1\nreverse = $reverse\nsegments = $segmentStr\n</axis>\n";
+sub meanDegreesReverse {
+	my $angle = meanangle( map { $_ * pi / 180 } @_ ) * 180 / pi - 180;
+	if ( $angle < 0 ) {
+		$angle += 360;
+	}
+	return $angle;
+}
 
-		}
+sub meandegrees {
+	return meanangle(
+		map { $_ * pi /180 } @_ ) * 180/pi; }
 
