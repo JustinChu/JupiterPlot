@@ -11,7 +11,7 @@ use Math::Trig ':pi';
 
 my $rawConf        = "rawConfHive.conf";
 my $prefix         = "circos";
-my $imgSize        = 1500;
+my $imgSize        = 2000;
 my $radius         = 0.05;
 my $defaultSpacing = 0.05;
 my $width          = 0.01;
