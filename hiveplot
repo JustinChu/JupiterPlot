@@ -64,8 +64,8 @@ endif
 	ln -s $< $@
 
 %.links: %.$(angle1).links.final %.$(angle2).links.final
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(name).$(angle1) $< > $@
-	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(name).$(angle2) $(name).$(angle2).links.final >> $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle1) -r $(angle1)_$(angle2) $< > $@
+	perl $(ROOT_DIR)/bin/linksToHiveLink.pl -p $(angle2) -r $(angle1)_$(angle2) $(name).$(angle2).links.final >> $@
 	
 %.conf %.segments : %.$(angle1).seqOrder.txt %.$(angle2).seqOrder.txt %.$(angle1).karyotype %.$(angle2).karyotype
 	perl $(ROOT_DIR)/bin/karyotypeHiveVariableSegments.pl -s $(s) -r $(ROOT_DIR)/config/rawConfHive2.conf -p $* $(angle1)_$(angle2)
