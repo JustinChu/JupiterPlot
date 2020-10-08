@@ -120,7 +120,7 @@ sub outputKaryotype {
 			last;
 		}
 		
-		if ( $count == $maxCount ) {
+		if ( $count == $maxCount + 1 ) {
 			last;
 		}
 
