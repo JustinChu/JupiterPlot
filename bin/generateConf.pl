@@ -19,7 +19,7 @@ my $result        = GetOptions(
 	'k=s' => \$rawKaryotype,
 	's=s' => \$scaffoldFiles,
 	'n=i' => \$numScaff,
-	'm=i' => \$maxCount
+	'm=i' => \$maxCount,
 	'b=s' => \$scafftigsBED,
 	'a=s' => \$agpFile,
 	'r=s' => \$rawConf,
