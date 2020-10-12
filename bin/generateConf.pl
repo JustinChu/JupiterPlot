@@ -11,6 +11,7 @@ my $rawKaryotype  = "";
 my $scaffoldFiles = "";
 my $scafftigsBED  = "";
 my $agpFile       = "";
+my $maxCount      = -1;
 my $numScaff      = 90;
 my $rawConf       = "rawConf.conf";
 my $prefix        = "circos";
@@ -18,6 +19,7 @@ my $result        = GetOptions(
 	'k=s' => \$rawKaryotype,
 	's=s' => \$scaffoldFiles,
 	'n=i' => \$numScaff,
+	'm=i' => \$maxCount,
 	'b=s' => \$scafftigsBED,
 	'a=s' => \$agpFile,
 	'r=s' => \$rawConf,
@@ -115,6 +117,10 @@ sub outputKaryotype {
 	foreach my $scaffoldID ( reverse @lengthOrder ) {
 
 		if ( ( $genomeSize * $numScaff ) <= $scaffoldSum ) {
+			last;
+		}
+		
+		if ( $count == $maxCount + 1 ) {
 			last;
 		}
 
