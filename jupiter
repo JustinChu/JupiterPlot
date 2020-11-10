@@ -12,6 +12,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 #------------------------------------------------------------
 
 ng=75
+maxScaff=-1
 maxGap=100000
 minBundleSize=50000
 m=100000
@@ -78,7 +79,7 @@ endif
 	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | perl $(ROOT_DIR)/bin/samToBed.pl > $@
 
 %.conf %.karyotype %.rv.links %.fw.links %.seqOrder.txt: %.agp %-agp.bed %_reference.karyotype %_scaffolds.fa.fai
-	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*-agp.bed -a $*.agp -k $*_reference.karyotype
+	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -m $(maxScaff) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa.fai -b $*-agp.bed -a $*.agp -k $*_reference.karyotype
 
 $(name)_reference.karyotype: $(name)_reference.fa
 	perl $(ROOT_DIR)/bin/generateKaryotype.pl -g $(g) -i $(i) -m $(m) $(name)_reference.fa > $@
