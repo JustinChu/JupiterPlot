@@ -142,6 +142,7 @@ sub outputKaryotype {
 		$percentCoverage = ( 100 * $scaffoldSum ) / $genomeSize;
 		print STDERR "Selected scaffolds cover genome by " . $percentCoverage . " percent.\n";
 	}
+	
 	#print out spacing information:
 	my $defaultSpacing = 0.002;
 	print $fd "<ideogram>\n<spacing>\ndefault = " . $defaultSpacing . "r\n";
