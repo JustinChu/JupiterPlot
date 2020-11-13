@@ -137,6 +137,7 @@ sub outputKaryotype {
 		$count++;
 	}
 	print STDERR "Selecting " . $count . " scaffolds to render\n";
+	print STDERR "By " . $count . " scaffolds, genome is covered " . $scaffoldSum . " bases of " . $genomeSize . " bases in total.\n";
 
 	#print out spacing information:
 	my $defaultSpacing = 0.002;
