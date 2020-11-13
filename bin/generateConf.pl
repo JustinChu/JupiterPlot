@@ -140,7 +140,7 @@ sub outputKaryotype {
 	print STDERR "Selecting " . $count . " scaffolds to render\n";
 	if ( $maxCount > 0 ) {
 		$percentCoverage = ( 100 * $scaffoldSum ) / $genomeSize;
-		print STDERR "Selected scaffolds cover genome by " . $percentCoverage . " percent.\n";
+		print STDERR "Selected scaffolds cover genome by " . $percentCoverage . " percent\n";
 	}
 
 	#print out spacing information:
