@@ -27,6 +27,7 @@ my $result        = GetOptions(
 );
 
 my $outputkaryotype = $prefix . ".karyotype";
+my $percentCoverage = 0;
 
 $numScaff = $numScaff / 100;
 
@@ -137,7 +138,10 @@ sub outputKaryotype {
 		$count++;
 	}
 	print STDERR "Selecting " . $count . " scaffolds to render\n";
-
+	if ( $maxCount > 0 ) {
+		$percentCoverage = ( 100 * $scaffoldSum ) / $genomeSize;
+		print STDERR "Selected scaffolds cover genome by " . $percentCoverage . " percent.\n";
+	}
 	#print out spacing information:
 	my $defaultSpacing = 0.002;
 	print $fd "<ideogram>\n<spacing>\ndefault = " . $defaultSpacing . "r\n";
