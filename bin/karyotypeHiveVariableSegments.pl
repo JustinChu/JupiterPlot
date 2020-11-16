@@ -64,14 +64,14 @@ sub main {
 			#ref5	gi|453232919|ref|NC_003284.9|	scaf15	68	-
 			my @tempArr = split( /\t/, $line );
 
-			my $refStr   = "_" . $pair . "_" . $tempArr[0] . "_";
+#			my $refStr   = "_" . $pair . "_" . $tempArr[0] . "_";
 			my $angleStr = "_" . $pair1 . "_" . $tempArr[2] . "_";
 
 			#populate ref1
-			unless ( exists( $angleStrs{$refStr} ) ) {
-				push( @{ $ordering{$pair} }, $refStr );
-				$angleStrs{$refStr} = 1;
-			}
+#			unless ( exists( $angleStrs{$refStr} ) ) {
+#				push( @{ $ordering{$pair} }, $refStr );
+#				$angleStrs{$refStr} = 1;
+#			}
 			unless ( exists( $angleStrs{$angleStr} ) ) {
 				push( @{ $ordering{$pair1} }, $angleStr );
 				$angleStrs{$angleStr} = 1;
@@ -89,14 +89,14 @@ sub main {
 			#ref5	gi|453232919|ref|NC_003284.9|	scaf15	68	-
 			my @tempArr = split( /\t/, $line );
 
-			my $refStr   = "_" . $pair . "_" . $tempArr[0] . "_";
+#			my $refStr   = "_" . $pair . "_" . $tempArr[0] . "_";
 			my $angleStr = "_" . $pair2 . "_" . $tempArr[2] . "_";
 
 			#populate ref1
-			unless ( exists( $angleStrs{$refStr} ) ) {
-				push( @{ $ordering{$pair} }, $refStr );
-				$angleStrs{$refStr} = 1;
-			}
+#			unless ( exists( $angleStrs{$refStr} ) ) {
+#				push( @{ $ordering{$pair} }, $refStr );
+#				$angleStrs{$refStr} = 1;
+#			}
 			unless ( exists( $angleStrs{$angleStr} ) ) {
 				push( @{ $ordering{$pair2} }, $angleStr );
 				$angleStrs{$angleStr} = 1;
@@ -116,12 +116,16 @@ sub main {
 			#ref0 0 13783801 gi|453232067|ref|NC003281.10| chr0
 			my @tempArr = split( /\s/, $line );
 			unless ( $tempArr[0] eq "band" ) {
-				my $chrName = "_" . $pair . "_" . $tempArr[2] . "_";
-				if ( exists( $angleStrs{$chrName} ) ) {
+				my $chrName = "_" . $pair1 . "_" . $tempArr[2] . "_";
+				if($tempArr[2] =~ /^ref/){
+					$chrName = "_" . $pair . "_" . $tempArr[2] . "_";
+					unless ( exists( $angleStrs{$chrName} ) ) {
+						push( @{ $ordering{$pair} }, $chrName );
+						$angleStrs{$chrName} = 1;
+					}
 					$refSum += $tempArr[5];
 				}
 				else {
-					$chrName = "_" . $pair1 . "_" . $tempArr[2] . "_";
 					$curSum += $tempArr[5];
 				}
 				unless ( exists( $segmentStrs{$chrName} ) ) {
@@ -159,12 +163,16 @@ sub main {
 			#ref0 0 13783801 gi|453232067|ref|NC003281.10| chr0
 			my @tempArr = split( /\s/, $line );
 			unless ( $tempArr[0] eq "band" ) {
-				my $chrName = "_" . $pair . "_" . $tempArr[2] . "_";
-				if ( exists( $angleStrs{$chrName} ) ) {
+				my $chrName = "_" . $pair2 . "_" . $tempArr[2] . "_";
+				if($tempArr[2] =~ /^ref/){
+					$chrName = "_" . $pair . "_" . $tempArr[2] . "_";
+					unless ( exists( $angleStrs{$chrName} ) ) {
+						push( @{ $ordering{$pair} }, $chrName );
+						$angleStrs{$chrName} = 1;
+					}
 					$refSum += $tempArr[5];
 				}
 				else {
-					$chrName = "_" . $pair2 . "_" . $tempArr[2] . "_";
 					$curSum += $tempArr[5];
 				}
 				unless ( exists( $segmentStrs{$chrName} ) ) {
