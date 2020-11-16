@@ -289,7 +289,7 @@ sub main {
 		}
 
 		#create order string for reference
-		my $orderStr = join( ",", reverse @{ $ordering{$pair} } );
+		my $orderStr = join( ",", @{ $ordering{$pair} } );
 
 		#compute new angle, assumes shortest angle when possible
 		#use largest angle when only 2 segments exist
