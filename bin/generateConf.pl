@@ -15,6 +15,7 @@ my $maxCount      = -1;
 my $numScaff      = 90;
 my $rawConf       = "rawConf.conf";
 my $prefix        = "circos";
+my $gScaff        = 1;
 my $result        = GetOptions(
 	'k=s' => \$rawKaryotype,
 	's=s' => \$scaffoldFiles,
@@ -23,7 +24,8 @@ my $result        = GetOptions(
 	'b=s' => \$scafftigsBED,
 	'a=s' => \$agpFile,
 	'r=s' => \$rawConf,
-	'p=s' => \$prefix
+	'p=s' => \$prefix,
+	'g=i' => \$gScaff
 );
 
 my $outputkaryotype = $prefix . ".karyotype";
@@ -41,6 +43,7 @@ my %scaffoldIDMap;
 my %refIDMap;
 my %chrColorMap;
 my %chromosomes;
+my %scaffoldGaps;
 
 system( "cp " . $rawConf . " $prefix.conf -f" );
 system("sed -i -e 's/karyotype.txt/$prefix.karyotype/g' $prefix.conf");
@@ -62,13 +65,23 @@ sub outputKaryotype {
 	#	my %scaffoldLengths;
 	my $karyotype = new IO::File(">$outputkaryotype");
 
-	#load in fai file
+	#load in fasta file
 	while ($line) {
-		my @tempArray = split( /\t/, $line );
-		my $scaffoldID = $tempArray[0];
-		chomp($line);
-		$scaffoldsSize{$scaffoldID} = $tempArray[1];
+		my $header = $line;
 		$line = $scaffFH->getline();
+		my $currentStr = "";
+		while ( $line && $line !~ /^>/ ) {
+			chomp $line;
+			$currentStr .= $line;
+			$line = $scaffFH->getline();
+		}
+		my ($scaffoldID) = $header =~ /^>([^\s]+)\s/;
+		$scaffoldsSize{$scaffoldID} = length($currentStr);
+		while ( $currentStr =~ /([^ATCGatcg]+)/g ) {
+			if ( $gScaff < ( $+[0] - $-[0] ) ) {
+				push( @{ $scaffoldGaps{$scaffoldID} }, "$-[0] $+[0]" );
+			}
+		}
 	}
 	$scaffFH->close();
 
@@ -82,7 +95,9 @@ sub outputKaryotype {
 		chomp($line);
 		my @tempArray = split( " ", $line );
 		if ( scalar(@tempArray) ) {
-			if ( $tempArray[0] eq "band" && exists( $refIDMap{ $tempArray[1] } ) ) {
+			if ( $tempArray[0] eq "band"
+				&& exists( $refIDMap{ $tempArray[1] } ) )
+			{
 				$tempArray[1] = $refIDMap{ $tempArray[1] };
 				my $tempStr = join( " ", @tempArray ) . "\n";
 				$karyotype->write($tempStr);
@@ -119,7 +134,7 @@ sub outputKaryotype {
 		if ( ( $genomeSize * $numScaff ) <= $scaffoldSum ) {
 			last;
 		}
-		
+
 		if ( $count == $maxCount + 1 ) {
 			last;
 		}
@@ -133,6 +148,12 @@ sub outputKaryotype {
 			  . $scaffoldsSize{$scaffoldID}
 			  . " vvlgrey"
 			  . "\n" );
+		if ( exists( $scaffoldGaps{$scaffoldID} ) ) {
+			foreach my $gap ( @{ $scaffoldGaps{$scaffoldID} } ) {
+				$karyotype->write(
+					"band $scaffolds{$scaffoldID} N N $gap black\n");
+			}
+		}
 		$scaffoldSum += $scaffoldsSize{$scaffoldID};
 		$count++;
 	}
@@ -187,7 +208,7 @@ sub outputLinks {
 
 	while ($line) {
 		chomp($line);
-		my @tempArray = split( /\t/, $line );
+		my @tempArray  = split( /\t/, $line );
 		my $scaffoldID = $tempArray[0];
 		$scaffoldID =~ s/^scaffold//;
 
@@ -218,7 +239,7 @@ sub outputLinks {
 
 	while ($line) {
 		chomp($line);
-		my @tempArray = split( /\t/, $line );
+		my @tempArray  = split( /\t/, $line );
 		my $scaffoldID = $tempArray[3];
 		$scaffoldID =~ s/^contig//;
 		$scaffoldID =~ s/_\d+$//;
@@ -293,7 +314,7 @@ sub outputLinks {
 
 	while ($line) {
 		chomp($line);
-		my @tempArray = split( /\t/, $line );
+		my @tempArray  = split( /\t/, $line );
 		my $scaffoldID = $tempArray[3];
 		$scaffoldID =~ s/^contig//;
 		$scaffoldID =~ s/_\d+$//;
@@ -342,8 +363,7 @@ sub outputLinks {
 						  . ( $scafftigLocationsFW{$contigID} + $tempArray[6] )
 						  . " "
 						  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
-						  . " color=$chrColorMap{$tempArray[0]}_a5\n" )
-					  ;
+						  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
 				}
 			}
 		}
@@ -364,7 +384,7 @@ sub outputLinks {
 
 					#I:scaffold876:1
 					$scaffoldFH->write(
-						    $key . "\t"
+							$key . "\t"
 						  . $chromosomes{$key} . "\t"
 						  . $scaffoldKey . "\t"
 						  . $scaffoldIDMap{$scaffoldKey} . "\t"
@@ -414,7 +434,7 @@ sub outputLinks {
 #taken from http://www.perlmonks.org/?node_id=474564
 sub median {
 	my @vals = sort { $a <=> $b } @_;
-	my $len = @vals;
+	my $len  = @vals;
 	if ( $len % 2 )    #odd?
 	{
 		return $vals[ int( $len / 2 ) ];

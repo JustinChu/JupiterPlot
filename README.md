@@ -53,7 +53,8 @@ minBundleSize=50000 #minimum size of a contiguous region to render
 m=100000            #only use genomic reference chromosomes larger than this value
 i=0                 #increment for colouring chromosomes (HSV colour shift by setting 0-360), when set to >360 it generates random colours
 t=4                 #number of threads to use for minimap2
-g=1                 #minimum gap size in genome to render
+g=1                 #minimum gap size in reference to render
+gScaff=100000		#minimum gap size in scaffolds to render
 ```
 
 If everything runs smoothly it will generate the following files:
