@@ -20,6 +20,7 @@ g=1
 gScaff=100000
 i=0
 t=4
+MAPQ=50
 
 #------------------------------------------------------------
 # meta rules
@@ -73,11 +74,11 @@ $(name)-agp.sam: $(sam)
 	ln -s $< $@
 else
 %-agp.sam: %_reference.fa %-agp.fa
-	minimap2 -ax asm10 -t $(t) $*_reference.fa $*-agp.fa > $@
+	minimap2 -ax asm20 -t $(t) $*_reference.fa $*-agp.fa > $@
 endif
 
 %.bed: %.sam
-	grep -v XA $< | grep -v '^@' | awk '{if($$5 > 50 || $$5 == "" ) print}' | perl $(ROOT_DIR)/bin/samToBed.pl > $@
+	grep -E -v '^@' $< | awk '{if($$5 >= $(MAPQ)) print}' | perl $(ROOT_DIR)/bin/samToBed.pl > $@
 
 %.conf %.karyotype %.rv.links %.fw.links %.seqOrder.txt: %.agp %-agp.bed %_reference.karyotype %_scaffolds.fa
 	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -m $(maxScaff) -r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa -b $*-agp.bed -a $*.agp -k $*_reference.karyotype -g $(gScaff)
