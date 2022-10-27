@@ -16,6 +16,7 @@ my $numScaff      = 90;
 my $rawConf       = "rawConf.conf";
 my $prefix        = "circos";
 my $gScaff        = 1;
+my $alpha         = 5;
 my $result        = GetOptions(
 	'k=s' => \$rawKaryotype,
 	's=s' => \$scaffoldFiles,
@@ -25,7 +26,8 @@ my $result        = GetOptions(
 	'a=s' => \$agpFile,
 	'r=s' => \$rawConf,
 	'p=s' => \$prefix,
-	'g=i' => \$gScaff
+	'g=i' => \$gScaff,
+	'l=i' => \$alpha
 );
 
 my $outputkaryotype = $prefix . ".karyotype";
@@ -161,7 +163,9 @@ sub outputKaryotype {
 	print STDERR "Selecting " . $count . " scaffolds to render\n";
 	if ( $maxCount > 0 ) {
 		$percentCoverage = ( 100 * $scaffoldSum ) / $genomeSize;
-		print STDERR "Selected scaffolds cover genome by " . $percentCoverage . " percent\n";
+		print STDERR "Selected scaffolds cover genome by "
+		  . $percentCoverage
+		  . " percent\n";
 	}
 
 	#print out spacing information:
@@ -336,7 +340,9 @@ sub outputLinks {
 						  . ( $scafftigLocationsRV{$contigID} + $tempArray[6] )
 						  . " "
 						  . ( $scafftigLocationsRV{$contigID} + $tempArray[7] )
-						  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
+						  . " color=$chrColorMap{$tempArray[0]}_a"
+						  . $alpha
+						  . "\n" );
 				}
 				else {
 					$linksRV->write( $refIDMap{ $tempArray[0] } . " "
@@ -346,7 +352,9 @@ sub outputLinks {
 						  . ( $scafftigLocationsRV{$contigID} + $tempArray[6] )
 						  . " "
 						  . ( $scafftigLocationsRV{$contigID} + $tempArray[7] )
-						  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
+						  . " color=$chrColorMap{$tempArray[0]}_a"
+						  . $alpha
+						  . "\n" );
 				}
 			}
 			else {
@@ -358,7 +366,9 @@ sub outputLinks {
 						  . ( $scafftigLocationsFW{$contigID} + $tempArray[6] )
 						  . " "
 						  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
-						  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
+						  . " color=$chrColorMap{$tempArray[0]}_a"
+						  . $alpha
+						  . "\n" );
 				}
 				else {
 					$linksRV->write( $refIDMap{ $tempArray[0] } . " "
@@ -368,7 +378,9 @@ sub outputLinks {
 						  . ( $scafftigLocationsFW{$contigID} + $tempArray[6] )
 						  . " "
 						  . ( $scafftigLocationsFW{$contigID} + $tempArray[7] )
-						  . " color=$chrColorMap{$tempArray[0]}_a5\n" );
+						  . " color=$chrColorMap{$tempArray[0]}_a"
+						  . $alpha
+						  . "\n" );
 				}
 			}
 		}
@@ -440,7 +452,7 @@ sub outputLinks {
 sub median {
 	my @vals = sort { $a <=> $b } @_;
 	my $len  = @vals;
-	if ( $len % 2 )    #odd?
+	if ( $len % 2 )    #odd
 	{
 		return $vals[ int( $len / 2 ) ];
 	}
