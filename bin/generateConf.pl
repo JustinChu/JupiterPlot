@@ -17,6 +17,7 @@ my $rawConf       = "rawConf.conf";
 my $prefix        = "circos";
 my $gScaff        = 1;
 my $alpha         = 5;
+my $labels        = "both";
 my $result        = GetOptions(
 	'k=s' => \$rawKaryotype,
 	's=s' => \$scaffoldFiles,
@@ -27,7 +28,8 @@ my $result        = GetOptions(
 	'r=s' => \$rawConf,
 	'p=s' => \$prefix,
 	'g=i' => \$gScaff,
-	'l=i' => \$alpha
+	't=i' => \$alpha,
+	'l=s' => \$labels
 );
 
 my $outputkaryotype = $prefix . ".karyotype";
@@ -51,6 +53,26 @@ my %scaffoldGaps;
 system( "cp " . $rawConf . " $prefix.conf -f" );
 system("sed -i -e 's/karyotype.txt/$prefix.karyotype/g' $prefix.conf");
 system("sed -i -e 's/links.txt/$prefix.links.final/g' $prefix.conf");
+#filter labels
+if ( $labels eq "ref" ) {
+	system(
+'sed -i -e \'s/label_format_str/eval( var(chr) =~ \/scaf(\\\d+)$\/ ? "": var(label) )/g\' '
+		  . $prefix
+		  . '.conf' );
+}
+elsif ( $labels eq "scaf" ) {
+	system(
+'sed -i -e \'s/label_format_str/eval( var(chr) !~ \/scaf(\\\d+)$\/ ? "": var(label) )/g\' '
+		  . $prefix
+		  . '.conf' );
+}
+else {
+	system(
+		'sed -i -e \'s/label_format.*//g\' '
+		  . $prefix . '.conf'
+	);
+}
+
 open( my $fd, ">>$prefix.conf" );
 
 #create karyotype file
@@ -147,7 +169,7 @@ sub outputKaryotype {
 		$scaffoldIDMap{ "scaf" . $count } = $scaffoldID;
 		$karyotype->write( "chr - "
 			  . $scaffolds{$scaffoldID}
-			  . " $scaffolds{$scaffoldID} 0 "
+			  . " $scaffoldID 0 "
 			  . $scaffoldsSize{$scaffoldID}
 			  . " vvlgrey"
 			  . "\n" );
@@ -400,6 +422,7 @@ sub outputLinks {
 				foreach my $scaffoldKey (@tempArray) {
 
 					#I:scaffold876:1
+					#ref5	X	scaf45	361699	-
 					$scaffoldFH->write(
 							$key . "\t"
 						  . $chromosomes{$key} . "\t"
