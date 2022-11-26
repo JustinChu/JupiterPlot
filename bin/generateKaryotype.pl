@@ -51,7 +51,7 @@ while ($line) {
 		push( @chrOrder, $chrName );
 	}
 }
-print STDERR "Reference Genome Size after removing short seqeunces: " . $sum
+print STDERR "Reference Genome Size after removing short sequences: " . $sum
   . "\n";
 my $incSize = $maxHue / scalar( keys(%chrlengths) );
 foreach my $chrName (@chrOrder) {
