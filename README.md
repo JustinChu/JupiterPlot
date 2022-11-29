@@ -54,17 +54,17 @@ t=4                 #number of threads to use for minimap2
 #Karyotype options
 m=100000            #only use genomic reference chromosomes larger than this value
 ng=75               #use largest scaffolds that are equal to 75% of the genome 
-maxScaff=-1			#Instead of ng filter by this number of scaffolds
+maxScaff=-1         #Instead of ng filter by this number of scaffolds
 i=0                 #increment for colouring chromosomes (HSV colour shift by setting 0-360), when set to >360 it generates random colours
 g=1                 #minimum gap size in reference to render
-gScaff=100000		#minimum gap size in scaffolds to render
-labels = ref	    #Shows reference chromosome name "ref", scaffolds "scaf" or "both".
+gScaff=100000       #minimum gap size in scaffolds to render
+labels = ref        #Shows reference chromosome name "ref", scaffolds "scaf" or "both".
 
 #Link optinosn
 maxGap=100000       #maximum alignment gap allowed to consider a region contiguous
 minBundleSize=50000 #minimum size of a contiguous region to render
-MAPQ=50				#maximum mapping quality allowed when filtering
-linkAlpha=5			#alpha of links 1 = 17% , 2 = 33%, 3 = 50%, 4 = 67% and 5 = 83%.
+MAPQ=50             #maximum mapping quality allowed when filtering
+linkAlpha=5         #alpha of links 1 = 17% , 2 = 33%, 3 = 50%, 4 = 67% and 5 = 83%.
 
 ```
 
