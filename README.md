@@ -60,7 +60,7 @@ g=1                 #minimum gap size in reference to render
 gScaff=100000       #minimum gap size in scaffolds to render
 labels = ref        #Shows reference chromosome name "ref", scaffolds "scaf" or "both".
 
-#Link optinosn
+#Link options
 maxGap=100000       #maximum alignment gap allowed to consider a region contiguous
 minBundleSize=50000 #minimum size of a contiguous region to render
 MAPQ=50             #maximum mapping quality allowed when filtering
