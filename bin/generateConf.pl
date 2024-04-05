@@ -12,7 +12,7 @@ my $scaffoldFiles = "";
 my $scafftigsBED  = "";
 my $agpFile       = "";
 my $maxCount      = -1;
-my $numScaff      = 90;
+my $percScaff      = 90;
 my $rawConf       = "rawConf.conf";
 my $prefix        = "circos";
 my $gScaff        = 1;
@@ -21,7 +21,7 @@ my $labels        = "both";
 my $result        = GetOptions(
 	'k=s' => \$rawKaryotype,
 	's=s' => \$scaffoldFiles,
-	'n=i' => \$numScaff,
+	'n=i' => \$percScaff,
 	'm=i' => \$maxCount,
 	'b=s' => \$scafftigsBED,
 	'a=s' => \$agpFile,
@@ -35,7 +35,7 @@ my $result        = GetOptions(
 my $outputkaryotype = $prefix . ".karyotype";
 my $percentCoverage = 0;
 
-$numScaff = $numScaff / 100;
+$percScaff = $percScaff / 100;
 
 if ( $scaffoldFiles eq "" ) {
 	die "-s -b and parameters needed";
@@ -153,10 +153,11 @@ sub outputKaryotype {
 
 	my $count       = 1;
 	my $scaffoldSum = 0;
+	
 
 	foreach my $scaffoldID ( reverse @lengthOrder ) {
 
-		if ( ( $genomeSize * $numScaff ) <= $scaffoldSum ) {
+		if ( $percScaff > 0 && ( $genomeSize * $percScaff ) <= $scaffoldSum ) {
 			last;
 		}
 

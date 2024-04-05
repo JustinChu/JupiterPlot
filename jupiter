@@ -16,7 +16,7 @@ t=4                 #number of threads to use for minimap2
 
 #Karyotype options
 m=100000            #only use genomic reference chromosomes larger than this value
-ng=75               #use largest scaffolds that are equal to 75% of the genome 
+ng=75               #use largest scaffolds that are equal to 75% of the genome. when set to 0 all scaffolds are used.
 maxScaff=-1			#Instead of ng filter by this number of scaffolds
 i=0                 #increment for colouring chromosomes (HSV colour shift by setting 0-360), when set to >360 it generates random colours
 g=1                 #minimum gap size in reference to render
