@@ -2,7 +2,7 @@
 
 #Written by Justin Chu 2019
 #Collapse links using simple rules
-#currently only collapses edges that apear in colinear streatches
+#currently only collapses edges that apear in colinear stretches
 #requires sorted links file
 
 use strict;
