@@ -1,6 +1,0 @@
-chr - A A 0 543 colora
-chr - F F 0 476 colorf
-chr - C C 0 397 colorc
-chr - E E 0 340 colore
-chr - D D 0 246 colord
-chr - B B 0 122 colorb

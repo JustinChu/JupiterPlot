@@ -1,3 +1,0 @@
-segdup00001 hs1 465 30596 id=abc,color=blue,thickness=1
-segdup00001 hs2 114046768 114076456 id=def,fill_color=red,thickness=1
-

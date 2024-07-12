@@ -1,4 +1,0 @@
-#!/bin/bash
-
-./parsemap -map map.txt -links map.links.txt -debug
-circos

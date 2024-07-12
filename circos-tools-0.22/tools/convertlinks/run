@@ -1,4 +1,0 @@
-#!/bin/bash
-
-cat data/segdup.links.opt.txt | bin/convertlinks
-

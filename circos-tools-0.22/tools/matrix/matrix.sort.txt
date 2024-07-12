@@ -1,7 +1,0 @@
-# 3 x 3 matrix, unsorted
-b b bb
-c a ca
-b a ba
-a a aa
-a b ab
-a c ac

@@ -1,8 +1,0 @@
-chr - hair-0 hair-0 0 279 orange_a1
-chr - hair-1 hair-1 0 414 orange_a1
-chr - hair-2 hair-2 0 215 orange_a2
-chr - hair-3 hair-3 0 92 orange_a3
-chr - eye-3 eye-3 0 154 green_a3
-chr - eye-2 eye-2 0 110 green_a2
-chr - eye-1 eye-1 0 293 green_a1
-chr - eye-0 eye-0 0 443 green_a1

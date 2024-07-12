@@ -1,4 +1,0 @@
-#!/bin/bash
-
-cat data/dog.vs.human.all.txt | bin/bundlelinks > data/dog.vs.human.bundles.new.txt
-

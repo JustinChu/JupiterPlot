@@ -1,9 +1,0 @@
-#
-# use -show_parsed option to only report what has been parsed
-#
-# cat parse-example-1.txt | ../bin/parse-table -field_delim , -no-field_delim_collapse -show_parsed
-# 
--,A,B,C
-A,0,1,2
-B,3,4,5
-C,6,7,8

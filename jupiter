@@ -97,7 +97,7 @@ $(name)_reference.karyotype: $(name)_reference.fa
 	perl $(ROOT_DIR)/bin/generateKaryotype.pl -g $(g) -i $(i) -m $(m) $(name)_reference.fa > $@
 
 %.links.bundled: %.links
-	cat $< | perl $(ROOT_DIR)/circos-tools-0.22/tools/bundlelinks/bin/bundlelinks -max_gap $(maxGap) -min_bundle_size $(minBundleSize) > $@
+	cat $< | bundlelinks -max_gap $(maxGap) -min_bundle_size $(minBundleSize) > $@
 	#cat $< | perl $(ROOT_DIR)/bin/linkCollapse.pl -m $(maxGap) -b $(minBundleSize) > $@ #simple bundle
 
 %.fw.links.bundled.flipped : %.fw.links.bundled

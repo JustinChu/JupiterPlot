@@ -11,16 +11,26 @@ Nicknamed after the type of plot you get if your assembly is relatively error fr
 
 Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event) between L2 and L3. This event is inverted relative to the orientation show in the plot so the link is displayed as twisted. There are also smaller events internal to 3R. Note that by default only large scale events (>10kb) can be see in this plot, and small misassemblies, possibly medidated by repeats, cannot be seen (unless `maxBundleSize` is changed). The black lines on the reference indicate gaps of Ns, which can explain why some regions of the assembly are not covered (often found in telomeric or centromeric regions). Default settings except for ng=80 used.
 
+# Installing Juptiterplot
+## With conda
+Jupiterplot can be install with [conda](https://github.com/conda/conda) using the command:
+```{bash}
+conda install bioconda::jupiterplot
+```
+
+## Running from source
+
 ### Requirements (for full pipeline):
-* [Circos and Circos tools](http://circos.ca/software/download/circos/) (Installation Options below)
-* [minimap2](https://github.com/lh3/minimap2) (currently included in repo, feel free to remove it)
+* [Circos and Circos tools](http://circos.ca/software/download/circos/) (Installation options below)
+* [minimap2](https://github.com/lh3/minimap2) (assumes that this is in the path of the user)
 * [samtools](https://github.com/samtools/samtools) (assumes that this is in the path of the user)
 * GNU make
 
-### Installing Circos
-Circos can be installed with [linuxbrew](https://docs.brew.sh/Homebrew-on-Linux) using the command:
+### Installing Circos and Circos-tools
+Circos can be installed with [conda](https://github.com/conda/conda) using the command:
 ```{bash}
-brew install circos
+conda install bioconda::circos
+conda install bioconda::circos-tools
 ```
 
 Perl Modules Needed (If downloading and installing Circos without a package manager):
@@ -30,16 +40,17 @@ Perl Modules Needed (If downloading and installing Circos without a package mana
 * List::MoreUtils
 * Modules needed for Circos: [http://www.circos.ca/documentation/tutorials/configuration/perl_and_modules/](http://www.circos.ca/documentation/tutorials/configuration/perl_and_modules/)
 
-### Starting inputs:
+# Running Jupiterplot
+## Starting inputs:
 
 * Set of scaffolds in fasta format
 * Reference genome in fasta format
 
 To generate a plot given these inputs, samtools and minimap2 must be in your path.
 
-### Usage:
-
-Simply run:
+## Usage:
+The script used as the main executable is a makefile.
+Basic command:
 ```{bash}
 jupiter name=$prefix ref=$reference fa=$scaffolds
 ```
@@ -89,7 +100,24 @@ prefix.agp
 
 Most likely, you will want to work with the svg file as the perl image processing module Circos uses has difficulty rendering transparency on png files.
 
-### Relating image back to assembly:
+Chromosome X matches scaffold 361740 as the first segment (in the - direction relative to the orignal sequence) then scaffold 361915 (in the + direction relative to the orignal sequence) occurs as the next alignment (ordered in the 5'->3' direction relative to the reference). 
+
+# Tips and Tricks:
+## Renaming Chromosomes
+You can relabel chromosomes by running to the `prefix.karyotype` stage, editing the file and run the rest of the pipeline:
+
+```{bash}
+#Run pipeline to prefix.karyotype stage
+jupiter name=prefix $OPTS prefix.karyotype
+#Edit the file prefix.karyotype file in some way
+sed -i 's/chromosome/chr/g' prefix.karyotype
+#Finish pipeline
+jupiter name=prefix $OPTS
+```
+
+In this example, if the labels had `chromosome1` and they were then changed to `chr1`.
+
+## Relating image back to assembly:
 `prefix.seqOrder.txt` file:
 This file helps to relate the mapping order of each scaffold rendered back to the reference chromosomes in the plot. It lists what scaffold is rendered in the order to each reference chromosome from top of the plot to the bottom.
 
@@ -106,24 +134,7 @@ ref5	X	scaf68	361536	+
 ...
 ```
 
-Chromosome X matches scaffold 361740 as the first segment (in the - direction relative to the orignal sequence) then scaffold 361915 (in the + direction relative to the orignal sequence) occurs as the next alignment (ordered in the 5'->3' direction relative to the reference). 
-
-### Tips and Tricks:
- 1. Renaming Chromosomes
-You can relabel chromosomes by running to the `prefix.karyotype` stage, editing the file and run the rest of the pipeline:
-
-```{bash}
-#Run pipeline to prefix.karyotype stage
-jupiter name=prefix $OPTS prefix.karyotype
-#Edit the file prefix.karyotype file in some way
-sed -i 's/chromosome/chr/g' prefix.karyotype
-#Finish pipeline
-jupiter name=prefix $OPTS
-```
-
-In this example, if the labels had `chromosome1` and they were then changed to `chr1`.
-
-### Possible issues:
+# Possible issues:
  1. Error regarding too many ideograms - Example:
 ```
 You have asked to draw [831] ideograms, but the maximum is currently set at
@@ -133,7 +144,7 @@ You have asked to draw [831] ideograms, but the maximum is currently set at
 ```
 This basically means the assembly may be too fragmented. You can decrease `ng` to smaller value or alter the housekeeping.conf to allow for more scaffolds to render (keeping in mind it may become quite unwieldy).
 
-### Acknowledgements
+# Acknowledgements
 * Members of the [BTL lab](http://www.birollab.ca/) at the [BCGSC](https://github.com/bcgsc) for testing and feedback.
 * [ckeeling](https://github.com/ckeeling) for helping with identifying required perl modules.
 * [harish0201](https://github.com/harish0201) for helping with adding minimap2 functionality.

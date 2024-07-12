@@ -1,5 +1,0 @@
-#!/bin/bash
-
-bin/clustal2link -aln data/alignment.aln -debug
-cd circos
-circos 

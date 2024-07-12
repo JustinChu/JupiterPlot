@@ -1,6 +1,0 @@
-# leading spaces are skipped
-# 
-data    D    E    F
-   A  100  192  251
-   B   24   44   54
-   C  122  104  171
