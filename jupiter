@@ -74,7 +74,7 @@ $(name)_scaffolds.fa: $(fa)
 	samtools faidx $<
 	
 %.agp %-agp.fa : %_scaffolds.fa
-	perl $(ROOT_DIR)/bin/fatoagp.pl -f $*-agp.fa $< > $*.agp
+	perl $(ROOT_DIR)/jupiterplot/bin/fatoagp.pl -f $*-agp.fa $< > $*.agp
 
 ifdef sam
 $(name)-agp.sam: $(sam)
@@ -85,20 +85,20 @@ else
 endif
 
 %.bed: %.sam
-	grep -E -v '^@' $< | awk '{if($$5 >= $(MAPQ)) print}' | perl $(ROOT_DIR)/bin/samToBed.pl > $@
+	grep -E -v '^@' $< | awk '{if($$5 >= $(MAPQ)) print}' | perl $(ROOT_DIR)/jupiterplot/bin/samToBed.pl > $@
 
 %.conf %.karyotype %.rv.links %.fw.links %.seqOrder.txt: %.agp %-agp.bed %_reference.karyotype %_scaffolds.fa
-	perl $(ROOT_DIR)/bin/generateConf.pl -n $(ng) -m $(maxScaff) \
-	-r $(ROOT_DIR)/config/rawConf.conf -p $* -s $*_scaffolds.fa \
+	perl $(ROOT_DIR)/jupiterplot/bin/generateConf.pl -n $(ng) -m $(maxScaff) \
+	-r $(ROOT_DIR)/jupiterplot/config/rawConf.conf -p $* -s $*_scaffolds.fa \
 	-b $*-agp.bed -a $*.agp -k $*_reference.karyotype -g $(gScaff) \
 	-t $(linkAlpha) -l $(labels)
 
 $(name)_reference.karyotype: $(name)_reference.fa
-	perl $(ROOT_DIR)/bin/generateKaryotype.pl -g $(g) -i $(i) -m $(m) $(name)_reference.fa > $@
+	perl $(ROOT_DIR)/jupiterplot/bin/generateKaryotype.pl -g $(g) -i $(i) -m $(m) $(name)_reference.fa > $@
 
 %.links.bundled: %.links
 	cat $< | bundlelinks -max_gap $(maxGap) -min_bundle_size $(minBundleSize) > $@
-	#cat $< | perl $(ROOT_DIR)/bin/linkCollapse.pl -m $(maxGap) -b $(minBundleSize) > $@ #simple bundle
+	#cat $< | perl $(ROOT_DIR)/jupiterplot/bin/linkCollapse.pl -m $(maxGap) -b $(minBundleSize) > $@ #simple bundle
 
 %.fw.links.bundled.flipped : %.fw.links.bundled
 	awk ' { t = $$5; $$5 = $$6; $$6 = t; print; } ' $< > $@
