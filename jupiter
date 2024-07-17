@@ -1,4 +1,4 @@
-#!/usr/bin/make -Rrf
+#!/usr/bin/env -S make -Rrf
 ifdef profile
 SHELL=/usr/bin/time -f '=> jupiter: %e %C' /bin/bash -o pipefail
 else
