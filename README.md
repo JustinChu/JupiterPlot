@@ -11,8 +11,12 @@ Nicknamed after the type of plot you get if your assembly is relatively error fr
 
 Example plot on a Drosophila assembly showing a misassembly (or possible chromosomal fusion event) between L2 and L3. This event is inverted relative to the orientation show in the plot so the link is displayed as twisted. There are also smaller events internal to 3R. Note that by default only large scale events (>10kb) can be see in this plot, and small misassemblies, possibly medidated by repeats, cannot be seen (unless `maxBundleSize` is changed). The black lines on the reference indicate gaps of Ns, which can explain why some regions of the assembly are not covered (often found in telomeric or centromeric regions). Default settings except for ng=80 used.
 
-# Installing Juptiterplot
+# Installing Jupiterplot
 
+Jupiterplot can be installed with [conda](https://github.com/conda/conda) using the command:
+```{bash}
+conda install bioconda::jupiterplot
+```
 ## Running from source
 
 ### Requirements (for full pipeline):
