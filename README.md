@@ -90,7 +90,9 @@ prefix_reference.fa (symlink)
 prefix.seqOrder.txt
 prefix.svg
 prefix-agp.sam
-prefix.links
+prefix.rv.links
+prefix.fw.links
+prefix.links.final
 prefix.karyotype
 prefix-agp.fa
 prefix.conf
