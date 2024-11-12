@@ -101,8 +101,6 @@ prefix.agp
 
 Most likely, you will want to work with the svg file as the perl image processing module Circos uses has difficulty rendering transparency on png files.
 
-Chromosome X matches scaffold 361740 as the first segment (in the - direction relative to the orignal sequence) then scaffold 361915 (in the + direction relative to the orignal sequence) occurs as the next alignment (ordered in the 5'->3' direction relative to the reference). 
-
 # Tips and Tricks:
 ## Renaming Chromosomes
 You can relabel chromosomes by running to the `prefix.karyotype` stage, editing the file and run the rest of the pipeline:
@@ -134,6 +132,7 @@ ref5	X	scaf120	361915	+
 ref5	X	scaf68	361536	+
 ...
 ```
+Chromosome X matches scaffold 361740 as the first segment (in the - direction relative to the orignal sequence) then scaffold 361915 (in the + direction relative to the orignal sequence) occurs as the next alignment (ordered in the 5'->3' direction relative to the reference). 
 
 # Possible issues:
  1. Error regarding too many ideograms - Example:
