@@ -1,9 +1,0 @@
-#test files of drosphila
-/home/cjustin/Scratch/oldLaptop/oldUbuntu/justin/jupiter/dros.fa
-/home/cjustin/Scratch/oldLaptop/oldUbuntu/justin/jupiter/drosScaf.fa
-
-~/git/JupiterPlot/jupiter name=dm \
-fa="/home/cjustin/Scratch/oldLaptop/oldUbuntu/justin/jupiter/dros.fa" \
-ref="/home/cjustin/Scratch/oldLaptop/oldUbuntu/justin/jupiter/drosScaf.fa"
-
-
